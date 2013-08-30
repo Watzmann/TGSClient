@@ -15,7 +15,7 @@
     <div id="board" style="display:none;"
          oncontextmenu="return false;">
       <div style="border:solid blue 2px;
-                  background-image:url(board/background.gif);opacity:0.80;
+                  background-image:url(resources/board/background.gif);opacity:0.60;
                   width:497px; height:354px;">
                    <!--
                    filter:alpha(opacity=10);
@@ -46,10 +46,10 @@
     </form>
     <div>websockets: <span id="status">undef</span><br>
        host: <span id="host"></span></div>
-    <script src="sprintf.js"></script>
-    <script src="jquery.js"></script>
+    <script src="third_party/sprintf.js"></script>
+    <script src="third_party/jquery.js"></script>
     <script src="board.js"></script>
     <script src="client.js"></script>
-    <script>loadTGC("themisto:8001", "%s");</script>
+    <script>loadTGC("themisto:8001", "55555");</script>
   </body>
 </html>

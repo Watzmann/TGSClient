@@ -23,8 +23,8 @@ hannes rolls 4 and 3.
         boardPane.innerHTML = result;
     },
     draw: function(boardPane, board) {
-        var piece = {'O': "board/playerpiece.gif",
-                     'X': "board/opponentpiece.gif",};
+        var piece = {'O': "resources/board/playerpiece.gif",
+                     'X': "resources/board/opponentpiece.gif",};
         function moveChecker() {
             alert('clicked '+this.id+'  '+event.button);
             return false;   /* suppress contextmenu for right clicks */

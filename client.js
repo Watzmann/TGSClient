@@ -94,7 +94,7 @@ function loadTGC(host_port, token) {
             }
             tgc.action.focus(msg);
         },
-        _callbacks: {
+        _statusIndicators: {
             onopen: function(wsState) {
                 state.innerHTML = 'open ' + wsState;
                 state.className = signal_colors[wsState];
@@ -112,28 +112,34 @@ function loadTGC(host_port, token) {
                 state.className = signal_colors[wsState];
             }
         },
-        cc: {
+        cc: { /* This is a container for connection calls;
+                 they are constructed during the openConnection() call. */
+            /* TODO:0j: das muss doch hier drin gemacht werden;
+             *          aber 'ws' muss bekannt sein */
         },
         openConnection: function(host_port, token) {
             var ws = new WebSocket("ws://"+host_port+"/ws");
             ws.onopen = function() {
-                tgc._callbacks.onopen(ws.readyState);
+                tgc._statusIndicators.onopen(ws.readyState);
                 ws.send(token);
             };
             ws.onclose = function(event) {
                 ws.send("ciao again");
-                tgc._callbacks.onclose(ws.readyState);
+                tgc._statusIndicators.onclose(ws.readyState);
                 window.location = "http://"+host_port+"/ciao"
+                /* TODO:0j: das holt er vom server. Client wäre besser!! */
             };
             ws.onmessage = function(evt) {
                 var data = evt.data;
-                tgc._callbacks.onmessage(ws.readyState);
+                tgc._statusIndicators.onmessage(ws.readyState);
                 tgc.parse(data);
             };
-            tgc._callbacks.onopen(ws.readyState);
+            tgc._statusIndicators.onopen(ws.readyState);
             host.innerHTML = host_port; /* TODO:0j: das geht noch sauberer (code raus hier!) */
             if (window.WebSocket === undefined) {
-                tgc._callbacks.wsUndefined(ws.readyState);
+                /* Das hier gehört höher und sollte einen alternativen Zweig starten
+                 * mit Darstellung von Erklärung und kein login erlauben.*/
+                tgc._statusIndicators.wsUndefined(ws.readyState);
             };
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
