@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>TigerGammon client</title>
+  </head>
+  <body>
+    <h1>TigerGammon login</h1>
+    <div style="font-size:0.7em; color:red;"><p>Die Seite hier soll schon mit WebRTC ausgeliefert werden.
+<ol>
+<li>Es spricht nix dagegen, jetzt schon zu wissen, ob die Technik geht.</li>
+<li>Wenn die Technik nicht geht, kann man direkt Info/Hilfe anzeigen, ein Login ist gar nicht nötig.</li>
+<li>Wenn die Technik geht, kann man direkt mit Firlefanz (WebRTC) glänzen.</li>
+<li>Bei Erfolg (login) wird dieses div zugemacht (js), das andere auf.</li>
+</ol>
+         Oder???
+</p></div>
+    <form action="client" method="post">
+      <label for="name">name:</label>
+      <input type="text" name="name" id="name"/><br/>
+      <label for="password">password:</label>
+      <input type="password" name="password" id="password"/>
+      <input type="submit" name="send_submit" id="send_submit" value="Send" />
+    </form>
+    <div>websockets: <span id="status">undef</span><br>
+       host: <span id="host"></span></div>
+  </body>
+</html>

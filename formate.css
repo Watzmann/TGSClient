@@ -1,0 +1,44 @@
+.button {
+   background-color: rgba(227,149,13,1);
+   background-image: -webkit-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);
+   background-image:    -moz-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);
+   background-image:     -ms-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);
+   background-image:      -o-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);
+   background-image:         linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);
+   -webkit-box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+      -moz-box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+           box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+   border: solid 3px rgba(255,162,0,1);
+   -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+           border-radius: 10px;
+   width: 74px;
+   margin: 3px;
+   display: inline-block;
+   font-size: 17px;
+   color: rgba(0,0,0,1);
+   text-shadow: 0px 0px 0px rgba(0,0,0,1)
+}
+.button:hover {
+   background-image: -webkit-linear-gradient(top, rgba(245,159,10,1) 63%,rgba(200,200,200,1) 100%);
+   background-image:    -moz-linear-gradient(top, rgba(245,159,10,1) 63%,rgba(200,200,200,1) 100%);
+   background-image:     -ms-linear-gradient(top, rgba(245,159,10,1) 63%,rgba(200,200,200,1) 100%);
+   background-image:      -o-linear-gradient(top, rgba(245,159,10,1) 63%,rgba(200,200,200,1) 100%);
+   background-image:         linear-gradient(top, rgba(245,159,10,1) 63%,rgba(200,200,200,1) 100%);
+   border: solid 3px rgba(255,140,0,1);
+}
+.button:active {
+   background-image: -webkit-linear-gradient(top, rgba(247,177,0,1) 54%,rgba(224,71,16,1) 97%);
+   background-image:    -moz-linear-gradient(top, rgba(247,177,0,1) 54%,rgba(224,71,16,1) 97%);
+   background-image:     -ms-linear-gradient(top, rgba(247,177,0,1) 54%,rgba(224,71,16,1) 97%);
+   background-image:      -o-linear-gradient(top, rgba(247,177,0,1) 54%,rgba(224,71,16,1) 97%);
+   background-image:         linear-gradient(top, rgba(247,177,0,1) 54%,rgba(224,71,16,1) 97%);
+   -webkit-box-shadow: 2px 0px 2px 1px rgba(150,57,150,1);
+      -moz-box-shadow: 2px 0px 2px 1px rgba(150,57,150,1);
+           box-shadow: 2px 0px 2px 1px rgba(150,57,150,1);
+   border: solid 3px rgba(255,132,0,1);
+}
+
+.red {background-color:red; color:white}
+.green {background-color:green; color:white}
+.orange {background-color:#FF8040; color:blue}

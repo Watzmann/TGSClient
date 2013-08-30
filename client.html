@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>TigerGammon client</title>
+    <link rel="stylesheet" type="text/css" href="formate.css">
+    <link rel="stylesheet" type="text/css" href="board.css">
+  </head>
+  <body>
+    <h1>client demo</h1>
+    <p id="nick" style="background-color:green; color:white"></p>
+    <p id="tabs">
+        <span class="button" onclick="tgc.navigate.show('players')">players</span>
+        <span class="button" onclick="tgc.navigate.show('system')">system</span>
+        <span class="button" onclick="tgc.navigate.show('board')">board</span>
+    </p>
+    <div id="board" style="display:none;"
+         oncontextmenu="return false;">
+      <div style="border:solid blue 2px;
+                  background-image:url(board/background.gif);opacity:0.80;
+                  width:497px; height:354px;">
+                   <!--
+                   filter:alpha(opacity=10);
+                   -->
+      </div>
+      <div style="position:absolute;top:130px;left:0;" id="boardarea">
+            <pre id="boardpane">
+        </pre>
+      </div>
+      <div id="boardimg" style="position:absolute;top:130px;left:0;">
+      </div>
+    </div>
+    <div id="board2"></div>
+    <div id="system"> <!--style="display:block;float:right"-->
+      <label for="received">System output:</label>
+      <textarea name="received" id="received" cols="80" rows="20"></textarea>
+    </div>
+    <div id="players" style="display:block; background-color:#FFFF99;">
+      <p><pre name="players_list" id="players_list"></pre></p>
+    </div>
+    <form id="control" style="display:block">
+      <label for="send_input">Command:</label>
+      <input type="text" name="send_input" id="send_input"/>
+      <input type="submit" name="send_submit" id="send_submit" value="Send"
+             onclick="tgc.cc.send_data(); return false"/>
+      <input type="submit" name="logout" id="logout" value="Quit"
+             onclick="tgc.cc.shutdown(); return false"/>
+    </form>
+    <div>websockets: <span id="status">undef</span><br>
+       host: <span id="host"></span></div>
+    <script src="sprintf.js"></script>
+    <script src="jquery.js"></script>
+    <script src="board.js"></script>
+    <script src="client.js"></script>
+    <script>loadTGC("themisto:8001", "%s");</script>
+  </body>
+</html>
