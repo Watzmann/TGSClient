@@ -139,13 +139,10 @@ function loadTGC(host_port, token) {
             };
             ws.onclose = function(event) {
                 ws.send("ciao again");
-                tgc._statusIndicators.onclose(ws.readyState);
-                //window.location = "http://"+host_port+"/ciao"
-                /* TODO:0j: das holt er vom server. Client wäre besser!! */
+                window.location = "ciao"
             };
             ws.onmessage = function(evt) {
                 var data = evt.data;
-                tgc._statusIndicators.onmessage(ws.readyState);
                 tgc.parse(data);
             };
             tgc._statusIndicators.onopen(ws.readyState);
@@ -187,7 +184,7 @@ function loadTGC(host_port, token) {
                         systempane.style.display = "none";
                         players.style.display = "none";
                         board.style.display = "block";
-                        tgc.action.focus = tgc.action.board;
+                        tgc.action.focus = tgc.action.system;
                         board_str = "board:You:hannes:1:0:0:0:-1:0:0:0:-1:5:0:3:0:0:0:-4:5:0:0:0:-4:0:-5:0:0:0:0:2:0:1:0:0:0:0:1:1:1:0:-1:1:25:0:0:0:0:0:2:0:0:0"
                         tgc.action.board(board_str);
                         break;
