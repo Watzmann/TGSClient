@@ -7,14 +7,18 @@
   <body>
 	<div id=login style="display:block;">
       <h1>TigerGammon login</h1>
+      <div id="denied" style="display:none; color:red;">
+		  Access denied: wrong username <i id="user-name">...</i> or password!
+      </div>
       <div>
         <label for="name">name:</label>
-        <input type="text" name="name" id="name"/><br/>
+        <input type="text" name="name" id="login_name"/><br/>
         <label for="password">password:</label>
-        <input type="password" name="password" id="password"/>
-        <input type="button" name="login_submit" id="login_submit" value="Login"/>
+        <input type="password" name="password" id="login_password"/>
+        <input type="button" id="login_submit" value="Login"
+               onclick="tgc.cc.login();"/>
       </div>
-	  <div>websockets: <span id="status">undef</span><br>
+	  <div style="padding-top:20px">websockets: <span id="status">undef</span><br>
            host: <span id="host"></span></div>
 	</div>
 	<div id=client style="display:none;">
@@ -49,7 +53,7 @@
 		<div id="players" style="display:block; background-color:#FFFF99;">
 		  <p><pre name="players_list" id="players_list"></pre></p>
 		</div>
-		<form id="control" style="display:block">
+		<form id="control" style="display:block">   <!-- muss des ne form sein???? -->
 		  <label for="send_input">Command:</label>
 		  <input type="text" name="send_input" id="send_input"/>
 		  <input type="submit" name="send_submit" id="send_submit" value="Send"

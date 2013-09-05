@@ -11,14 +11,25 @@ function loadTGC(host_port, token) {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var state = document.getElementById("status"),
         host = document.getElementById("host"),
-        input_field = document.getElementById("send_input"),
-        board2 = document.getElementById("board2");
-    var systempane = document.getElementById("system"),
+        input_field = document.getElementById("send_input");
+    var login = document.getElementById("login"),
+        denied = document.getElementById("denied"),
+        client = document.getElementById("client"),
+        systempane = document.getElementById("system"),
         board = document.getElementById("board"),
+        board2 = document.getElementById("board2"),
         players = document.getElementById("players");
     return {
         action: {
+            access_denied: function (nick) {
+                denied.style.display = "block";
+                var target = document.getElementById("user-name");
+                target.innerHTML = nick;
+                tgc.cc.reopen();
+                },
             set_nick: function (nick) {
+                login.style.display = "none";
+                client.style.display = "block";
                 var target = document.getElementById("nick");
                 target.innerHTML = "You are logged in as <i>"+nick+"</i>";
                 },
@@ -73,6 +84,9 @@ function loadTGC(host_port, token) {
                 act = action_parts[0];
                 cmd = action_parts[1];
                 switch (act) {
+                    case "000":
+                        tgc.action.access_denied(cmd);
+                        break;
                     case "001":
                         tgc.action.set_nick(cmd);
                         break;
@@ -81,6 +95,7 @@ function loadTGC(host_port, token) {
                         break;
                     default:
                         tgc.action.focus(msg);
+                    // unterdruecken: "User not known or wrong password"
                 }
                 return;
             }
@@ -121,12 +136,11 @@ function loadTGC(host_port, token) {
             var ws = new WebSocket("ws://"+host_port+"/ws");
             ws.onopen = function() {
                 tgc._statusIndicators.onopen(ws.readyState);
-                ws.send(token);
             };
             ws.onclose = function(event) {
                 ws.send("ciao again");
                 tgc._statusIndicators.onclose(ws.readyState);
-                window.location = "http://"+host_port+"/ciao"
+                //window.location = "http://"+host_port+"/ciao"
                 /* TODO:0j: das holt er vom server. Client wäre besser!! */
             };
             ws.onmessage = function(evt) {
@@ -156,6 +170,15 @@ function loadTGC(host_port, token) {
             tgc.cc.sendCmd = function(msg) {
                 ws.send(msg);
             };
+            tgc.cc.login = function() {
+				var name = document.getElementById("login_name"),
+					passwd = document.getElementById("login_password");
+                ws.send("login "+name.value+" "+passwd.value);
+                return true;
+            };
+            tgc.cc.reopen = function() {
+				tgc.openConnection(host_port, token);
+			}
         },
         navigate: {
             show: function(element) {
