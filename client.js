@@ -184,7 +184,7 @@ function loadTGC(host_port, token) {
                         systempane.style.display = "none";
                         players.style.display = "none";
                         board.style.display = "block";
-                        tgc.action.focus = tgc.action.system;
+                        tgc.action.focus = tgc.action.board;
                         board_str = "board:You:hannes:1:0:0:0:-1:0:0:0:-1:5:0:3:0:0:0:-4:5:0:0:0:-4:0:-5:0:0:0:0:2:0:1:0:0:0:0:1:1:1:0:-1:1:25:0:0:0:0:0:2:0:0:0"
                         tgc.action.board(board_str);
                         break;
