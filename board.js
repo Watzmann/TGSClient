@@ -26,6 +26,7 @@ hannes rolls 4 and 3.
 
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
+        parts["nrMoves"] = boardParts[49];
 
         return parts;
     },
@@ -36,9 +37,22 @@ hannes rolls 4 and 3.
         var gifRoot = "resources/board/",
             piece = {'O': gifRoot + "playerpiece.gif",
                      'X': gifRoot + "opponentpiece.gif",};
-        function moveChecker() {
-            alert('clicked '+this.id+'  '+event.button);
-            return false;   /* suppress contextmenu for right clicks */
+
+        function moveChecker(element, dice, nrMoves, direction, position) {
+            var target,
+				point = parseInt(element.id.slice(1));
+            for (var d in dice) {
+				target = (direction > 0) ? point+dice[d] : point-dice[d];
+				if (target > 0 && target < 25 && 
+								position[target] == 0) {
+					alert('clicked '+element.id+'  '+event.button);
+				}
+				/* TODO:0j:
+				 * undo!! 
+				 * moves beim gegner zeigen 
+				 * zahl der vorhandenen checker sollte im container gespeichert sein
+				 */ 
+			}
         }
         function drawPoint(checkers, padding, color) {
             function drawCheckers(checkers, color) {
@@ -86,31 +100,39 @@ hannes rolls 4 and 3.
                 jQuery(div+point+"</div>").appendTo($b);
             }
         }
-        function setAction(index, element) {
-            var action;
-            element.onclick = moveChecker;
-            element.oncontextmenu = moveChecker;
-
-            /*if (color == 'X') {
-                return "\">";
-            } else {
-                return "\" onclick=\"this.moveChecker('#p" +
-                          from + "','#p" + from+pips + "')\">";
-            }*/
-
-        }
         var elements = this.parseBoard(board);
-        var drawPosition = function(target, elements) {
-            var $board;
-            $board = $(target);
+        var setDirection = function($imgs, elements) {
+			if (elements['direction'] == '-1') {
+				$imgs.filter('#pip13').attr('class', 'upperpips');
+				$imgs.filter('#pip12').attr('class', 'lowerpips');
+			} else {
+				$imgs.filter('#pip12').attr('class', 'upperpips');
+				$imgs.filter('#pip13').attr('class', 'lowerpips');
+			}
+		}
+        var drawPosition = function($board, elements) {
             $board.find("div").remove();
             setCheckers(elements['position'], $board);
             setDice(elements['dice'], $board);
             if (elements['turn']) {
+				var move = function() {
+					var dice = elements['dice'].slice(0,2),
+					    nrMoves = elements['nrMoves'],
+					    direction = elements['direction'],
+					    position = elements['position'];
+					moveChecker(this, dice, nrMoves, direction, position);
+					return false;   /* suppress contextmenu for right clicks */
+				};
+				function setAction(index, element) {
+					element.onclick = move;
+					element.oncontextmenu = move;
+				}
                 $board.find('.starthere').each(setAction);
             }
         };
-        drawPosition(boardPane, elements);
+        $board = $(boardPane);
+        setDirection($('#boardBg > img'), elements);
+        drawPosition($(boardPane), elements);
     }
   }
 };

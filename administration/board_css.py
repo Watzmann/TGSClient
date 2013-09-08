@@ -31,6 +31,8 @@ class BoardCss():
         print "#pDice2 { position:absolute; top:182px; left:398px; width:21px; height:21px; }"
         print "#oDice1 { position:absolute; top:182px; left:129px; width:21px; height:21px; }"
         print "#oDice2 { position:absolute; top:182px; left:189px; width:21px; height:21px; }"
+		print ".upperpips { position:relative; top:131px; left:43px; }"
+		print ".lowerpips { position:relative; top:198px; left:43px; }"
         self.board_css = css.getvalue()
 
 if __name__ == '__main__':
