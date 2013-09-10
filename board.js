@@ -15,6 +15,13 @@ board:You:hannes:1:0:0:0:-1:0:0:0:-1:5:0:3:0:0:0:-4:5:0:0:0:-4:0:-5:0:0:0:0:2:0:
 hannes rolls 4 and 3.
 */
         var parts = {};
+        var castInt = function(arr) {
+            var result = new Array;
+            for (var i in arr) {
+                result.push(+ arr[i]);
+            }
+            return result;
+        }
         parts["opponent"] = boardParts[2];
         parts["position"] = boardParts.slice(6,32);
 
@@ -22,7 +29,7 @@ hannes rolls 4 and 3.
         parts["direction"] = boardParts[42];
 
         parts["turn"] = boardParts[32] == boardParts[41];
-        parts["dice"] = boardParts.slice(33,37);
+        parts["dice"] = castInt(boardParts.slice(33,37));
 
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
@@ -35,22 +42,22 @@ hannes rolls 4 and 3.
     },
     draw: function(boardPane, board) {
         var gifRoot = "resources/board/",
-            piece = {'O': gifRoot + "playerpiece.gif",
-                     'X': gifRoot + "opponentpiece.gif",};
+            piece = {'player': gifRoot + "playerpiece.gif",
+                     'opponent': gifRoot + "opponentpiece.gif",};
 
-        function moveChecker(element, dice, nrMoves, direction, position) {
-            var target,
+        function moveChecker(element, dice, nrMoves, position, $divs) {
+            var target, $t,
                 point = parseInt(element.id.slice(1));
             for (var d in dice) {
-                target = (direction > 0) ? point+dice[d] : point-dice[d];
+                target = point-dice[d];
+                $t = $divs.filter('#p'+target);
                 if (target > 0 && target < 25 &&
-                                position[target] == 0) {
+                                $t.attr('data-target') != 'no') {
                     alert('clicked '+element.id+'  '+event.button);
                 }
                 /* TODO:0j:
                  * undo!!
                  * moves beim gegner zeigen
-                 * zahl der vorhandenen checker sollte im container gespeichert sein
                  */
             }
         }
@@ -85,15 +92,49 @@ hannes rolls 4 and 3.
                 jQuery('<div id="oDice2">'+pic+"</div>").appendTo($b);
             }
         }
-        function setCheckers(position, $b) {
+        function setCheckersX(position, $b) {
+            var color, point, checkers, div, container;
+            for (var i=1; i<25; i++) {
+                checkers = position[25-i];
+                container = {id: i,
+                             point: 25-i,
+                           };
+                if (checkers < 0) {
+                    color = 'player';
+                    container['class'] = "starthere";
+                    container['target'] = "yes";
+                    container['checkers'] = -checkers;
+                } else {
+                    color='opponent';
+                                 availability:  "yes",
+                    container['class'] = "neutral";
+                    if (checkers > 1) {
+                        container['target'] = "no";
+                    } else if (checkers == 1) {
+                        container['target'] = "hit";
+                    } else {
+                        container['target'] = "yes";
+                    }
+                    container['checkers'] = checkers;
+                }
+                div = sprintf('<div id="p%(id)d" class="%(class)s" ' +
+                              'data-point="%(point)s" ' +
+                              'data-target="%(target)s" ' +
+                              'data-checkers="%(checkers)s">', container);
+                point = drawPoint(parseInt(checkers), i<13, color);
+                /* TODO:0j: is it a good idea to draw empty points?? */
+                jQuery(div+point+"</div>").appendTo($b);
+            }
+        }
+        function setCheckersO(position, $b) {
             var color, point, checkers, div;
-            for (var i=1; i<26; i++) {
-                checkers = position[26-i];
+            for (var i=1; i<25; i++) {
+                checkers = position[i];
                 if (checkers > 0) {
-                    color='O';
+                    color = 'player';
                     div = "<div id=\"p"+i+"\" class=\"starthere\">";
                 } else {
-                    color='X';
+                    color='opponent';
                     div = "<div id=\"p"+i+"\">";
                 }
                 point = drawPoint(parseInt(checkers), i<13, color);
@@ -111,8 +152,12 @@ hannes rolls 4 and 3.
             }
         }
         var drawPosition = function($board, elements) {
-            $board.find("div").remove();
-            setCheckers(elements['position'], $board);
+            $board.find('div').remove();
+            if (elements['color'] == "-1") {
+                setCheckersX(elements['position'], $board);
+            } else {
+                setCheckersO(elements['position'], $board);
+            }
             setDice(elements['dice'], $board);
             if (elements['turn']) {
                 var move = function() {
@@ -120,7 +165,7 @@ hannes rolls 4 and 3.
                         nrMoves = elements['nrMoves'],
                         direction = elements['direction'],
                         position = elements['position'];
-                    moveChecker(this, dice, nrMoves, direction, position);
+                    moveChecker(this, dice, nrMoves, position, $board.find('div'));
                     return false;   /* suppress contextmenu for right clicks */
                 };
                 function setAction(index, element) {
