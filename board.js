@@ -45,9 +45,12 @@ hannes rolls 4 and 3.
             piece = {'player': gifRoot + "playerpiece.gif",
                      'opponent': gifRoot + "opponentpiece.gif",};
 
-        function moveChecker(element, dice, nrMoves, $divs) {
-            var target, $t, $s, div;
-            if (event.button == 1) {
+        function moveChecker(element, dice, double, nrMoves, $board) {
+            var target, $t, $s,
+                myMove = new Array,
+                $divs = $board.find('div'); /* needs to be selected anew at
+                    every function entry, since the divs are being manipulated. */
+            if (event.button == 1) {        /* ignore middle clicks */
                 return;
             } else if (event.button == 2 && nrMoves == 2) {
                 dice.reverse();
@@ -62,31 +65,48 @@ hannes rolls 4 and 3.
                 data = {'id': id, 'point': point};
                 return composePlayersPoint(data, checkers, pip<13);
             }
+            function replacePoint($p, point, diff) {
+                var div = construct($p, point, diff);
+                $p.remove();
+                jQuery(div).attr('class', 'starthere').insertBefore($divs.eq(0));
+                return $p.attr('data-point');
+            }
             for (var d in dice) {
-                target = start - dice[d];
+                var undo = {'dice': dice.slice()};
+                var used = dice.shift();
+                target = start - used;
                 $t = $divs.filter('#p'+target);
-                if (target > 0 && target < 25 &&
-                                $t.attr('data-target') == 'no') {
-                    continue;
+                if ($t.length == 0 || $t.attr('data-target') == 'no') {
+                    dice.push(used);
+                    if (double) {
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
-                var undo = {'start': '#' + element.id,
-                            '$sClone': $s.clone(),
-                            'target': '#p' + target,
-                            '$tClone': $t.clone(),
-                            };
-                div = construct($t, target, +1);
-                $t.remove();
-                jQuery(div).insertBefore($divs.eq(0))
-                div = construct($s, start, -1);
-                $s.remove();
-                jQuery(div).insertBefore($divs.eq(0))
+                undo['nrMoves'] = nrMoves;
+                undo['start'] = '#' + element.id;
+                undo['$sClone'] = $s.clone();
+                undo['target'] = '#p' + target;
+                undo['$tClone'] = $t.clone();
+                undo['myMove'] = myMove;
+                var point = replacePoint($s, start, -1);
+                myMove.push(point);
+                $divs = $board.find('div'); /* refresh selection, since divs
+                                                have been manipulated.       */
+                point = replacePoint($t, target, +1);
+                myMove.push(point);
+                nrMoves--;
                 break;
 
                 /* TODO:0j:
                  * undo!!
                  * moves beim gegner zeigen
+                 * Hit beachten
                  */
             }
+            return {'dice': dice, 'moves': nrMoves,
+                    'myMove': myMove, 'undo': undo};
         }
         function drawPoint(checkers, padding, color) {
             function drawCheckers(checkers, color) {
@@ -139,9 +159,7 @@ hannes rolls 4 and 3.
             var checkers, div, container;
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[25-i]);
-                container = {id: i, point: 25-i,
-                             /* TODO:0j: looks like we don't need 'point' */
-                            };
+                container = {id: i, point: 25-i};
                 if (checkers < 0) {
                     div = composePlayersPoint(container, -checkers, i<13);
                 } else {
@@ -155,9 +173,7 @@ hannes rolls 4 and 3.
             var checkers, div, container;
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[i]);
-                container = {id: i, point: i,
-                             /* TODO:0j: looks like we don't need 'point' */
-                            };
+                container = {id: i, point: i};
                 if (checkers > 0) {
                     div = composePlayersPoint(container, checkers, i<13);
                 } else {
@@ -192,6 +208,15 @@ hannes rolls 4 and 3.
             }
         }
         var drawPosition = function($board, elements) {
+            var availableDice, initialDice, double, nrMoves,
+                myMoves = new Array;
+            function setAvailableDice(dice, nrmoves) {
+                availableDice = dice;
+                nrMoves = nrmoves;
+            }
+            function accumulateMoves(move) {
+                myMoves = myMoves.concat(move);
+            }
             $board.find('div').remove();
             if (elements['color'] == "-1") {
                 setCheckersX(elements['position'], $board);
@@ -199,20 +224,51 @@ hannes rolls 4 and 3.
                 setCheckersO(elements['position'], $board);
             }
             setDice(elements['dice'], $board);
+            initialDice = elements['dice'].slice(0,2);
+            if (initialDice[0] == initialDice[1]) {
+                initialDice = initialDice.concat(initialDice);
+                double = true;
+            } else {
+                double = false;
+            }
+            setAvailableDice(initialDice, elements['nrMoves']);
             if (elements['turn']) {
-                var move = function() {
-                    var dice = elements['dice'].slice(0,2),
-                        nrMoves = elements['nrMoves'],
-                        direction = elements['direction'],
-                        color = elements['color'];
-                    if (nrMoves > 0) {
-                        moveChecker(this, dice, nrMoves, $board.find('div'));
-                    }
-                    return false;   /* suppress contextmenu for right clicks */
+                var move = function(dice, nrmoves) {
+                    return function() {
+                        /* move() must be a closure with knowledge about
+                         * availableDice and nrMoves.
+                         * after moves are done, set a onclick on the dice to
+                         * send of the moves */
+                        var available,
+                            direction = elements['direction'],
+                            color = elements['color'];
+                        if (nrmoves > 0) {
+                            available = moveChecker(this, dice, double, nrmoves, $board);
+                            setAvailableDice(available['dice'], available['moves']);
+                            accumulateMoves(available['myMove']);
+                            if (available['moves'] > 0) {
+                                $board.find('.starthere').each(setAction);
+                            } else {
+                                $board.find('.starthere').each(clearAction);
+                                /* TODO:0j: set click area on dice */
+                                tgc.cc.sendCmd("move "+myMoves.join(" "));
+                            }
+                        /* TODO:0j: when clicking the dice to send the move, there
+                         * might be a message, that not all moves were yet made.
+                         * This might be especially interesting when there is a
+                         * move, difficult for beginners (like 1-6, where 6 is
+                         * possible only after a very special 1) */
+                        }
+                        return false;   /* suppress contextmenu for right clicks */
+                    };
                 };
                 function setAction(index, element) {
-                    element.onclick = move;
-                    element.oncontextmenu = move;
+                    element.onclick = move(availableDice, nrMoves);
+                    element.oncontextmenu = move(availableDice, nrMoves);
+                }
+                function clearAction(index, element) {
+                    element.onclick = null;
+                    element.oncontextmenu = null;
                 }
                 $board.find('.starthere').each(setAction);
             }
