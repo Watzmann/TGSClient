@@ -30,6 +30,8 @@ hannes rolls 4 and 3.
 
         parts["turn"] = boardParts[32] == boardParts[41];
         parts["dice"] = castInt(boardParts.slice(33,37));
+        parts["dice"].sort();
+        parts["dice"].reverse();
 
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
@@ -50,11 +52,8 @@ hannes rolls 4 and 3.
                 myMove = new Array;
             if (event.button == 1) {        /* ignore middle clicks */
                 return;
-            } else if (!double && nrMoves == 2) {
-                dice.sort();
-                if (event.button == 0) {
-                    dice.reverse();
-                }
+            } else if (!double && nrMoves == 2 && event.button == 2) {
+                dice.reverse();
             }
             var start = parseInt(element.id.slice(1));
             $s = $divs.filter('#'+element.id);
@@ -120,7 +119,9 @@ hannes rolls 4 and 3.
                 }
                 for (var c = 0; c < checkers; c++) {
                     var stack = '';
-                    if (c > 8) {
+                    if (padding && c > 4) {
+                        stack = ' class=cp' + c;
+                    } else if (c > 8) {
                         stack = ' class=c9';
                     } else if (c > 4) {
                         stack = ' class=c5';
@@ -135,6 +136,10 @@ hannes rolls 4 and 3.
             } else {
                 return drawCheckers((checkers > 0) ? checkers : -checkers, color);
             }
+        }
+        function sendMoveApologies(nrP, more) {
+            var m = more ? ' more' : ''
+            return 'please move ' + nrP + m + ' piece' + (nrP > 1 ? 's':'');
         }
         function composeDiv(values) {
             if (values['checkers'] > 5) {
@@ -199,18 +204,27 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
-        function setDice(dice, $b) {
+        function setDice(dice, turn, nrMoves, $b) {
             var pic;
+            function rollDice() {
+                tgc.cc.sendCmd("roll");
+            }
             if (dice[0] != 0) {
                 pic = '<img src="' + gifRoot + 'playerdie'+dice[0]+'.gif" alt="playerdie1">';
-                jQuery('<div id="pDice1">'+pic+"</div>").appendTo($b);
+                jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
                 pic = '<img src="' + gifRoot + 'playerdie'+dice[1]+'.gif" alt="playerdie2">';
-                jQuery('<div id="pDice2">'+pic+"</div>").appendTo($b);
+                jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
+                jQuery('<div id="sendMove" title="' +
+                        sendMoveApologies(nrMoves, false) + '"></div>').appendTo($b);
             } else if (dice[2] != 0) {
                 pic = '<img src="' + gifRoot + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
-                jQuery('<div id="oDice1">'+pic+"</div>").appendTo($b);
+                jQuery('<div id="oDice1">'+pic+'</div>').appendTo($b);
                 pic = '<img src="' + gifRoot + 'opponentdie'+dice[3]+'.gif" alt="opponentdie2">';
-                jQuery('<div id="oDice2">'+pic+"</div>").appendTo($b);
+                jQuery('<div id="oDice2">'+pic+'</div>').appendTo($b);
+            } else if (turn) {
+                pic = '<img src="' + gifRoot + 'rolldice.gif" alt="roll dice" title="click to roll">';
+                jQuery('<div id="rollDice">' + pic + '</div>').appendTo($b);
+                jQuery('#rollDice')[0].onclick = rollDice;
             }
         }
         var elements = this.parseBoard(board);
@@ -233,13 +247,16 @@ hannes rolls 4 and 3.
             function accumulateMoves(move) {
                 myMoves = myMoves.concat(move);
             }
+            function sendMove() {
+                tgc.cc.sendCmd("move "+myMoves.join(" "));
+            }
             $board.find('div').remove();
             if (elements['color'] == "-1") {
                 setCheckersX(elements['position'], $board);
             } else {
                 setCheckersO(elements['position'], $board);
             }
-            setDice(elements['dice'], $board);
+            setDice(elements['dice'], elements['turn'], elements['nrMoves'], $board);
             initialDice = elements['dice'].slice(0,2);
             if (initialDice[0] == initialDice[1]) {
                 initialDice = initialDice.concat(initialDice);
@@ -266,16 +283,19 @@ hannes rolls 4 and 3.
                             /* TODO:0j: hier kommt das undo hin */
                             if (resulting['moves'] > 0) {
                                 $board.find('.starthere').each(setAction);
+                                $board.find('#sendMove').attr('title',
+                                    sendMoveApologies(resulting['moves'], true));
+                                /* TODO:0j: when clicking the dice to send the move, there
+                                 * is a message, that not all moves were yet made.
+                                 * This might be especially interesting when there is a
+                                 * move, difficult for beginners (like 1-6, where 6 is
+                                 * possible only after a very special 1) */
                             } else {
                                 $board.find('.starthere').each(clearAction);
-                                /* TODO:0j: set click area on dice */
-                                tgc.cc.sendCmd("move "+myMoves.join(" "));
+                                var $dx = $board.find('#sendMove')
+                                $dx.attr('title', 'click to affirm move');
+                                $dx[0].onclick = sendMove;
                             }
-                        /* TODO:0j: when clicking the dice to send the move, there
-                         * might be a message, that not all moves were yet made.
-                         * This might be especially interesting when there is a
-                         * move, difficult for beginners (like 1-6, where 6 is
-                         * possible only after a very special 1) */
                         }
                         return false;   /* suppress contextmenu for right clicks */
                     };
@@ -297,3 +317,8 @@ hannes rolls 4 and 3.
     }
   }
 };
+/* würfeln
+ * ditch und bar
+ * bear off
+ * cube
+ */
