@@ -26,13 +26,17 @@ class BoardCss():
                 width -= BAR_WIDTH
             if i == 17:
                 width += BAR_WIDTH
-            print >>css,  rule % values
-        print "#pDice1 { position:absolute; top:182px; left:338px; width:21px; height:21px; }"
-        print "#pDice2 { position:absolute; top:182px; left:398px; width:21px; height:21px; }"
-        print "#oDice1 { position:absolute; top:182px; left:129px; width:21px; height:21px; }"
-        print "#oDice2 { position:absolute; top:182px; left:189px; width:21px; height:21px; }"
-        print ".upperpips { position:relative; top:131px; left:43px; }"
-        print ".lowerpips { position:relative; top:198px; left:43px; }"
+            print >>css, rule % values
+        print >>css, "#pDice1 { position:absolute; top:182px; left:338px; width:21px; height:21px; }"
+        print >>css, "#pDice2 { position:absolute; top:182px; left:398px; width:21px; height:21px; }"
+        print >>css, "#oDice1 { position:absolute; top:182px; left:129px; width:21px; height:21px; }"
+        print >>css, "#oDice2 { position:absolute; top:182px; left:189px; width:21px; height:21px; }"
+        print >>css, ".upperpipsX { position:relative; top:131px; left:43px; }"
+        print >>css, ".lowerpipsX { position:relative; top:198px; left:43px; }"
+        print >>css, ".upperpipsO { position:relative; top:143px; left:43px; }"
+        print >>css, ".lowerpipsO { position:relative; top:186px; left:43px; }"
+        print >>css, ".c5 { position:relative; top:-%dpx; }" % (5*27 + 13)
+        print >>css, ".c9 { position:relative; top:-%dpx; }" % (9*27)
         self.board_css = css.getvalue()
 
 if __name__ == '__main__':

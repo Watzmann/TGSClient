@@ -105,6 +105,7 @@ hannes rolls 4 and 3.
                  * undo!!
                  * moves beim gegner zeigen
                  * Hit beachten
+                 * Bear Off
                  */
             }
             return {'dice': dice, 'moves': nrMoves,
@@ -114,10 +115,18 @@ hannes rolls 4 and 3.
             function drawCheckers(checkers, color) {
                 var point = "";
                 if (padding) {
-                    point = "<div style=\"height:"+(162-checkers*27)+"px\"></div>";
+                    var pheight = (6 - Math.min(5,checkers)) * 27;
+                    point = "<div style=\"height:" + pheight + "px\"></div>";
                 }
                 for (var c = 0; c < checkers; c++) {
-                    point += '<img src=' + piece[color] + ' alt=' + color + '>';
+                    var stack = '';
+                    if (c > 8) {
+                        stack = ' class=c9';
+                    } else if (c > 4) {
+                        stack = ' class=c5';
+                    }
+                    point += '<img' + stack + ' src=' + piece[color] +
+                                                        ' alt=' + color + '>';
                 }
                 return point;
             }
@@ -128,10 +137,15 @@ hannes rolls 4 and 3.
             }
         }
         function composeDiv(values) {
+            if (values['checkers'] > 5) {
+                values['title'] = ' title="' + values['checkers'] + ' checkers"';
+            } else {
+                values['title'] = '';
+            }
             return sprintf('<div id="p%(id)d" class="%(class)s" ' +
                            'data-point="%(point)s" ' +
                            'data-target="%(target)s" ' +
-                           'data-checkers="%(checkers)s">', values);
+                           'data-checkers="%(checkers)s"%(title)s>', values);
         }
         function composePlayersPoint(container, checkers, padding) {
             var div, point;
@@ -202,11 +216,11 @@ hannes rolls 4 and 3.
         var elements = this.parseBoard(board);
         var setDirection = function($imgs, elements) {
             if (elements['direction'] == '-1') {
-                $imgs.filter('#pip13').attr('class', 'upperpips');
-                $imgs.filter('#pip12').attr('class', 'lowerpips');
+                $imgs.filter('#pip13').attr('class', 'upperpipsO');
+                $imgs.filter('#pip12').attr('class', 'lowerpipsO');
             } else {
-                $imgs.filter('#pip12').attr('class', 'upperpips');
-                $imgs.filter('#pip13').attr('class', 'lowerpips');
+                $imgs.filter('#pip12').attr('class', 'upperpipsX');
+                $imgs.filter('#pip13').attr('class', 'lowerpipsX');
             }
         }
         var drawPosition = function($board, elements) {
