@@ -168,14 +168,14 @@ function loadTGC(host_port, token) {
                 ws.send(msg);
             };
             tgc.cc.login = function() {
-				var name = document.getElementById("login_name"),
-					passwd = document.getElementById("login_password");
+                var name = document.getElementById("login_name"),
+                    passwd = document.getElementById("login_password");
                 ws.send("login "+name.value+" "+passwd.value);
                 return true;
             };
             tgc.cc.reopen = function() {
-				tgc.openConnection(host_port, token);
-			}
+                tgc.openConnection(host_port, token);
+            }
         },
         navigate: {
             show: function(element) {
@@ -185,6 +185,9 @@ function loadTGC(host_port, token) {
                         players.style.display = "none";
                         board.style.display = "block";
                         tgc.action.focus = tgc.action.board;
+                        /* TODO:0j: Protocol msgs should go to a separate window
+                         *          that might be a fly out. This window may be
+                         *          invisible; cmp to 'Tasks' in 'gmail'.     */
                         board_str = "board:You:hannes:1:0:0:0:-1:0:0:0:-1:5:0:3:0:0:0:-4:5:0:0:0:-4:0:-5:0:0:0:0:2:0:1:0:0:0:0:1:1:1:0:-1:1:25:0:0:0:0:0:2:0:0:0"
                         tgc.action.board(board_str);
                         break;

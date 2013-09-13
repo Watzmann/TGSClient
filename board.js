@@ -45,15 +45,16 @@ hannes rolls 4 and 3.
             piece = {'player': gifRoot + "playerpiece.gif",
                      'opponent': gifRoot + "opponentpiece.gif",};
 
-        function moveChecker(element, dice, double, nrMoves, $board) {
-            var target, $t, $s,
-                myMove = new Array,
-                $divs = $board.find('div'); /* needs to be selected anew at
-                    every function entry, since the divs are being manipulated. */
+        function moveChecker(element, dice, double, nrMoves, $divs) {
+            var target, $t, $s, $p,
+                myMove = new Array;
             if (event.button == 1) {        /* ignore middle clicks */
                 return;
-            } else if (event.button == 2 && nrMoves == 2) {
-                dice.reverse();
+            } else if (!double && nrMoves == 2) {
+                dice.sort();
+                if (event.button == 0) {
+                    dice.reverse();
+                }
             }
             var start = parseInt(element.id.slice(1));
             $s = $divs.filter('#'+element.id);
@@ -67,9 +68,14 @@ hannes rolls 4 and 3.
             }
             function replacePoint($p, point, diff) {
                 var div = construct($p, point, diff);
-                $p.remove();
-                jQuery(div).attr('class', 'starthere').insertBefore($divs.eq(0));
-                return $p.attr('data-point');
+                $p.detach();
+                /* here search the first index to work with insertBefore */
+                var i = 0;
+                while ($divs[i].id == "" || $divs[i].nextSibling == null) {
+                    i++;
+                }
+                jQuery(div).attr('class', 'starthere').insertBefore($divs.eq(i));
+                return $p;
             }
             for (var d in dice) {
                 var undo = {'dice': dice.slice()};
@@ -85,17 +91,13 @@ hannes rolls 4 and 3.
                     }
                 }
                 undo['nrMoves'] = nrMoves;
-                undo['start'] = '#' + element.id;
-                undo['$sClone'] = $s.clone();
-                undo['target'] = '#p' + target;
-                undo['$tClone'] = $t.clone();
-                undo['myMove'] = myMove;
-                var point = replacePoint($s, start, -1);
-                myMove.push(point);
-                $divs = $board.find('div'); /* refresh selection, since divs
-                                                have been manipulated.       */
-                point = replacePoint($t, target, +1);
-                myMove.push(point);
+                undo['myMove'] = myMove.slice();
+                $p = replacePoint($s, start, -1);
+                undo['$sClone'] = $p;
+                myMove.push($p.attr('data-point'));
+                $p = replacePoint($t, target, +1);
+                undo['$tClone'] = $p;
+                myMove.push($p.attr('data-point'));
                 nrMoves--;
                 break;
 
@@ -239,14 +241,16 @@ hannes rolls 4 and 3.
                          * availableDice and nrMoves.
                          * after moves are done, set a onclick on the dice to
                          * send of the moves */
-                        var available,
+                        var resulting,
                             direction = elements['direction'],
                             color = elements['color'];
                         if (nrmoves > 0) {
-                            available = moveChecker(this, dice, double, nrmoves, $board);
-                            setAvailableDice(available['dice'], available['moves']);
-                            accumulateMoves(available['myMove']);
-                            if (available['moves'] > 0) {
+                            resulting = moveChecker(this, dice, double, nrmoves,
+                                                            $board.find('div'));
+                            setAvailableDice(resulting['dice'], resulting['moves']);
+                            accumulateMoves(resulting['myMove']);
+                            /* TODO:0j: hier kommt das undo hin */
+                            if (resulting['moves'] > 0) {
                                 $board.find('.starthere').each(setAction);
                             } else {
                                 $board.find('.starthere').each(clearAction);
