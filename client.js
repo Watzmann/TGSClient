@@ -188,8 +188,7 @@ function loadTGC(host_port, token) {
                         /* TODO:0j: Protocol msgs should go to a separate window
                          *          that might be a fly out. This window may be
                          *          invisible; cmp to 'Tasks' in 'gmail'.     */
-                        board_str = "board:You:hannes:1:0:0:0:-1:0:0:0:-1:5:0:3:0:0:0:-4:5:0:0:0:-4:0:-5:0:0:0:0:2:0:1:0:0:0:0:1:1:1:0:-1:1:25:0:0:0:0:0:2:0:0:0"
-                        tgc.action.board(board_str);
+                        tgc.cc.sendCmd('board');
                         break;
                     case "system":
                         board.style.display = "none";

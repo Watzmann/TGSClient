@@ -30,8 +30,6 @@ hannes rolls 4 and 3.
 
         parts["turn"] = boardParts[32] == boardParts[41];
         parts["dice"] = castInt(boardParts.slice(33,37));
-        parts["dice"].sort();
-        parts["dice"].reverse();
 
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
@@ -46,6 +44,8 @@ hannes rolls 4 and 3.
         var gifRoot = "resources/board/",
             piece = {'player': gifRoot + "playerpiece.gif",
                      'opponent': gifRoot + "opponentpiece.gif",};
+            home = {'player': gifRoot + "playerpiecehome.gif",
+                    'opponent': gifRoot + "opponentpiecehome.gif",};
 
         function moveChecker(element, dice, double, nrMoves, $divs) {
             var target, $t, $s, $p,
@@ -67,14 +67,14 @@ hannes rolls 4 and 3.
             }
             function replacePoint($p, point, diff) {
                 var div = construct($p, point, diff);
-                $p.detach();
+                var $r = $p.detach();
                 /* here search the first index to work with insertBefore */
                 var i = 0;
                 while ($divs[i].id == "" || $divs[i].nextSibling == null) {
                     i++;
                 }
                 jQuery(div).attr('class', 'starthere').insertBefore($divs.eq(i));
-                return $p;
+                return $r;
             }
             for (var d in dice) {
                 var undo = {'dice': dice.slice()};
@@ -101,10 +101,8 @@ hannes rolls 4 and 3.
                 break;
 
                 /* TODO:0j:
-                 * undo!!
+                 * undo!! (for each move)
                  * moves beim gegner zeigen
-                 * Hit beachten
-                 * Bear Off
                  */
             }
             return {'dice': dice, 'moves': nrMoves,
@@ -141,6 +139,9 @@ hannes rolls 4 and 3.
             var m = more ? ' more' : ''
             return 'please move ' + nrP + m + ' piece' + (nrP > 1 ? 's':'');
         }
+        function restoreBoard() {
+            tgc.cc.sendCmd("board");
+        }
         function composeDiv(values) {
             if (values['checkers'] > 5) {
                 values['title'] = ' title="' + values['checkers'] + ' checkers"';
@@ -176,6 +177,40 @@ hannes rolls 4 and 3.
             point = drawPoint(checkers, padding, 'opponent');
             return div + point + "</div>";
         }
+        function composePlayersDitch(checkers) {
+            var point = "";
+            var pheight = (16 - checkers) * 8;
+            point = "<div style=\"height:" + pheight + "px\"></div>";
+            for (var c = 0; c < checkers; c++) {
+                point += '<img src=' + home['player'] + ' alt="home piece player">';
+            }
+            return '<div id=pDitch>' + point + '</div>';
+        }
+        function composeOpponentsDitch(checkers) {
+            var point = "";
+            for (var c = 0; c < checkers; c++) {
+                point += '<img src=' + home['opponent'] + ' alt="home piece opponent">';
+            }
+            return '<div id=oDitch>' + point + '</div>';
+        }
+        function composePlayersBar(checkers) {
+            /* TODO:0j: passen nur 5 auf die Bar :((( */
+            /* TODO:00: von der Bar muss Action kommen; kein move vorher möglich */
+            var point = "";
+            for (var c = 0; c < checkers; c++) {
+                point += '<img src=' + piece['player'] + ' alt="bar piece player">';
+            }
+            return '<div id=pBar>' + point + '</div>';
+        }
+        function composeOpponentsBar(checkers) {
+            var point = "";
+            var pheight = (5 - checkers) * 27;
+            point = "<div style=\"height:" + pheight + "px\"></div>";
+            for (var c = 0; c < checkers; c++) {
+                point += '<img src=' + piece['opponent'] + ' alt="bar piece player">';
+            }
+            return '<div id=oBar>' + point + '</div>';
+        }
         function setCheckersX(position, $b) {
             var checkers, div, container;
             for (var i=1; i<25; i++) {
@@ -204,6 +239,18 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
+        function setDitches(home, $b) {
+            var div;
+            div = composePlayersDitch(home[0]);
+            div += composeOpponentsDitch(home[1]);
+            jQuery(div).appendTo($b);
+        }
+        function setBars(bar, $b) {
+            var div;
+            div = composePlayersBar(bar[0]);
+            div += composeOpponentsBar(bar[1]);
+            jQuery(div).appendTo($b);
+        }
         function setDice(dice, turn, nrMoves, $b) {
             var pic;
             function rollDice() {
@@ -226,6 +273,16 @@ hannes rolls 4 and 3.
                 jQuery('<div id="rollDice">' + pic + '</div>').appendTo($b);
                 jQuery('#rollDice')[0].onclick = rollDice;
             }
+        }
+        function setUndo($b) {
+            /* TODO:0j: undo is just a shortcut, so far.
+             *          The better idea is to undo each move in reverse order
+             *          (last in first out). Preparations are there already, as
+             *          there is an object 'undo' being returned by moveChecker().
+             * */
+            var pic = '<img src="' + gifRoot + 'undo.gif" alt="undo">';
+            jQuery('<div id="undo">' + pic + '</div>').appendTo($b);
+            jQuery('#undo')[0].onclick = restoreBoard;
         }
         var elements = this.parseBoard(board);
         var setDirection = function($imgs, elements) {
@@ -256,23 +313,23 @@ hannes rolls 4 and 3.
             } else {
                 setCheckersO(elements['position'], $board);
             }
+            setDitches(elements['onHome'], $board);
+            setBars(elements['onBar'], $board);
             setDice(elements['dice'], elements['turn'], elements['nrMoves'], $board);
-            initialDice = elements['dice'].slice(0,2);
-            if (initialDice[0] == initialDice[1]) {
-                initialDice = initialDice.concat(initialDice);
-                double = true;
-            } else {
-                double = false;
-            }
-            setAvailableDice(initialDice, elements['nrMoves']);
             if (elements['turn']) {
+                initialDice = elements['dice'].slice(0,2);
+                if (initialDice[0] == initialDice[1]) {
+                    initialDice = initialDice.concat(initialDice);
+                    double = true;
+                } else {
+                    initialDice.sort();
+                    initialDice.reverse();
+                    double = false;
+                }
+                setAvailableDice(initialDice, elements['nrMoves']);
                 var move = function(dice, nrmoves) {
                     return function() {
-                        /* move() must be a closure with knowledge about
-                         * availableDice and nrMoves.
-                         * after moves are done, set a onclick on the dice to
-                         * send of the moves */
-                        var resulting,
+                        var resulting, $dx,
                             direction = elements['direction'],
                             color = elements['color'];
                         if (nrmoves > 0) {
@@ -280,7 +337,12 @@ hannes rolls 4 and 3.
                                                             $board.find('div'));
                             setAvailableDice(resulting['dice'], resulting['moves']);
                             accumulateMoves(resulting['myMove']);
-                            /* TODO:0j: hier kommt das undo hin */
+                            /* Manage Undo */
+                            $dx = $board.find('#undo');
+                            if ($dx.length < 1) {
+                                setUndo($board);
+                            }
+                            /* Manage actions regarding checkers */
                             if (resulting['moves'] > 0) {
                                 $board.find('.starthere').each(setAction);
                                 $board.find('#sendMove').attr('title',
@@ -292,7 +354,7 @@ hannes rolls 4 and 3.
                                  * possible only after a very special 1) */
                             } else {
                                 $board.find('.starthere').each(clearAction);
-                                var $dx = $board.find('#sendMove')
+                                $dx = $board.find('#sendMove')
                                 $dx.attr('title', 'click to affirm move');
                                 $dx[0].onclick = sendMove;
                             }
@@ -317,8 +379,8 @@ hannes rolls 4 and 3.
     }
   }
 };
-/* würfeln
- * ditch und bar
+/* + ditch und bar
+ * hit
  * bear off
  * cube
  */
