@@ -48,25 +48,34 @@ hannes rolls 4 and 3.
                     'opponent': gifRoot + "opponentpiecehome.gif",};
 
         function moveChecker(element, dice, double, nrMoves, $divs) {
-            var target, $t, $s, $p,
+            var target, $t, $s, $r,
+                myPoint = element.id,
                 myMove = new Array;
             if (event.button == 1) {        /* ignore middle clicks */
-                return;
+                return false;
             } else if (!double && nrMoves == 2 && event.button == 2) {
                 dice.reverse();
             }
-            var start = parseInt(element.id.slice(1));
+            /* Are checkers on the bar? If so, is this here the bar?? */
+            $r = $divs.filter('#p25');
+            if ($r.find('img').length > 0) {
+                if (myPoint != 'p25') {
+                    return false;
+                }
+            }
+            /* Now comes movement on regular points. */
+            var start = parseInt(myPoint.slice(1));
             $s = $divs.filter('#'+element.id);
-            function construct($p, pip, diff) {
+            function construct($p, diff) {
                 var point, checkers, data;
                 var id = parseInt($p.attr('id').slice(1));
                 point = $p.attr('data-point');
                 checkers = parseInt($p.attr('data-checkers')) + diff;
                 data = {'id': id, 'point': point};
-                return composePlayersPoint(data, checkers, pip<13);
+                return composePlayersPoint(data, checkers, id<13);
             }
-            function replacePoint($p, point, diff) {
-                var div = construct($p, point, diff);
+            function replacePoint($p, diff) {
+                var div = construct($p, diff);
                 var $r = $p.detach();
                 /* here search the first index to work with insertBefore */
                 var i = 0;
@@ -91,24 +100,29 @@ hannes rolls 4 and 3.
                 }
                 undo['nrMoves'] = nrMoves;
                 undo['myMove'] = myMove.slice();
-                $p = replacePoint($s, start, -1);
-                undo['$sClone'] = $p;
-                myMove.push($p.attr('data-point'));
-                $p = replacePoint($t, target, +1);
-                undo['$tClone'] = $p;
-                myMove.push($p.attr('data-point'));
+                $r = replacePoint($s, -1);
+                undo['$sClone'] = $r;
+                myMove.push($r.attr('data-point'));
+                $r = replacePoint($t, +1);
+                undo['$tClone'] = $r;
+                myMove.push($r.attr('data-point'));
                 nrMoves--;
                 break;
 
                 /* TODO:0j:
                  * undo!! (for each move)
                  * moves beim gegner zeigen
+                 *    > tried 4 10           >>
+                 *    > tried 10 12
+                 *    > tried undo
                  */
             }
             return {'dice': dice, 'moves': nrMoves,
                     'myMove': myMove, 'undo': undo};
         }
         function drawPoint(checkers, padding, color) {
+            /* Returns <checkers> * <img ...></img>.
+             * It accounts for padding and stacking */
             function drawCheckers(checkers, color) {
                 var point = "";
                 if (padding) {
@@ -132,7 +146,7 @@ hannes rolls 4 and 3.
             if (checkers == 0) {
                 return "";
             } else {
-                return drawCheckers((checkers > 0) ? checkers : -checkers, color);
+                return drawCheckers(Math.abs(checkers), color);
             }
         }
         function sendMoveApologies(nrP, more) {
@@ -193,19 +207,25 @@ hannes rolls 4 and 3.
             }
             return '<div id=oDitch>' + point + '</div>';
         }
-        function composePlayersBar(checkers) {
+        function composePlayersBar(checkers, direction) {
             /* TODO:0j: passen nur 5 auf die Bar :((( */
-            /* TODO:00: von der Bar muss Action kommen; kein move vorher möglich */
-            var point = "";
+            var point = "",
+                data = {'id': 25,
+                        'point': (direction == '-1') ? 25 : 0,
+                        'class': "starthere",
+                        'checkers': checkers,
+                        'target': 'bar'
+                        };
+            var pheight = (5 - checkers) * 27;
+            point = "<div style=\"height:" + pheight + "px\"></div>";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + piece['player'] + ' alt="bar piece player">';
             }
-            return '<div id=pBar>' + point + '</div>';
+            return composeDiv(data) + point + '</div>';
         }
         function composeOpponentsBar(checkers) {
+            /* TODO:0j: passen nur 5 auf die Bar :((( */
             var point = "";
-            var pheight = (5 - checkers) * 27;
-            point = "<div style=\"height:" + pheight + "px\"></div>";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + piece['opponent'] + ' alt="bar piece player">';
             }
@@ -245,9 +265,9 @@ hannes rolls 4 and 3.
             div += composeOpponentsDitch(home[1]);
             jQuery(div).appendTo($b);
         }
-        function setBars(bar, $b) {
+        function setBars(bar, direction, $b) {
             var div;
-            div = composePlayersBar(bar[0]);
+            div = composePlayersBar(bar[0], direction);
             div += composeOpponentsBar(bar[1]);
             jQuery(div).appendTo($b);
         }
@@ -257,9 +277,12 @@ hannes rolls 4 and 3.
                 tgc.cc.sendCmd("roll");
             }
             if (dice[0] != 0) {
-                pic = '<img src="' + gifRoot + 'playerdie'+dice[0]+'.gif" alt="playerdie1">';
+                var sortedDice = dice.slice(0,2);
+                sortedDice.sort();
+                sortedDice.reverse();
+                pic = '<img src="' + gifRoot + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
                 jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
-                pic = '<img src="' + gifRoot + 'playerdie'+dice[1]+'.gif" alt="playerdie2">';
+                pic = '<img src="' + gifRoot + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
                 jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
                 jQuery('<div id="sendMove" title="' +
                         sendMoveApologies(nrMoves, false) + '"></div>').appendTo($b);
@@ -273,6 +296,7 @@ hannes rolls 4 and 3.
                 jQuery('<div id="rollDice">' + pic + '</div>').appendTo($b);
                 jQuery('#rollDice')[0].onclick = rollDice;
             }
+            return dice[0] != 0;
         }
         function setUndo($b) {
             /* TODO:0j: undo is just a shortcut, so far.
@@ -280,7 +304,8 @@ hannes rolls 4 and 3.
              *          (last in first out). Preparations are there already, as
              *          there is an object 'undo' being returned by moveChecker().
              * */
-            var pic = '<img src="' + gifRoot + 'undo.gif" alt="undo">';
+            var pic = '<img src="' + gifRoot + 'undo.gif" alt="undo"' +
+                      ' title="click to undo your moves">';
             jQuery('<div id="undo">' + pic + '</div>').appendTo($b);
             jQuery('#undo')[0].onclick = restoreBoard;
         }
@@ -314,9 +339,10 @@ hannes rolls 4 and 3.
                 setCheckersO(elements['position'], $board);
             }
             setDitches(elements['onHome'], $board);
-            setBars(elements['onBar'], $board);
-            setDice(elements['dice'], elements['turn'], elements['nrMoves'], $board);
-            if (elements['turn']) {
+            setBars(elements['onBar'], elements['direction'], $board);
+            var readyToSetCheckers = setDice(elements['dice'], elements['turn'],
+                                                    elements['nrMoves'], $board);
+            if (readyToSetCheckers) {
                 initialDice = elements['dice'].slice(0,2);
                 if (initialDice[0] == initialDice[1]) {
                     initialDice = initialDice.concat(initialDice);
@@ -330,33 +356,38 @@ hannes rolls 4 and 3.
                 var move = function(dice, nrmoves) {
                     return function() {
                         var resulting, $dx,
-                            direction = elements['direction'],
                             color = elements['color'];
                         if (nrmoves > 0) {
                             resulting = moveChecker(this, dice, double, nrmoves,
                                                             $board.find('div'));
-                            setAvailableDice(resulting['dice'], resulting['moves']);
-                            accumulateMoves(resulting['myMove']);
-                            /* Manage Undo */
-                            $dx = $board.find('#undo');
-                            if ($dx.length < 1) {
-                                setUndo($board);
-                            }
-                            /* Manage actions regarding checkers */
-                            if (resulting['moves'] > 0) {
-                                $board.find('.starthere').each(setAction);
-                                $board.find('#sendMove').attr('title',
-                                    sendMoveApologies(resulting['moves'], true));
-                                /* TODO:0j: when clicking the dice to send the move, there
-                                 * is a message, that not all moves were yet made.
-                                 * This might be especially interesting when there is a
-                                 * move, difficult for beginners (like 1-6, where 6 is
-                                 * possible only after a very special 1) */
-                            } else {
-                                $board.find('.starthere').each(clearAction);
-                                $dx = $board.find('#sendMove')
-                                $dx.attr('title', 'click to affirm move');
-                                $dx[0].onclick = sendMove;
+                            if (resulting !== false) {
+                                /* A regular action was taken */
+                                setAvailableDice(resulting['dice'], resulting['moves']);
+                                accumulateMoves(resulting['myMove']);
+                                /* Manage Undo */
+                                $dx = $board.find('#undo');
+                                if ($dx.length < 1) {
+                                    setUndo($board);
+                                }
+                                /* Manage actions regarding checkers */
+                                if (resulting['moves'] > 0) {
+                                    /* There are moves left; set hotspots accordingly */
+                                    $board.find('.starthere').each(setAction);
+                                    $board.find('#sendMove').attr('title',
+                                        sendMoveApologies(resulting['moves'], true));
+                                    /* TODO:0j: when clicking the dice to send the move, there
+                                     * is a message, that not all moves were yet made.
+                                     * This might be especially interesting when there is a
+                                     * move, difficult for beginners (like 1-6, where 6 is
+                                     * possible only after a very special 1).
+                                     * TODO: should there be a special alarm?????? */
+                                } else {
+                                    /* All moves done; set affirmative hotspot ready */
+                                    $board.find('.starthere').each(clearAction);
+                                    $dx = $board.find('#sendMove')
+                                    $dx.attr('title', 'click to affirm move');
+                                    $dx[0].onclick = sendMove;
+                                }
                             }
                         }
                         return false;   /* suppress contextmenu for right clicks */

@@ -11,7 +11,7 @@ class BoardCss():
         HEIGHT = 162        # 27*6
         BAR_WIDTH = 31
         width = 430
-        for i in range(25):
+        for i in range(24):
             values = dict((('point', i+1),
                            ('top', {True: 30, False: 370-HEIGHT}[i>11]),
                            ('left', width),
@@ -29,8 +29,8 @@ class BoardCss():
             print >>css, rule % values
         print >>css, "#pDitch { position:absolute; top:238px; left:468px; width:27px; height:120px; }"
         print >>css, "#oDitch { position:absolute; top:31px; left:468px; width:27px; height:120px; }"
-        print >>css, "#pBar { position:absolute; top:220px; left:245px; width:27px; height:135px; }"
-        print >>css, "#oBar { position:absolute; top:42px; left:245px; width:27px; height:135px; }"
+        print >>css, "#oBar { position:absolute; top:220px; left:245px; width:27px; height:135px; }"
+        print >>css, "#p25 { position:absolute; top:42px; left:245px; width:27px; height:135px; }"
         print >>css, "#pDice1 { position:absolute; top:182px; left:338px; width:21px; height:21px; }"
         print >>css, "#pDice2 { position:absolute; top:182px; left:398px; width:21px; height:21px; }"
         print >>css, "#oDice1 { position:absolute; top:182px; left:129px; width:21px; height:21px; }"
