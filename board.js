@@ -45,10 +45,15 @@ hannes rolls 4 and 3.
             piece = {'player': gifRoot + "playerpiece.gif",
                      'opponent': gifRoot + "opponentpiece.gif",};
             home = {'player': gifRoot + "playerpiecehome.gif",
-                    'opponent': gifRoot + "opponentpiecehome.gif",};
-
-        function moveChecker(element, dice, double, nrMoves, $divs) {
+                    'opponent': gifRoot + "opponentpiecehome.gif",},
+            wasteFilter = {'1': '#p6,#p5,#p4,#p3,#p2',
+                           '2': '#p6,#p5,#p4,#p3',
+                           '3': '#p6,#p5,#p4',
+                           '4': '#p6,#p5',
+                           '5': '#p6'};
+        function moveChecker(element, dice, double, nrMoves, $board) {
             var target, $t, $s, $r,
+                $divs = $board.find('div'),
                 myPoint = element.id,
                 myMove = new Array;
             if (event.button == 1) {        /* ignore middle clicks */
@@ -66,13 +71,31 @@ hannes rolls 4 and 3.
             /* Now comes movement on regular points. */
             var start = parseInt(myPoint.slice(1));
             $s = $divs.filter('#'+element.id);
+            function bearOffPossible(waste) {
+                var totals = 0;
+                function sumUp() {
+                    totals += parseInt(jQuery(this).attr('data-checkers'));
+                }
+                var $r = $board.find('.home').each(sumUp);
+                if (totals < 15) {
+                    return false;
+                }
+            totals = 0;
+            $r.filter(wasteFilter[waste]).each(sumUp);
+            return totals == 0;
+            }
             function construct($p, diff) {
-                var point, checkers, data;
+                var point, checkers, data, html;
                 var id = parseInt($p.attr('id').slice(1));
                 point = $p.attr('data-point');
                 checkers = parseInt($p.attr('data-checkers')) + diff;
                 data = {'id': id, 'point': point};
-                return composePlayersPoint(data, checkers, id<13);
+                if (id == 0) {
+                    html = composePlayersDitch(checkers, (point == 0) ? '-1' : '1');
+                } else {
+                    html = composePlayersPoint(data, checkers, id<13, id<7);
+                }
+                return html;
             }
             function replacePoint($p, diff) {
                 var div = construct($p, diff);
@@ -82,16 +105,27 @@ hannes rolls 4 and 3.
                 while ($divs[i].id == "" || $divs[i].nextSibling == null) {
                     i++;
                 }
-                jQuery(div).attr('class', 'starthere').insertBefore($divs.eq(i));
+                jQuery(div).insertBefore($divs.eq(i));
                 return $r;
             }
             for (var d in dice) {
                 var undo = {'dice': dice.slice()};
                 var used = dice.shift();
+                var waste = '';
                 target = start - used;
+                if (target < 0) {
+                    target = 0;
+                    waste = myPoint.slice(1);
+                }
+                if (target == 0 && !bearOffPossible(waste)) {
+                    /* tried bearoff while not possible */
+                    dice.unshift(used);
+                    return false;
+                }
                 $t = $divs.filter('#p'+target);
                 if ($t.length == 0 || $t.attr('data-target') == 'no') {
                     dice.push(used);
+                    /* TODO:00: kann es sein, dass durch den push demnächst die dice verkehrt rum sind??? */
                     if (double) {
                         break;
                     } else {
@@ -167,9 +201,9 @@ hannes rolls 4 and 3.
                            'data-target="%(target)s" ' +
                            'data-checkers="%(checkers)s"%(title)s>', values);
         }
-        function composePlayersPoint(container, checkers, padding) {
+        function composePlayersPoint(container, checkers, padding, home) {
             var div, point;
-            container['class'] = "starthere";
+            container['class'] = home ? "starthere home" : "starthere";
             container['checkers'] = checkers;
             container['target'] = "yes";
             div = composeDiv(container);
@@ -191,14 +225,20 @@ hannes rolls 4 and 3.
             point = drawPoint(checkers, padding, 'opponent');
             return div + point + "</div>";
         }
-        function composePlayersDitch(checkers) {
-            var point = "";
-            var pheight = (16 - checkers) * 8;
+        function composePlayersDitch(checkers, direction) {
+            var point = "",
+                data = {'id': 0,
+                        'point': (direction == '-1') ? 0 : 25,
+                        'class': "neutral home",
+                        'checkers': checkers,
+                        'target': 'yes'
+                        },
+                pheight = (16 - checkers) * 8;
             point = "<div style=\"height:" + pheight + "px\"></div>";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + home['player'] + ' alt="home piece player">';
             }
-            return '<div id=pDitch>' + point + '</div>';
+            return composeDiv(data) + point + '</div>';
         }
         function composeOpponentsDitch(checkers) {
             var point = "";
@@ -232,18 +272,19 @@ hannes rolls 4 and 3.
             return '<div id=oBar>' + point + '</div>';
         }
         function setCheckersX(position, $b) {
-            var checkers, div, container;
+            var checkers, container,
+                div = "";
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[25-i]);
                 container = {id: i, point: 25-i};
                 if (checkers < 0) {
-                    div = composePlayersPoint(container, -checkers, i<13);
+                    div += composePlayersPoint(container, -checkers, i<13, i<7);
                 } else {
-                    div = composeOpponentsPoint(container, checkers, i<13);
+                    div += composeOpponentsPoint(container, checkers, i<13);
                 }
                 /* TODO:0j: is it a good idea to draw empty points?? */
-                jQuery(div).appendTo($b);
             }
+            jQuery(div).appendTo($b);
         }
         function setCheckersO(position, $b) {
             var checkers, div, container;
@@ -259,9 +300,9 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
-        function setDitches(home, $b) {
+        function setDitches(home, direction, $b) {
             var div;
-            div = composePlayersDitch(home[0]);
+            div = composePlayersDitch(home[0], direction);
             div += composeOpponentsDitch(home[1]);
             jQuery(div).appendTo($b);
         }
@@ -338,7 +379,7 @@ hannes rolls 4 and 3.
             } else {
                 setCheckersO(elements['position'], $board);
             }
-            setDitches(elements['onHome'], $board);
+            setDitches(elements['onHome'], elements['direction'], $board);
             setBars(elements['onBar'], elements['direction'], $board);
             var readyToSetCheckers = setDice(elements['dice'], elements['turn'],
                                                     elements['nrMoves'], $board);
@@ -359,7 +400,7 @@ hannes rolls 4 and 3.
                             color = elements['color'];
                         if (nrmoves > 0) {
                             resulting = moveChecker(this, dice, double, nrmoves,
-                                                            $board.find('div'));
+                                                                        $board);
                             if (resulting !== false) {
                                 /* A regular action was taken */
                                 setAvailableDice(resulting['dice'], resulting['moves']);
@@ -410,8 +451,7 @@ hannes rolls 4 and 3.
     }
   }
 };
-/* + ditch und bar
- * hit
- * bear off
+/* hit
  * cube
+ * resign
  */

@@ -27,7 +27,7 @@ class BoardCss():
             if i == 17:
                 width += BAR_WIDTH
             print >>css, rule % values
-        print >>css, "#pDitch { position:absolute; top:238px; left:468px; width:27px; height:120px; }"
+        print >>css, "#p0 { position:absolute; top:238px; left:468px; width:27px; height:120px; }"
         print >>css, "#oDitch { position:absolute; top:31px; left:468px; width:27px; height:120px; }"
         print >>css, "#oBar { position:absolute; top:220px; left:245px; width:27px; height:135px; }"
         print >>css, "#p25 { position:absolute; top:42px; left:245px; width:27px; height:135px; }"
