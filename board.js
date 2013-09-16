@@ -416,7 +416,10 @@ hannes rolls 4 and 3.
             }
             function sendMove() {
                 tgc.cc.sendCmd("move "+myMoves.join(" "));
-                /* TODO:00: würfel wegnehmen */
+                $board.find('#pDice1,#pDice2').remove();
+                var $r = $board.find('#sendMove');
+                $r[0].onclick = null;
+                $r.attr('title', 'the game is finished');
             }
             $board.find('div').remove();
             if (elements['color'] == "-1") {
@@ -428,6 +431,7 @@ hannes rolls 4 and 3.
             setBars(elements['onBar'], elements['direction'], $board);
             var readyToSetCheckers = setDice(elements['dice'], elements['turn'],
                                                     elements['nrMoves'], $board);
+            /* TODO:0j: watchers must not be readyToSetCheckers */
             if (readyToSetCheckers) {
                 initialDice = elements['dice'].slice(0,2);
                 if (initialDice[0] == initialDice[1]) {

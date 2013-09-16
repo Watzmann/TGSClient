@@ -26,13 +26,13 @@ function loadTGC(host_port, token) {
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
                 tgc.cc.reopen();
-                },
+            },
             set_nick: function (nick) {
                 login.style.display = "none";
                 client.style.display = "block";
                 var target = document.getElementById("nick");
                 target.innerHTML = "You are logged in as <i>"+nick+"</i>";
-                },
+            },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
                                rating: "Rating",
@@ -57,12 +57,12 @@ function loadTGC(host_port, token) {
                     var po = eval("(" + list_of_players[p] + ")");
                     target.innerHTML += this.whoFormat1(po) + "<br>";
                 }
-                },
+            },
             system: function (result) {
                 var target = document.getElementById("received");
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
-                },
+            },
             board: function (result) {
                 var board2 = document.getElementById("board2"),
                     boardimg = document.getElementById("boardimg"),
@@ -70,12 +70,17 @@ function loadTGC(host_port, token) {
                     // TODO:0j: das hier soll nur einmal gemacht werden. Also hoch in das Objekt.
                 if (result.indexOf("BAR") != -1) {
                     tgc.board.showAscii(boardpane, result);
-                } else if (result.indexOf("board:You") != -1) {
+                } else if (result.indexOf("board:") != -1) {
+                    /* Rendering of board-string "board:......" */
                     tgc.board.draw("#boardarea", result);
+                } else if (result.indexOf("Type 'join' if you want") != -1) {
+                    /* TODO:0j: of course this should be an 'exx#....' message!! */
+                    /* Automatically joining the next game in this match. */
+                    tgc.cc.sendCmd("join");
                 } else {
                     board2.innerHTML += result+"<br>";
                 }
-                },
+            },
             focus: null
         },
         parse: function(msg) {
@@ -84,6 +89,9 @@ function loadTGC(host_port, token) {
                 act = action_parts[0];
                 cmd = action_parts[1];
                 switch (act) {
+                    /* This is the way to go: messages with message ids like
+                     * cdd#...... (c=character, d=digit, #=separator, ....= msg)
+                     * */
                     case "000":
                         tgc.action.access_denied(cmd);
                         break;
@@ -95,10 +103,11 @@ function loadTGC(host_port, token) {
                         break;
                     default:
                         tgc.action.focus(msg);
-                    // unterdruecken: "User not known or wrong password"
+                    // unterdruecken: "User not known or wrong password" (ist das noch aktuell???)
                 }
                 return;
             }
+            /* Don't use this way of interpretation; instead use msg-ids above. */
             else if (msg.indexOf("running match was loaded.") != -1) {
                 tgc.cc.sendCmd("set b 3");
                 tgc.navigate.show("board");
