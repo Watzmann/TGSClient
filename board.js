@@ -80,27 +80,49 @@ hannes rolls 4 and 3.
                 if (totals < 15) {
                     return false;
                 }
-            totals = 0;
-            $r.filter(wasteFilter[waste]).each(sumUp);
-            return totals == 0;
+                totals = 0;
+                $r.filter(wasteFilter[waste]).each(sumUp);
+                return totals == 0;
             }
             function construct($p, diff) {
                 var point, checkers, data, html;
-                var id = parseInt($p.attr('id').slice(1));
+                var id = $p.attr('id');
                 point = $p.attr('data-point');
                 checkers = parseInt($p.attr('data-checkers')) + diff;
-                data = {'id': id, 'point': point};
-                if (id == 0) {
-                    html = composePlayersDitch(checkers, (point == 0) ? '-1' : '1');
-                } else {
-                    html = composePlayersPoint(data, checkers, id<13, id<7);
+                switch (id) {
+                    case 'oBar':
+                        html = composeOpponentsBar(checkers);
+                        break;
+                    case 'p0':
+                        html = composePlayersDitch(checkers, point);
+                        break;
+                    case 'p25':
+                        html = composePlayersBar(checkers, point);
+                        break;
+                    default:
+                        id = parseInt(id.slice(1));
+                        data = {'id': id, 'point': point};
+                        html = composePlayersPoint(data, checkers, id<13, id<7);
+                        break;
                 }
                 return html;
             }
             function replacePoint($p, diff) {
                 var div = construct($p, diff);
                 var $r = $p.detach();
-                /* here search the first index to work with insertBefore */
+                /* Search the first 'alive' index to insertBefore */
+                var i = 0;
+                while ($divs[i].id == "" || $divs[i].nextSibling == null) {
+                    i++;
+                }
+                jQuery(div).insertBefore($divs.eq(i));
+                return $r;
+            }
+            function hitPoint($p, $o) {
+                var div = construct($p, 0);
+                div += construct($o, +1);
+                var $r = $p.add($o).detach();
+                /* Search the first 'alive' index to insertBefore */
                 var i = 0;
                 while ($divs[i].id == "" || $divs[i].nextSibling == null) {
                     i++;
@@ -119,13 +141,17 @@ hannes rolls 4 and 3.
                 }
                 if (target == 0 && !bearOffPossible(waste)) {
                     /* tried bearoff while not possible */
-                    dice.unshift(used);
-                    return false;
+                    dice.push(used);
+                    if (double) {
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
                 $t = $divs.filter('#p'+target);
-                if ($t.length == 0 || $t.attr('data-target') == 'no') {
+                var targetType = $t.attr('data-target');
+                if ( targetType == 'no') {
                     dice.push(used);
-                    /* TODO:00: kann es sein, dass durch den push demnächst die dice verkehrt rum sind??? */
                     if (double) {
                         break;
                     } else {
@@ -137,22 +163,36 @@ hannes rolls 4 and 3.
                 $r = replacePoint($s, -1);
                 undo['$sClone'] = $r;
                 myMove.push($r.attr('data-point'));
-                $r = replacePoint($t, +1);
-                undo['$tClone'] = $r;
-                myMove.push($r.attr('data-point'));
+                if ( targetType == 'hit') {
+                    $r = hitPoint($t, $board.find('#oBar'));
+                    undo['$tClone'] = $r;
+                    myMove.push($t.attr('data-point'));
+                } else {
+                    $r = replacePoint($t, +1);
+                    undo['$tClone'] = $r;
+                    myMove.push($t.attr('data-point'));
+                }
                 nrMoves--;
                 break;
 
                 /* TODO:0j:
+                 *
                  * undo!! (for each move)
+                 *
+                 * with left click mark a point to be made (like gnubg)
+                 *
                  * moves beim gegner zeigen
-                 *    > tried 4 10           >>
+                 *    > tried 4 10           >> tried 4 10
                  *    > tried 10 12
                  *    > tried undo
                  */
             }
-            return {'dice': dice, 'moves': nrMoves,
-                    'myMove': myMove, 'undo': undo};
+            if (myMove.length > 0) {
+                return {'dice': dice, 'moves': nrMoves,
+                        'myMove': myMove, 'undo': undo};
+            } else {
+                return false;
+            }
         }
         function drawPoint(checkers, padding, color) {
             /* Returns <checkers> * <img ...></img>.
@@ -203,7 +243,11 @@ hannes rolls 4 and 3.
         }
         function composePlayersPoint(container, checkers, padding, home) {
             var div, point;
-            container['class'] = home ? "starthere home" : "starthere";
+            if (checkers > 0) {
+                container['class'] = home ? "starthere home" : "starthere";
+            } else {
+                container['class'] = "neutral";
+            }
             container['checkers'] = checkers;
             container['target'] = "yes";
             div = composeDiv(container);
@@ -225,10 +269,10 @@ hannes rolls 4 and 3.
             point = drawPoint(checkers, padding, 'opponent');
             return div + point + "</div>";
         }
-        function composePlayersDitch(checkers, direction) {
+        function composePlayersDitch(checkers, pt) {
             var point = "",
                 data = {'id': 0,
-                        'point': (direction == '-1') ? 0 : 25,
+                        'point': pt,
                         'class': "neutral home",
                         'checkers': checkers,
                         'target': 'yes'
@@ -247,12 +291,12 @@ hannes rolls 4 and 3.
             }
             return '<div id=oDitch>' + point + '</div>';
         }
-        function composePlayersBar(checkers, direction) {
+        function composePlayersBar(checkers, pt) {
             /* TODO:0j: passen nur 5 auf die Bar :((( */
             var point = "",
                 data = {'id': 25,
-                        'point': (direction == '-1') ? 25 : 0,
-                        'class': "starthere",
+                        'point': pt,
+                        'class': (checkers > 0) ? "starthere" : "",
                         'checkers': checkers,
                         'target': 'bar'
                         };
@@ -269,7 +313,7 @@ hannes rolls 4 and 3.
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + piece['opponent'] + ' alt="bar piece player">';
             }
-            return '<div id=oBar>' + point + '</div>';
+            return '<div id=oBar data-checkers=' + checkers + '>' + point + '</div>';
         }
         function setCheckersX(position, $b) {
             var checkers, container,
@@ -292,7 +336,7 @@ hannes rolls 4 and 3.
                 checkers = parseInt(position[i]);
                 container = {id: i, point: i};
                 if (checkers > 0) {
-                    div = composePlayersPoint(container, checkers, i<13);
+                    div = composePlayersPoint(container, checkers, i<13, i<7);
                 } else {
                     div = composeOpponentsPoint(container, -checkers, i<13);
                 }
@@ -302,13 +346,13 @@ hannes rolls 4 and 3.
         }
         function setDitches(home, direction, $b) {
             var div;
-            div = composePlayersDitch(home[0], direction);
+            div = composePlayersDitch(home[0], (direction == '-1') ? 0 : 25);
             div += composeOpponentsDitch(home[1]);
             jQuery(div).appendTo($b);
         }
         function setBars(bar, direction, $b) {
             var div;
-            div = composePlayersBar(bar[0], direction);
+            div = composePlayersBar(bar[0], (direction == '-1') ? 25 : 0);
             div += composeOpponentsBar(bar[1]);
             jQuery(div).appendTo($b);
         }
@@ -372,6 +416,7 @@ hannes rolls 4 and 3.
             }
             function sendMove() {
                 tgc.cc.sendCmd("move "+myMoves.join(" "));
+                /* TODO:00: würfel wegnehmen */
             }
             $board.find('div').remove();
             if (elements['color'] == "-1") {
@@ -451,7 +496,6 @@ hannes rolls 4 and 3.
     }
   }
 };
-/* hit
- * cube
+/* cube
  * resign
  */
