@@ -52,5 +52,7 @@ class BoardCss():
                                             (i, 2*i*27 - o)
         self.board_css = css.getvalue()
 
+# TODO:00: include a line saying that the css-file is created automatically.
+
 if __name__ == '__main__':
     print BoardCss().board_css
