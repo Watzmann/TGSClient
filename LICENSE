@@ -1,0 +1,11 @@
+
+    This application TGSClient is property of Dr. Andreas Hausmann/Germany.
+    It may as of now NOT be redistributed in any way.
+    It is intended to be put under the terms of the Lesser GNU General
+    Public License as published by the Free Software Foundation, or some other
+    appropriate free software license.
+
+    This program is given away to be modified according to the permission of
+    and in close cooperation with Dr. Andreas Hausmann. The purpose of these
+    modifications is implementation of a TGSClient that operates on the
+    internet backgammon server "TigerGammon" (http://tigergammon.com).
