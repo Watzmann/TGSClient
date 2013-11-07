@@ -72,6 +72,7 @@ function loadTGC(host_port, token) {
                     tgc.board.showAscii(boardpane, result);
                 } else if (result.indexOf("board:") != -1) {
                     /* Rendering of board-string "board:......" */
+                    boardpane.style.display = "none";
                     tgc.board.draw("#boardarea", result);
                 } else if (result.indexOf("Type 'join' if you want") != -1) {
                     /* TODO:0j: of course this should be an 'exx#....' message!! */
