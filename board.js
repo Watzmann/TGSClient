@@ -51,14 +51,14 @@ hannes rolls 4 and 3.
                            '3': '#p6,#p5,#p4',
                            '4': '#p6,#p5',
                            '5': '#p6'};
-        function moveChecker(element, dice, double, nrMoves, $board) {
+        function moveChecker(element, dice, double, nrMoves, event, $board) {
             var target, $t, $s, $r,
                 $divs = $board.find('div'),
                 myPoint = element.id,
                 myMove = new Array;
-            if (event.button == 1) {        /* ignore middle clicks */
+            if (event.which == 2) {        /* ignore middle clicks */
                 return false;
-            } else if (!double && nrMoves == 2 && event.button == 2) {
+            } else if (!double && nrMoves == 2 && event.which == 3) {
                 dice.reverse();
             }
             /* Are checkers on the bar? If so, is this here the bar?? */
@@ -443,13 +443,13 @@ hannes rolls 4 and 3.
                     double = false;
                 }
                 setAvailableDice(initialDice, elements['nrMoves']);
-                var move = function(dice, nrmoves) {
-                    return function() {
+                var move = function(element, dice, nrmoves) {
+                    return function(event) {
                         var resulting, $dx,
                             color = elements['color'];
                         if (nrmoves > 0) {
-                            resulting = moveChecker(this, dice, double, nrmoves,
-                                                                        $board);
+                            resulting = moveChecker(element, dice, double,
+                                                      nrmoves, event, $board);
                             if (resulting !== false) {
                                 /* A regular action was taken */
                                 setAvailableDice(resulting['dice'], resulting['moves']);
@@ -460,6 +460,7 @@ hannes rolls 4 and 3.
                                     setUndo($board);
                                 }
                                 /* Manage actions regarding checkers */
+                                $board.find('.starthere').each(clearAction);
                                 if (resulting['moves'] > 0) {
                                     /* There are moves left; set hotspots accordingly */
                                     $board.find('.starthere').each(setAction);
@@ -473,10 +474,9 @@ hannes rolls 4 and 3.
                                      * TODO: should there be a special alarm?????? */
                                 } else {
                                     /* All moves done; set affirmative hotspot ready */
-                                    $board.find('.starthere').each(clearAction);
                                     $dx = $board.find('#sendMove')
                                     $dx.attr('title', 'click to affirm move');
-                                    $dx[0].onclick = sendMove;
+                                    $dx[0].onclick = sendMove;    /* TODO:0j: also jQuery */
                                 }
                             }
                         }
@@ -484,12 +484,12 @@ hannes rolls 4 and 3.
                     };
                 };
                 function setAction(index, element) {
-                    element.onclick = move(availableDice, nrMoves);
-                    element.oncontextmenu = move(availableDice, nrMoves);
+                    $(element).on("mousedown", function(event) {
+                                move(element, availableDice, nrMoves)(event);
+                                });
                 }
                 function clearAction(index, element) {
-                    element.onclick = null;
-                    element.oncontextmenu = null;
+                    $(element).off();
                 }
                 $board.find('.starthere').each(setAction);
             }
