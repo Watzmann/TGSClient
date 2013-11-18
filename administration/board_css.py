@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# in folder TGSClient do
+# python administration/board_css.py > board.css
+
 from StringIO import StringIO
 
 class BoardCss():
@@ -52,7 +55,8 @@ class BoardCss():
                                             (i, 2*i*27 - o)
         self.board_css = css.getvalue()
 
-# TODO:00: include a line saying that the css-file is created automatically.
-
 if __name__ == '__main__':
+    print "/* %-55s */" % "This css file is created automatically by board_css.py."
+    print "/* %-55s */" % "Do not edit as changes will be overridden."
+    print
     print BoardCss().board_css
