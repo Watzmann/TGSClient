@@ -4,6 +4,6 @@ TigerGammon is a site for online Backgammon play. You play against humans or bot
 
 Permission to copy or use is limited for now. Please see LICENSE for information.
 
-See a prototype installation on http://tigergammon.com/client.
+See a prototype installation on http://tigergammon.eu/client.
 
 See SETUP to get instruction how to set up your own client development environment.
