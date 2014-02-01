@@ -6,8 +6,9 @@
 from StringIO import StringIO
 
 class BoardCss():
-    def __init__(self,):
+    def __init__(self, filepath):
         """Create the boards CSS."""
+        self.metrics = self._read_metrics(filepath)
         self.board_css = self._points()
         self.board_css += self._checkers()
         self.board_css += self._dice()
@@ -77,8 +78,32 @@ class BoardCss():
         print >>css, ".lowerpipsO { position:relative; top:186px; left:43px; }"
         return css.getvalue()
 
+    metrics_keys = (
+'player_die_left', 'player_die_right', 'opponent_die_left',
+'opponent_die_right', 'player_owns_cube', 'opponent_owns_cube',
+'neutral_cube', 'doubled_cube', 'player_bar_bottom_left_corner',
+'opponent_bar_top_left_corner', 'player_home_bottom_left_corner',
+'opponent_home_top_left_corner', 'roll_dice', 'resign', 'reject',
+'join', 'undo', 'upper_pip_numbers', 'lower_pip_numbers',
+'points_start_upper_right',
+'point_dimension', 'piece_dimension', 'home_piece_dim', 'roll_dice_dim',
+'join_dim', 'reject_dim', 'die_dim', 'undo_dim', 'cube_dim', 'resign_dim',
+        )
+
+    def _read_metrics(self, filepath):
+        tint = lambda m: (int(m[0]), int(m[1]))
+        f = open(filepath)
+        metrics = [l.split('/')[0].rstrip() for l in f.readlines()]
+        metrics = [tint(m.split(',')) for m in metrics]
+        del metrics[21:44]
+        print zip(self.metrics_keys, metrics)
+        f.close()
+        return metrics
+
 if __name__ == '__main__':
+    import os.path
+    metrics_file = os.path.join(os.path.dirname(__file__), 'normal.metrics')
     print "/* %-55s */" % "This css file is created automatically by board_css.py."
     print "/* %-55s */" % "Do not edit as changes will be overridden."
     print
-    print BoardCss().board_css
+    print BoardCss(metrics_file).board_css
