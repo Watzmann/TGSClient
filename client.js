@@ -6,7 +6,7 @@
  *
 */
 
-function loadTGC(host_port, token) {
+function loadTGC(host_port) {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var state = document.getElementById("status"),
@@ -65,7 +65,6 @@ function loadTGC(host_port, token) {
             },
             board: function (result) {
                 var board2 = document.getElementById("board2"),
-                    boardimg = document.getElementById("boardimg"),
                     boardpane = document.getElementById("boardpane");
                     // TODO:0j: das hier soll nur einmal gemacht werden. Also hoch in das Objekt.
                 if (result.indexOf("BAR") != -1) {
@@ -142,7 +141,7 @@ function loadTGC(host_port, token) {
             /* TODO:0j: das muss doch hier drin gemacht werden;
              *          aber 'ws' muss bekannt sein */
         },
-        openConnection: function(host_port, token) {
+        openConnection: function(host_port) {
             var ws = new WebSocket("ws://"+host_port+"/ws");
             ws.onopen = function() {
                 tgc._statusIndicators.onopen(ws.readyState);
@@ -184,7 +183,7 @@ function loadTGC(host_port, token) {
                 return true;
             };
             tgc.cc.reopen = function() {
-                tgc.openConnection(host_port, token);
+                tgc.openConnection(host_port);
             }
         },
         navigate: {
@@ -220,7 +219,7 @@ function loadTGC(host_port, token) {
         }
     };
   })();
-  tgc.openConnection(host_port, token);
+  tgc.openConnection(host_port);
   tgc.action.focus = tgc.action.system;
   tgc.board = loadBoard();
   window.tgc = tgc;

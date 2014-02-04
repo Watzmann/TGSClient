@@ -200,8 +200,9 @@ hannes rolls 4 and 3.
             function drawCheckers(checkers, color) {
                 var point = "";
                 if (padding) {
-                    var pheight = (6 - Math.min(5,checkers)) * 27;
-                    point = "<div style=\"height:" + pheight + "px\"></div>";
+                    /* TODO:03: what do I need 6 checker divs for?? */
+                    var pheight = (6 - Math.min(5,checkers));
+                    point = "<div class=\"cs" + pheight + "\"></div>";
                 }
                 for (var c = 0; c < checkers; c++) {
                     var stack = '';
@@ -277,8 +278,8 @@ hannes rolls 4 and 3.
                         'checkers': checkers,
                         'target': 'yes'
                         },
-                pheight = (16 - checkers) * 8;
-            point = "<div style=\"height:" + pheight + "px\"></div>";
+                pheight = (15 - checkers);
+            point = "<div class=\"pds" + pheight + "\"></div>";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + home['player'] + ' alt="home piece player">';
             }
@@ -300,8 +301,8 @@ hannes rolls 4 and 3.
                         'checkers': checkers,
                         'target': 'bar'
                         };
-            var pheight = (5 - checkers) * 27;
-            point = "<div style=\"height:" + pheight + "px\"></div>";
+            var pheight = (5 - checkers);
+            point = "<div class=\"cs" + pheight + "\"></div>";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + piece['player'] + ' alt="bar piece player">';
             }

@@ -37,8 +37,9 @@
             <span class="button" onclick="tgc.navigate.show('board')">board</span>
         </p>
         <div id="board" style="display:none;"
-             oncontextmenu="return false;">
-          <div id="boardBg">
+                        oncontextmenu="return false;">
+          <div style="position:absolute;">
+            <div id="boardBg">
               <img id="pip13" src="resources/board/pip13to24.gif" alt="points 13 to 24">
               <img id="pip12" src="resources/board/pip12to1.gif" alt="points 12 to 1">
               <!--img id="pip1" src="resources/board/pip1to12.gif" alt="points 1 to 12"-->
@@ -46,15 +47,14 @@
                        <!--
                        filter:alpha(opacity=10);
                        -->
+            </div>
+            <div id="boardarea" style="position:absolute;top:0px;left:0;">
+              <pre id="boardpane">
+              </pre>
+            </div>
           </div>
-          <div style="position:absolute;top:130px;left:0;" id="boardarea">
-                <pre id="boardpane">
-            </pre>
-          </div>
-          <div id="boardimg" style="position:absolute;top:130px;left:0;">
-          </div>
+          <div id="board2"></div>
         </div>
-        <div id="board2"></div>
         <div id="system"> <!--style="display:block;float:right"-->
           <label for="received">System output:</label>
           <textarea name="received" id="received" cols="80" rows="20"></textarea>
@@ -75,6 +75,6 @@
     <script src="third_party/jquery.js"></script>
     <script src="board.js"></script>
     <script src="client.js"></script>
-    <script>loadTGC("tigergammon.com:8080", "55555");</script>
+    <script>loadTGC("tigergammon.com:8080");</script>
   </body>
 </html>

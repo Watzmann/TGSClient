@@ -27,7 +27,7 @@ class BoardCss():
         rule = "#p%(point)d {position:absolute; top:%(top)dpx; " \
                "left:%(left)dpx; width:%(width)dpx; height:%(height)dpx;}"
         WIDTH = self.metrics['point_width']
-        HEIGHT = 6 * self.metrics['piece_height']
+        HEIGHT = 6 * self.metrics['piece_dimension'][1]
         BAR_WIDTH = self.metrics['bar_width']
         xpos = self.metrics['xposition']
         for i in range(24):
@@ -47,20 +47,13 @@ class BoardCss():
                 xpos -= BAR_WIDTH
             if i == 17:
                 xpos += BAR_WIDTH
-            print >>css, rule % values        # ditch[4]  bar[4]
-        width = self.metrics['piece_height']
-        top, left, height = self.metrics['ditch']
-        print >>css, "#p0 { position:absolute; top:%dpx; left:%dpx; " \
-                     "width:%dpx; height:%dpx; }" % (top, left, width, height)
-        top, left, height = self.metrics['bar']
-        print >>css, "#p25 { position:absolute; top:%dpx; left:%dpx; " \
-                     "width:%dpx; height:%dpx; }" % (top, left, width, height)
+            print >>css, rule % values
         return css.getvalue()
 
     def _checkers(self,):
         """Create the boards checker positions."""
         css = StringIO()
-        h = self.metrics['piece_height']
+        h = self.metrics['piece_dimension'][1]
         hh = h / 2
         print >>css, ".c5 { position:relative; top:-%dpx; }" % (4 * h + hh)
         print >>css, ".c9 { position:relative; top:-%dpx; }" % (8 * h)
@@ -70,65 +63,76 @@ class BoardCss():
                 o = offset[i]
             print >>css, ".cp%d { position:relative; top:-%dpx; }" % \
                                             (i, 2*i*h - o)
+        for i in range(1,6): # 1..5
+            print >>css, ".cs%d { height:%dpx; }" % (i, i*h)
         return css.getvalue()
 
     def _dice(self,):
         """Create the boards checker positions."""
         css = StringIO()
         dw, dh = self.metrics['dice_dimension']
-        dy, dx = self.metrics['player_dice1']
+        dx, dy = self.metrics['player_dice1']
         print >>css, "#pDice1 { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
-        dy, dx = self.metrics['player_dice2']
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['player_dice2']
         print >>css, "#pDice2 { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
-        dy, dx = self.metrics['opponent_dice1']
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['opponent_dice1']
         print >>css, "#oDice1 { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
-        dy, dx = self.metrics['opponent_dice2']
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['opponent_dice2']
         print >>css, "#oDice2 { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
-        dy, dx, dw, dh = self.metrics['roll_dice']
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy, dw, dh = self.metrics['roll_dice']
         print >>css, "#rollDice { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
-        dy, dx, dw, dh = self.metrics['send_move']
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy, dw, dh = self.metrics['send_move']
         print >>css, "#sendMove { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
         return css.getvalue()
 
     def _decoration(self,):
         """Create the boards checker positions."""
         css = StringIO()
-        width = self.metrics['piece_height']
-        top, left, height = self.metrics['oditch']
+        width = self.metrics['piece_dimension'][0]
+        left, top, height = self.metrics['pditch']
+        print >>css, "#p0 { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (top, left, width, height)
+        left, top, height = self.metrics['pbar']
+        print >>css, "#p25 { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (top, left, width, height)
+        left, top, height = self.metrics['oditch']
         print >>css, "#oDitch { position:absolute; top:%dpx; left:%dpx; " \
                        "width:%dpx; height:%dpx; }" % (top, left, width, height)
-        top, left, height = self.metrics['obar']
+        left, top, height = self.metrics['obar']
         print >>css, "#oBar { position:absolute; top:%dpx; left:%dpx; " \
                        "width:%dpx; height:%dpx; }" % (top, left, width, height)
+        thick = self.metrics['piece_dimension'][2]
+        for i in range(16):
+            print >>css, ".pds%d { height:%dpx; }" % (i, i*thick)
         dx, dy, dw, dh = self.metrics['undo']
         print >>css, "#undo { position:absolute; top:%dpx; left:%dpx; " \
-                                "width:%dpx; height:%dpx; }" % (dx, dy, dw, dh)
+                                "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
         dx, dy = self.metrics['upperpipsX']
-        print >>css, ".upperpipsX { position:relative; top:%dpx; left:%dpx; }" \
-                                                                    % (dx, dy)
+        print >>css, ".upperpipsX { position:absolute; top:%dpx; left:%dpx; }" \
+                                                                    % (dy, dx)
         dx, dy = self.metrics['lowerpipsX']
-        print >>css, ".lowerpipsX { position:relative; top:%dpx; left:%dpx; }" \
-                                                                    % (dx, dy)
+        print >>css, ".lowerpipsX { position:absolute; top:%dpx; left:%dpx; }" \
+                                                                    % (dy, dx)
         dx, dy = self.metrics['upperpipsO']
-        print >>css, ".upperpipsO { position:relative; top:%dpx; left:%dpx; }" \
-                                                                    % (dx, dy)
+        print >>css, ".upperpipsO { position:absolute; top:%dpx; left:%dpx; }" \
+                                                                    % (dy, dx)
         dx, dy = self.metrics['lowerpipsO']
-        print >>css, ".lowerpipsO { position:relative; top:%dpx; left:%dpx; }" \
-                                                                    % (dx, dy)
+        print >>css, ".lowerpipsO { position:absolute; top:%dpx; left:%dpx; }" \
+                                                                    % (dy, dx)
         return css.getvalue()
 
     metrics_keys = (
-        'board_dimensions', 'point_width', 'piece_height',
+        'board_dimensions', 'point_width', 'piece_dimension',
         'bar_width', 'xposition', 'top_margin', 'bottom_margin',
-        'ditch', 'bar', 'dice_dimension', 'player_dice1',
-        'player_dice2', 'opponent_dice1', 'opponent_dice2',
-        'roll_dice', 'send_move', 'oditch', 'obar', 'undo',
+        'dice_dimension', 'player_dice1', 'player_dice2',
+        'opponent_dice1', 'opponent_dice2', 'roll_dice', 'send_move',
+        'pditch', 'oditch', 'pbar', 'obar', 'undo',
         'upperpipsX', 'lowerpipsX', 'upperpipsO', 'lowerpipsO',
         )
 
