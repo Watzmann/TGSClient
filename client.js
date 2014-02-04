@@ -63,6 +63,11 @@ function loadTGC(host_port) {
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
+            gameProtocol: function (result) {
+                var target = document.getElementById("board_received");
+                target.value = target.value + result;
+                target.scrollTop = target.scrollHeight - target.clientHeight;
+            },
             board: function (result) {
                 var board2 = document.getElementById("board2"),
                     boardpane = document.getElementById("boardpane");
@@ -77,8 +82,12 @@ function loadTGC(host_port) {
                     /* TODO:0j: of course this should be an 'exx#....' message!! */
                     /* Automatically joining the next game in this match. */
                     tgc.cc.sendCmd("join");
+                } else if ((result.indexOf("roll") != -1) ||
+                           (result.indexOf("move") != -1) ||
+                           (result.indexOf("Type 'accept'") != -1))  {
+                    tgc.action.gameProtocol(result);
                 } else {
-                    board2.innerHTML += result+"<br>";
+                    tgc.action.system(result);
                 }
             },
             focus: null
@@ -164,7 +173,6 @@ function loadTGC(host_port) {
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
                 input_field.value = "";
-                board2.innerHTML = "";
             };
             tgc.cc.shutdown = function() {
                 ws.send("ciao");

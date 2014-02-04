@@ -44,18 +44,19 @@
               <img id="pip12" src="resources/board/pip12to1.gif" alt="points 12 to 1">
               <!--img id="pip1" src="resources/board/pip1to12.gif" alt="points 1 to 12"-->
               <!--img id="pip24" src="resources/board/pip24to13.gif" alt="points 24 to 13"-->
-                       <!--
-                       filter:alpha(opacity=10);
-                       -->
             </div>
             <div id="boardarea" style="position:absolute;top:0px;left:0;">
               <pre id="boardpane">
               </pre>
             </div>
           </div>
-          <div id="board2"></div>
+          <div id="board2">
+            <label for="board_received">Game protocol:</label>
+            <textarea name="board_received" id="board_received"
+                      cols="48" rows="35"></textarea>
+          </div>
         </div>
-        <div id="system"> <!--style="display:block;float:right"-->
+        <div id="system">
           <label for="received">System output:</label>
           <textarea name="received" id="received" cols="80" rows="20"></textarea>
         </div>
