@@ -21,6 +21,7 @@ function loadTGC(host_port) {
         players = document.getElementById("players");
     return {
         action: {
+            playersList: {},
             access_denied: function (nick) {
                 denied.style.display = "block";
                 var target = document.getElementById("user-name");
@@ -51,6 +52,15 @@ function loadTGC(host_port) {
     //            '%(hostname)s' % args
             },
             who: function (list_of_players) {
+                var target = document.getElementById("players_list");
+                target.innerHTML = this.whoFormat1Head() + "<br>";
+                for (var p = 1, len = list_of_players.length-1; p < len; p++) {
+                    var po = eval("(" + list_of_players[p] + ")");
+                    this.playersList[po['user']] = po;
+                    target.innerHTML += this.whoFormat1(po) + "<br>";
+                }
+            },
+            whoUpdate: function (list_of_players) {
                 var target = document.getElementById("players_list");
                 target.innerHTML = this.whoFormat1Head() + "<br>";
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
@@ -95,8 +105,8 @@ function loadTGC(host_port) {
         parse: function(msg) {
             var action_parts = msg.split("#");
             if (action_parts.length > 1) {
-                act = action_parts[0];
-                cmd = action_parts[1];
+                var act = action_parts[0];
+                var cmd = action_parts[1];
                 switch (act) {
                     /* This is the way to go: messages with message ids like
                      * cdd#...... (c=character, d=digit, #=separator, ....= msg)
@@ -109,6 +119,9 @@ function loadTGC(host_port) {
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
+                        break;
+                    case "g02":
+                        tgc.action.whoUpdate(action_parts);
                         break;
                     default:
                         tgc.action.focus(msg);
