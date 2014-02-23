@@ -51,22 +51,31 @@ function loadTGC(host_port) {
     //        w = '%(status)s %(user)-14s %(login)5s ' \
     //            '%(hostname)s' % args
             },
-            who: function (list_of_players) {
+            displayPlayersList: function (pl) {
                 var target = document.getElementById("players_list");
                 target.innerHTML = this.whoFormat1Head() + "<br>";
+                for (var p in pl) {
+                    target.innerHTML += this.whoFormat1(pl[p]) + "<br>";
+                }
+            },
+            who: function (list_of_players) {
+                this.playersList = {};
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
                     var po = eval("(" + list_of_players[p] + ")");
                     this.playersList[po['user']] = po;
-                    target.innerHTML += this.whoFormat1(po) + "<br>";
                 }
+                this.displayPlayersList(this.playersList);
             },
             whoUpdate: function (list_of_players) {
-                var target = document.getElementById("players_list");
-                target.innerHTML = this.whoFormat1Head() + "<br>";
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
                     var po = eval("(" + list_of_players[p] + ")");
-                    target.innerHTML += this.whoFormat1(po) + "<br>";
+                    this.playersList[po['user']] = po;
                 }
+                this.displayPlayersList(this.playersList);
+            },
+            delFromPL: function (player) {
+                delete this.playersList[player];
+                this.displayPlayersList(this.playersList);
             },
             system: function (result) {
                 var target = document.getElementById("received");
@@ -122,6 +131,10 @@ function loadTGC(host_port) {
                         break;
                     case "g02":
                         tgc.action.whoUpdate(action_parts);
+                        break;
+                    case "b04":
+                        var data = JSON.parse(cmd);
+                        tgc.action.delFromPL(data['name']);
                         break;
                     default:
                         tgc.action.focus(msg);

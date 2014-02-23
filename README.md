@@ -1,7 +1,7 @@
 # TGSClient
-## HTML5 client for TigerGammon
+## HTML5 Client for TigerGammonServer
 
-TigerGammon is a free online Backgammon server. You play against humans or bots. 
+TigerGammon is a free online Backgammon server. You play against humans or bots.
 
 The simplest way to connect is using telnet:
 
@@ -14,4 +14,4 @@ This repository contains the code for an HTML5 client. The setup for your own cl
 See a prototype installation of this client on [TigerGammon](http://tigergammon.eu/client/).
 
 ## License
-Copyright (c) 2013-2014 Andreas Hausmann. See LICENSE.md for information.
+Copyright (c) 2013-2014 Andreas Hausmann. See LICENSE.md for information (AGPL).
