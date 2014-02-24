@@ -3,6 +3,7 @@
     <title>TigerGammon</title>
     <link rel="stylesheet" type="text/css" href="formate.css">
     <link rel="stylesheet" type="text/css" href="board.css">
+    <link rel="stylesheet" type="text/css" href="playersList.css">
   </head>
   <body>
     <div id=login style="display:block;">
@@ -60,8 +61,22 @@
           <label for="received">System output:</label>
           <textarea name="received" id="received" cols="80" rows="20"></textarea>
         </div>
-        <div id="players" style="display:block; background-color:#FFFF99;">
-          <p><pre name="players_list" id="players_list"></pre></p>
+        <div id="players" style="display:none; background-color:#FFFF99; margin: 20px;">
+          <table name="players_list" class="playersList" id="playersList">
+            <colgroup>
+              <col width="80">
+              <col width="80">
+              <col width="80">
+              <col width="80">
+              <col width="80">
+            </colgroup>
+            <tr class="playersHeading">
+              <th>Name</th><th>S</th><th>Rating</th><th>Exp</th><th>Idle</th>
+            </tr>
+            <tr class="playersList">
+              <td>----</td><td>-</td><td>1500.00</td><td>0</td><td>0.0</td>
+            </tr>
+          </table>
         </div>
         <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
           <label for="send_input">Command:</label>

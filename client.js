@@ -22,6 +22,10 @@ function loadTGC(host_port) {
     return {
         action: {
             playersList: {},
+            plRowElement: {'start': '<tr class="playersList"><td class="playersName">',
+                            'end':  '</td></tr>',
+                            'running':  '</td><td>',
+                            },
             access_denied: function (nick) {
                 denied.style.display = "block";
                 var target = document.getElementById("user-name");
@@ -36,39 +40,59 @@ function loadTGC(host_port) {
             },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
+                               status: " S ",
                                rating: "Rating",
                                experience: "Exp",
                                idle: "Idle",
                                };
-                var line = sprintf("%(user)-14s %(rating)7s %(experience)5s %(idle)5s", heading);
+                var line = sprintf("%(user)-24s %(status)4s %(rating)7s %(experience)5s %(idle)5s", heading);
                 return "<span style=\"font-weight:bold\">" + line + "</span>";
             },
             whoFormat1: function (player) {
-                return sprintf("%(user)-14s %(rating)7.2f %(experience)5d %(idle)5s", player);
+                player['status'] = "-R"[player['ready']] + " ";
+                return sprintf("%(user)-24s %(status)4s %(rating)7.2f %(experience)5d %(idle)5s", player);
     // %(user)s %(opponent)s %(watching)s %(ready)s ' \
     //            '%(away)s %(login)s ' \
     //            '%(hostname)s %(client)s %(email)s
     //        w = '%(status)s %(user)-14s %(login)5s ' \
     //            '%(hostname)s' % args
             },
-            displayPlayersList: function (pl) {
-                var target = document.getElementById("players_list");
-                target.innerHTML = this.whoFormat1Head() + "<br>";
-                for (var p in pl) {
-                    target.innerHTML += this.whoFormat1(pl[p]) + "<br>";
+            displayPlayersList: function (playerList) {
+                function menuInvite(element) {
+                    return function(event) {
+                        alert("I'll invite you, " + element);
+                        return false;
+                    }
                 }
+                function setInvite(index, element) {
+                    $(element).on("mousedown", function(event) {
+                                menuInvite(element)(event);
+                                });
+                }
+                $("tr.playersList").remove();
+                var $h = $("tr.playersHeading"),
+                    s = this.plRowElement.start,
+                    e = this.plRowElement.end,
+                    r = this.plRowElement.running;
+                for (var pl in playerList) {
+                    var p = playerList[pl],
+                        st = "-R"[p['ready']] + " ",
+                        line = s+p.user+r+st+r+p.rating+r+p.experience+r+p.idle+e;
+                    $h.last().after($(line));
+                }
+                $("#playersList td.playersName").each(setAction);
             },
             who: function (list_of_players) {
                 this.playersList = {};
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
-                    var po = eval("(" + list_of_players[p] + ")");
+                    var po = JSON.parse(list_of_players[p]);
                     this.playersList[po['user']] = po;
                 }
                 this.displayPlayersList(this.playersList);
             },
             whoUpdate: function (list_of_players) {
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
-                    var po = eval("(" + list_of_players[p] + ")");
+                    var po = JSON.parse(list_of_players[p]);
                     this.playersList[po['user']] = po;
                 }
                 this.displayPlayersList(this.playersList);

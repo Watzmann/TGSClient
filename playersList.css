@@ -1,0 +1,15 @@
+/* This css file is created automatically by board_css.py. */
+/* Do not edit as changes will be overridden.              */
+
+.playersList {
+    //height: 594px;
+    font-family: monospace;
+}
+
+tr.playersHeading {
+    height: 15px;
+}
+
+tr.playersList {
+    height: 15px;
+}
