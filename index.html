@@ -1,11 +1,14 @@
 <html>
+
   <head>
     <title>TigerGammon</title>
     <link rel="stylesheet" type="text/css" href="formate.css">
     <link rel="stylesheet" type="text/css" href="board.css">
     <link rel="stylesheet" type="text/css" href="playersList.css">
   </head>
+
   <body>
+
     <div id=login style="display:block;">
       <h1>TigerGammon login</h1>
       <div id="denied" style="display:none; color:red;">
@@ -24,11 +27,17 @@
         <label for="password">password:</label>
         <input type="password" name="password" id="login_password"/>
         <input type="button" id="login_submit" value="Login"
-               onclick="tgc.cc.login();"/>
+               onclick="tgc.openSession();"/>
       </div>
-      <div style="padding-top:20px">websockets: <span id="status">undef</span><br>
-           host: <span id="host"></span></div>
+      <div style="padding-top:20px">detected websockets:
+        <table id="sockets">
+          <tr>
+            <td id="discard">None</td><td></td>
+          </tr>
+        </table>
+      </div>
     </div>
+
     <div id=client style="display:none;">
         <h1>client demo</h1>
         <p id="nick" style="background-color:green; color:white"></p>
@@ -87,10 +96,13 @@
                  onclick="tgc.cc.shutdown(); return false"/>
         </form>
     </div>
+
     <script src="third_party/sprintf.js"></script>
     <script src="third_party/jquery.js"></script>
     <script src="board.js"></script>
     <script src="client.js"></script>
-    <script>loadTGC("tigergammon.com:8080");</script>
+    <script>loadTGC();</script>
+
   </body>
+
 </html>

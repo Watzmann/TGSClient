@@ -1,17 +1,21 @@
 /*
- * Client code for TigerGammon HTML5 client
+ * Client code for TigerGammonServer HTML5 client
  *
- * (c) 2013 Dr. Andreas Hausmann
+ * (c) 2013, 2014 Andreas Hausmann
+ * Licensed under AGPL3; see LICENSE
  *
  *
 */
 
-function loadTGC(host_port) {
+var HOST_PORT = {'saturn': "192.168.1.204:8001",
+                 'TGS': "tigergammon.com:8080"
+                 };
+var CLIENT_PROTOCOL = '2010';
+
+function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
-    var state = document.getElementById("status"),
-        host = document.getElementById("host"),
-        input_field = document.getElementById("send_input");
+    var input_field = document.getElementById("send_input");
     var login = document.getElementById("login"),
         denied = document.getElementById("denied"),
         client = document.getElementById("client"),
@@ -177,22 +181,52 @@ function loadTGC(host_port) {
             }
             tgc.action.focus(msg);
         },
-        _statusIndicators: {
-            onopen: function(wsState) {
-                state.innerHTML = 'open ' + wsState;
-                state.className = signal_colors[wsState];
-            },
-            onclose: function(wsState) {
-                state.innerHTML = 'closed ' + wsState;
-                state.className = signal_colors[wsState];
-            },
-            onmessage: function(wsState) {
-                state.innerHTML = 'open ' + wsState;
-                state.className = signal_colors[wsState];
-            },
-            wsUndefined: function(wsState) {
-                state.innerHTML = 'not supported';
-                state.className = signal_colors[wsState];
+        connectionData: { /* This is a container for connection calls;
+                 they are constructed during the openConnection() call. */
+        },
+        checkConnections: function() {
+            if (window.WebSocket === undefined) {
+-                /* Das hier sollte einen alternativen Zweig starten
+-                 * mit Darstellung von Erklärung und kein login erlauben.*/
+                alert("Websockets undefined");
+            } else {
+                function ping(host, host_port) {
+                    function displayConnection(host, host_port, state) {
+                        var $s = $("#sockets tr");
+                        var h = host_port.split(':');
+                        var row = "<tr><td>"+host+":</td><td>"+h[0]+
+                                  "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
+                        $(row).insertAfter($s);
+                        var $d = $s.find("td").filter("#discard");
+                        if ($d.length > 0) {
+                            $d.parent().remove();
+                        }
+                        $("#sockets").attr('data-host', host_port);
+                        $("#sockets #"+host+"Status").attr('class', signal_colors[state]);
+                    }
+                    var registerConnection = function() {
+                        return function(state) {
+                            tgc.connectionData[host] = host_port;
+                            displayConnection(host, host_port, state);
+                            };
+                        }();
+                    var ws = new WebSocket("ws://"+host_port+"/ws");
+                    ws.onopen = function() {
+                        ws.send("ping");
+                    };
+                    ws.onmessage = function(event) {
+                        var data = event.data.split(',');
+                        var state = ws.readyState;
+                        ws.close();
+                        if ($.inArray(CLIENT_PROTOCOL, data) != -1) {
+                            registerConnection(state);
+                        }
+                    };
+                    host.innerHTML = host_port; /* TODO:0j: das geht noch sauberer (code raus hier!) */
+                };
+                for (var h in HOST_PORT) {
+                    ping(h, HOST_PORT[h]);
+                }
             }
         },
         cc: { /* This is a container for connection calls;
@@ -200,26 +234,24 @@ function loadTGC(host_port) {
             /* TODO:0j: das muss doch hier drin gemacht werden;
              *          aber 'ws' muss bekannt sein */
         },
-        openConnection: function(host_port) {
-            var ws = new WebSocket("ws://"+host_port+"/ws");
+        openSession: function() {
+            var hp = $("#sockets").attr('data-host');
+            var ws = new WebSocket("ws://"+hp+"/ws");
             ws.onopen = function() {
-                tgc._statusIndicators.onopen(ws.readyState);
+                var name = document.getElementById("login_name"),
+                    passwd = document.getElementById("login_password");
+                tgc.cc.login(name.value, passwd.value, CLIENT_PROTOCOL);
+                tgc.action.focus = tgc.action.system;
+                tgc.board = loadBoard();
             };
             ws.onclose = function(event) {
-                ws.send("ciao again");
-                window.location = "ciao"
+                    ws.send("ciao again");
+                    window.location = "ciao"
             };
             ws.onmessage = function(evt) {
-                var data = evt.data;
-                tgc.parse(data);
-            };
-            tgc._statusIndicators.onopen(ws.readyState);
-            host.innerHTML = host_port; /* TODO:0j: das geht noch sauberer (code raus hier!) */
-            if (window.WebSocket === undefined) {
-                /* Das hier gehört höher und sollte einen alternativen Zweig starten
-                 * mit Darstellung von Erklärung und kein login erlauben.*/
-                tgc._statusIndicators.wsUndefined(ws.readyState);
-            };
+                    var data = evt.data;
+                    tgc.parse(data);
+                };
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
                 input_field.value = "";
@@ -234,15 +266,13 @@ function loadTGC(host_port) {
             tgc.cc.sendCmd = function(msg) {
                 ws.send(msg);
             };
-            tgc.cc.login = function() {
-                var name = document.getElementById("login_name"),
-                    passwd = document.getElementById("login_password");
-                ws.send("login "+name.value+" "+passwd.value);
+            tgc.cc.login = function(name, passwd, protVersion) {
+                ws.send("login "+name+" "+passwd+" "+protVersion);
                 return true;
             };
             tgc.cc.reopen = function() {
-                tgc.openConnection(host_port);
-            }
+                tgc.openConnection();
+            };
         },
         navigate: {
             show: function(element) {
@@ -277,8 +307,6 @@ function loadTGC(host_port) {
         }
     };
   })();
-  tgc.openConnection(host_port);
-  tgc.action.focus = tgc.action.system;
-  tgc.board = loadBoard();
+  tgc.checkConnections();
   window.tgc = tgc;
 };

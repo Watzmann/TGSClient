@@ -39,6 +39,6 @@
    border: solid 3px rgba(255,132,0,1);
 }
 
-.red {background-color:red; color:white}
-.green {background-color:green; color:white}
-.orange {background-color:#FF8040; color:blue}
+.red {background-color:red; color:white; padding: 0px 6px;}
+.green {background-color:green; color:white; padding: 0px 6px;}
+.orange {background-color:#FF8040; color:blue; padding: 0px 6px;}

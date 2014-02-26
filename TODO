@@ -3,7 +3,9 @@ TODOs   German as it is meant for me; want it in git, though.
 () Erste Seite etwas schöner gestalten
 () Registrierung
 () Erst einloggen, wenn Login gedrückt ist (erste Seite also kein timeout)
-() Logout Page mit Login return link
+(y) Logout Page mit Login return link
+() Logout Page no separate page, but "Erste Seite" mit special Text
+()
 
 () Tutor Modus
 
