@@ -1,3 +1,33 @@
+body {
+    font-family: Helvetica;
+}
+
+#clientTitle {
+    background-color:white;
+    float: left;
+    margin-top: -6px;
+    margin-left: 50px;
+    padding: 0px 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+#identity {
+    width: 1200px;
+    margin-top: 10px;
+    text-align: right;
+    padding-right: 4px;
+    background-color:green;
+    color:white;
+}
+#nick {
+    font-weight: bold;
+    padding-right: 20px;
+}
+#quit {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .button {
    background-color: rgba(227,149,13,1);
    background-image: -webkit-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);

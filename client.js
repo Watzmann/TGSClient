@@ -7,7 +7,8 @@
  *
 */
 
-var HOST_PORT = {'saturn': "192.168.1.204:8001",
+var HOST_PORT = {'rechner1': "192.168.1.204:8001",
+                 'rechner2': "192.168.1.201:8001",
                  'TGS': "tigergammon.com:8080"
                  };
 var CLIENT_PROTOCOL = '2010';
@@ -37,11 +38,19 @@ function loadTGC() {
                 target.innerHTML = nick;
                 tgc.cc.reopen();
             },
+            showClient: function (enter) {
+                if (enter) {
+                    login.style.display = "none";
+                    client.style.display = "block";
+                } else {
+                    client.style.display = "none";
+                    login.style.display = "block";
+                }
+            },
             set_nick: function (nick) {
-                login.style.display = "none";
-                client.style.display = "block";
+                this.showClient(true);
                 var target = document.getElementById("nick");
-                target.innerHTML = "You are logged in as <i>"+nick+"</i>";
+                target.innerHTML = nick;
                 tgc.selfNick = nick;
             },
             whoFormat1Head: function () {
@@ -172,7 +181,7 @@ function loadTGC() {
             }
             /* Don't use this way of interpretation; instead use msg-ids above. */
             else if (msg.indexOf("running match was loaded.") != -1) {
-                tgc.cc.sendCmd("set b 3");
+                tgc.cc.sendCmd("set b 3");  /* TODO:0k: set this in the server, hard */
                 tgc.navigate.show("board");
             }
             else if (msg.indexOf("Starting a new game with") != -1) {
@@ -182,7 +191,7 @@ function loadTGC() {
             tgc.action.focus(msg);
         },
         connectionData: { /* This is a container for connection calls;
-                 they are constructed during the openConnection() call. */
+                 they are constructed during the checkConnection() call. */
         },
         checkConnections: function() {
             if (window.WebSocket === undefined) {
@@ -190,11 +199,20 @@ function loadTGC() {
 -                 * mit Darstellung von Erklärung und kein login erlauben.*/
                 alert("Websockets undefined");
             } else {
-                function ping(host, host_port) {
-                    function displayConnection(host, host_port, state) {
+                tgc.connectionData['setHost'] = function (host) {
+                        $('#sockets').attr('data-host',host);
+                    };
+                function ping(host, host_port, multiple) {
+                    function displayConnection(host, host_port, state, multiple) {
                         var $s = $("#sockets tr");
                         var h = host_port.split(':');
-                        var row = "<tr><td>"+host+":</td><td>"+h[0]+
+                        var choser = '';
+                        if (multiple) {
+                            choser = "<input type=\"radio\" name=\"socket\" value=\""+
+                                     host+"\" checked=\"checked\" onclick=\""+
+                                     "tgc.connectionData.setHost('"+host_port+"');\"/>";
+                        }
+                        var row = "<tr><td>"+choser+"</td><td>"+host+":</td><td>"+h[0]+
                                   "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
                         $(row).insertAfter($s);
                         var $d = $s.find("td").filter("#discard");
@@ -207,7 +225,7 @@ function loadTGC() {
                     var registerConnection = function() {
                         return function(state) {
                             tgc.connectionData[host] = host_port;
-                            displayConnection(host, host_port, state);
+                            displayConnection(host, host_port, state, multiple);
                             };
                         }();
                     var ws = new WebSocket("ws://"+host_port+"/ws");
@@ -222,10 +240,10 @@ function loadTGC() {
                             registerConnection(state);
                         }
                     };
-                    host.innerHTML = host_port; /* TODO:0j: das geht noch sauberer (code raus hier!) */
                 };
+                var multiple = Object.keys(HOST_PORT).length > 1;
                 for (var h in HOST_PORT) {
-                    ping(h, HOST_PORT[h]);
+                    ping(h, HOST_PORT[h], multiple);
                 }
             }
         },
@@ -245,8 +263,7 @@ function loadTGC() {
                 tgc.board = loadBoard();
             };
             ws.onclose = function(event) {
-                    ws.send("ciao again");
-                    window.location = "ciao"
+                tgc.action.showClient(false);
             };
             ws.onmessage = function(evt) {
                     var data = evt.data;

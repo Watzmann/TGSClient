@@ -1,11 +1,48 @@
-TODOs   German as it is meant for me; want it in git, though.
+TODOs   German, as it is meant for me; want it in git, though.
 
-() Erste Seite etwas schöner gestalten
-() Registrierung
-() Erst einloggen, wenn Login gedrückt ist (erste Seite also kein timeout)
-(y) Logout Page mit Login return link
-() Logout Page no separate page, but "Erste Seite" mit special Text
-()
+__________
 
-() Tutor Modus
+1) Schritte zur Alpha
+
+   1) Login/Logout
+      () Erste Seite etwas schöner gestalten
+->    () Registrierung
+      (y) Erst einloggen, wenn Login gedrückt ist (erste Seite also kein timeout)
+      (y) Logout Page mit Login return link
+->    () Logout Page no separate page, but "Erste Seite" mit special Text
+      ()
+
+   2) Spiel
+      (y) Invite
+      () Join
+      () Cube
+      () Resign
+      () Watchers
+
+   3) Community/Messages
+      () shouts eigenes Fenster
+      () chats??
+      () system: statusline with flyout history
+
+   4) 
+
+   5) Was wird benötigt, um es rauszufahren
+      () Nötige Änderungen am Server?
+          () Messages?
+              () shouts
+              () chat
+              () say, kibitz ...
+          () ...
+      () Gewünschte Änderungen am Server?
+          () Kleinzeug ----> TODO kucken
+          () Droppers
+          () Clock
+          () Chouette
+          () ...
+
+2) User Guide
+
+   () Tutor Modus
+
+------------------------------------------------------------
 

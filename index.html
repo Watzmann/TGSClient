@@ -9,17 +9,19 @@
 
   <body>
 
+    <!--                                             Login                   -->
     <div id=login style="display:block;">
       <h1>TigerGammon login</h1>
       <div id="denied" style="display:none; color:red;">
           Access denied: wrong username <i id="user-name">...</i> or password!
       </div>
       <div>
-               This is a prototype of the new HTML5 client for TigerGammon online backgammon play.</br>
-            <p>Just use your normal account.</br>
-               If you don't have an account use one of <strong>test_a</strong>, <strong>test_b</strong> or <strong>test_c</strong>.
-               Password for all three users is <strong>hallo</strong>.
-           </p>
+        This is a prototype of the new HTML5 client for TigerGammon online backgammon play.</br>
+        <p>
+          Just use your normal account.</br>
+          If you don't have an account use one of <strong>test_a</strong>, <strong>test_b</strong> or <strong>test_c</strong>.
+          Password for all three users is <strong>hallo</strong>.
+        </p>
       </div>
       <div>
         <label for="name">name:</label>
@@ -29,7 +31,7 @@
         <input type="button" id="login_submit" value="Login"
                onclick="tgc.openSession();"/>
       </div>
-      <div style="padding-top:20px">detected websockets:
+      <div style="padding-top:20px">available servers:
         <table id="sockets">
           <tr>
             <td id="discard">None</td><td></td>
@@ -38,16 +40,25 @@
       </div>
     </div>
 
-    <div id=client style="display:none;">
-        <h1>client demo</h1>
-        <p id="nick" style="background-color:green; color:white"></p>
-        <p id="tabs">
-            <span class="button" onclick="tgc.navigate.show('players')">players</span>
-            <span class="button" onclick="tgc.navigate.show('system')">system</span>
-            <span class="button" onclick="tgc.navigate.show('board')">board</span>
-        </p>
-        <div id="board" style="display:none;"
-                        oncontextmenu="return false;">
+    <!--                                             Active                  -->
+    <div id=client style="display:none; width:1200px;">
+        <div>
+          <div id="clientTitle">client demo</div>
+          <div id="identity">
+            Playing as <span id="nick">players</span>
+            <span id="quit" onclick="tgc.cc.shutdown(); return false">Quit</span>
+          </div>
+          <div style="clear:both;">
+            <p id="tabs">
+              <span class="button" onclick="tgc.navigate.show('players')">players</span>
+              <span class="button" onclick="tgc.navigate.show('system')">system</span>
+              <span class="button" onclick="tgc.navigate.show('board')">board</span>
+            </p>
+          </div>
+        </div>
+
+        <!--                                             Board               -->
+        <div id="board" style="display:none;" oncontextmenu="return false;">
           <div style="position:absolute;">
             <div id="boardBg">
               <img id="pip13" src="resources/board/pip13to24.gif" alt="points 13 to 24">
@@ -66,11 +77,14 @@
                       cols="48" rows="35"></textarea>
           </div>
         </div>
-        <div id="system">
+
+        <!--                                             System              -->
+        <div id="system" style="display:block;">
           <label for="received">System output:</label>
           <textarea name="received" id="received" cols="80" rows="20"></textarea>
         </div>
 
+        <!--                                             PlayersList         -->
         <div id="players" style="display:none; background-color:#FFFF99; margin: 20px;">
           <table name="players_list" class="playersList" id="playersList">
             <colgroup>
@@ -90,14 +104,14 @@
           <div class="inviteDialog" id="inviteDialog" style="display:none;">invite</div>
         </div>
 
+        <!--                                             CommandLine         -->
         <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
           <label for="send_input">Command:</label>
           <input type="text" name="send_input" id="send_input"/>
           <input type="submit" name="send_submit" id="send_submit" value="Send"
                  onclick="tgc.cc.send_data(); return false"/>
-          <input type="submit" name="logout" id="logout" value="Quit"
-                 onclick="tgc.cc.shutdown(); return false"/>
         </form>
+
     </div>
 
     <script src="third_party/sprintf.js"></script>
