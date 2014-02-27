@@ -9,8 +9,8 @@ __________
 ->    () Registrierung
       (y) Erst einloggen, wenn Login gedrückt ist (erste Seite also kein timeout)
       (y) Logout Page mit Login return link
-->    () Logout Page no separate page, but "Erste Seite" mit special Text
-      ()
+      (y) Logout Page no separate page, but "Erste Seite" mit special Text
+      (y) Board by Jendit
 
    2) Spiel
       (y) Invite

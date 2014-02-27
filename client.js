@@ -20,6 +20,8 @@ function loadTGC() {
     var login = document.getElementById("login"),
         denied = document.getElementById("denied"),
         client = document.getElementById("client"),
+        greeting = document.getElementById("greeting"),
+        goodbye = document.getElementById("goodbye"),
         systempane = document.getElementById("system"),
         board = document.getElementById("board"),
         board2 = document.getElementById("board2"),
@@ -37,6 +39,10 @@ function loadTGC() {
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
                 tgc.cc.reopen();
+            },
+            showBye: function () {
+                greeting.style.display = "none";
+                goodbye.style.display = "block";
             },
             showClient: function (enter) {
                 if (enter) {
@@ -263,6 +269,7 @@ function loadTGC() {
                 tgc.board = loadBoard();
             };
             ws.onclose = function(event) {
+                tgc.action.showBye();
                 tgc.action.showClient(false);
             };
             ws.onmessage = function(evt) {

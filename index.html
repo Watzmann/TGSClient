@@ -15,12 +15,19 @@
       <div id="denied" style="display:none; color:red;">
           Access denied: wrong username <i id="user-name">...</i> or password!
       </div>
-      <div>
-        This is a prototype of the new HTML5 client for TigerGammon online backgammon play.</br>
+      <div id="greeting"  style="display:block;">
+        <p>
+          This is a prototype of the new HTML5 client for TigerGammon online backgammon play.
+        </p>
         <p>
           Just use your normal account.</br>
           If you don't have an account use one of <strong>test_a</strong>, <strong>test_b</strong> or <strong>test_c</strong>.
           Password for all three users is <strong>hallo</strong>.
+        </p>
+      </div>
+      <div id="goodbye"  style="display:none;">
+        <p>
+          Thanks for playing on TigerGammon.
         </p>
       </div>
       <div>
@@ -66,6 +73,8 @@
               <!--img id="pip1" src="resources/board/pip1to12.gif" alt="points 1 to 12"-->
               <!--img id="pip24" src="resources/board/pip24to13.gif" alt="points 24 to 13"-->
             </div>
+            <div style="text-align:right; color:grey;">Board design by
+              <a href="http://jendit.de" target="_blank">jendit</a></div>
             <div id="boardarea" style="position:absolute;top:0px;left:0;">
               <pre id="boardpane">
               </pre>
