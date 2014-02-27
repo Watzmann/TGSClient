@@ -1,7 +1,8 @@
 /*
- * Board code for TigerGammon HTML5 client
+ * Board code for TigerGammonServer HTML5 Client
  *
- * (c) 2013 Dr. Andreas Hausmann
+ * (c) 2013, 2014 Andreas Hausmann
+ * Licensed under AGPL3; see LICENSE
  *
  *
 */

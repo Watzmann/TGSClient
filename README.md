@@ -14,4 +14,4 @@ This repository contains the code for an HTML5 client. The setup for your own cl
 See a prototype installation of this client on [TigerGammon](http://tigergammon.eu/client/).
 
 ## License
-Copyright (c) 2013-2014 Andreas Hausmann. See LICENSE.md for information (AGPL).
+Copyright (c) 2013-2014 Andreas Hausmann. See LICENSE for information (AGPL).

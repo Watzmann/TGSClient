@@ -70,6 +70,7 @@
           <label for="received">System output:</label>
           <textarea name="received" id="received" cols="80" rows="20"></textarea>
         </div>
+
         <div id="players" style="display:none; background-color:#FFFF99; margin: 20px;">
           <table name="players_list" class="playersList" id="playersList">
             <colgroup>
@@ -86,7 +87,9 @@
               <td>----</td><td>-</td><td>1500.00</td><td>0</td><td>0.0</td>
             </tr>
           </table>
+          <div class="inviteDialog" id="inviteDialog" style="display:none;">invite</div>
         </div>
+
         <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
           <label for="send_input">Command:</label>
           <input type="text" name="send_input" id="send_input"/>
@@ -99,6 +102,7 @@
 
     <script src="third_party/sprintf.js"></script>
     <script src="third_party/jquery.js"></script>
+    <script src="dialogs.js"></script>
     <script src="board.js"></script>
     <script src="client.js"></script>
     <script>loadTGC();</script>

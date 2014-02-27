@@ -42,3 +42,12 @@
 .red {background-color:red; color:white; padding: 0px 6px;}
 .green {background-color:green; color:white; padding: 0px 6px;}
 .orange {background-color:#FF8040; color:blue; padding: 0px 6px;}
+
+.inviteDialog {
+    background-color: lightgrey;
+   -webkit-box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+      -moz-box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+           box-shadow: 3px -2px 7px 2px rgba(120,22,120,1);
+    width: 170px;
+    height: 170px;
+}

@@ -1,5 +1,5 @@
 /*
- * Client code for TigerGammonServer HTML5 client
+ * Client code for TigerGammonServer HTML5 Client
  *
  * (c) 2013, 2014 Andreas Hausmann
  * Licensed under AGPL3; see LICENSE
@@ -26,9 +26,10 @@ function loadTGC() {
     return {
         action: {
             playersList: {},
-            plRowElement: {'start': '<tr class="playersList"><td class="playersName">',
-                            'end':  '</td></tr>',
-                            'running':  '</td><td>',
+            plRowElement: {'start': '<tr class="playersList"><td>',
+                           'starto': '<tr class="playersList"><td class="playersName">',
+                           'end':  '</td></tr>',
+                           'running':  '</td><td>',
                             },
             access_denied: function (nick) {
                 denied.style.display = "block";
@@ -41,6 +42,7 @@ function loadTGC() {
                 client.style.display = "block";
                 var target = document.getElementById("nick");
                 target.innerHTML = "You are logged in as <i>"+nick+"</i>";
+                tgc.selfNick = nick;
             },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
@@ -62,29 +64,27 @@ function loadTGC() {
     //            '%(hostname)s' % args
             },
             displayPlayersList: function (playerList) {
-                function menuInvite(element) {
-                    return function(event) {
-                        alert("I'll invite you, " + element);
-                        return false;
-                    }
-                }
                 function setInvite(index, element) {
-                    $(element).on("mousedown", function(event) {
-                                menuInvite(element)(event);
+                    var $e = $(element),
+                        name = $e.html();
+                    $e.on("mousedown", function(event) {
+                                tgc.dialogs.invite(name)(event);
                                 });
                 }
                 $("tr.playersList").remove();
                 var $h = $("tr.playersHeading"),
                     s = this.plRowElement.start,
+                    so = this.plRowElement.starto,
                     e = this.plRowElement.end,
                     r = this.plRowElement.running;
                 for (var pl in playerList) {
                     var p = playerList[pl],
                         st = "-R"[p['ready']] + " ",
-                        line = s+p.user+r+st+r+p.rating+r+p.experience+r+p.idle+e;
+                        sx = p.user == tgc.selfNick ? s : so,
+                        line = sx+p.user+r+st+r+p.rating+r+p.experience+r+p.idle+e;
                     $h.last().after($(line));
                 }
-                $("#playersList td.playersName").each(setAction);
+                $("#playersList td.playersName").each(setInvite);
             },
             who: function (list_of_players) {
                 this.playersList = {};
@@ -306,7 +306,8 @@ function loadTGC() {
             }
         }
     };
-  })();
+  }());
   tgc.checkConnections();
+  tgc.dialogs = loadDialogs();
   window.tgc = tgc;
 };
