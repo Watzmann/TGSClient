@@ -28,6 +28,15 @@ body {
     cursor: pointer;
 }
 
+#system label {
+    color: grey;
+}
+#systemLine {
+    background-color: #d0d0d0d;
+    margin-top: 36px;
+    display: inline;
+}
+
 .button {
    background-color: rgba(227,149,13,1);
    background-image: -webkit-linear-gradient(top, rgba(245,159,10,1) 0%,rgba(200,200,200,1) 100%);

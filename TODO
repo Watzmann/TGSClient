@@ -18,11 +18,14 @@ __________
       () Cube
       () Resign
       () Watchers
+      () beim Hyper geht der bearoff mit waste nicht
 
    3) Community/Messages
-      () shouts eigenes Fenster
-      () chats??
+      (y) shouts eigenes Fenster
+->    () chats??
       () system: statusline with flyout history
+          () same for notify
+          () same for report
 
    4) 
 

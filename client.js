@@ -25,7 +25,16 @@ function loadTGC() {
         systempane = document.getElementById("system"),
         board = document.getElementById("board"),
         board2 = document.getElementById("board2"),
-        players = document.getElementById("players");
+        players = document.getElementById("players"),
+        systemLine = document.getElementById("systemLine"),
+        shoutTarget = document.getElementById("shouts"),
+        shoutField = document.getElementById("send_shout"),
+        gameLog = document.getElementById("board_received");
+
+    function lineBreak(msg) {
+        return msg + '\n';
+    }
+
     return {
         action: {
             playersList: {},
@@ -121,12 +130,16 @@ function loadTGC() {
                 this.displayPlayersList(this.playersList);
             },
             system: function (result) {
-                var target = document.getElementById("received");
+                var target = systemLine;
+                target.innerHTML = result;
+            },
+            shouts: function (result) {
+                var target = shoutTarget;
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
             gameProtocol: function (result) {
-                var target = document.getElementById("board_received");
+                var target = gameLog;
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
@@ -168,6 +181,16 @@ function loadTGC() {
                         break;
                     case "001":
                         tgc.action.set_nick(cmd);
+                        break;
+                    case "c01":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("You            : %(message)s\n", data)
+                        tgc.action.shouts(line);
+                        break;
+                    case "c02":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("%(name)-15s: %(message)s\n", data)
+                        tgc.action.shouts(line);
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
@@ -279,6 +302,10 @@ function loadTGC() {
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
                 input_field.value = "";
+            };
+            tgc.cc.send_shout = function() {
+                ws.send('shout '+shoutField.value);
+                shoutField.value = "";
             };
             tgc.cc.shutdown = function() {
                 ws.send("ciao");

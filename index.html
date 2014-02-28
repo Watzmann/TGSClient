@@ -49,6 +49,7 @@
 
     <!--                                             Active                  -->
     <div id=client style="display:none; width:1200px;">
+        <!--                                             Head                -->
         <div>
           <div id="clientTitle">client demo</div>
           <div id="identity">
@@ -89,8 +90,17 @@
 
         <!--                                             System              -->
         <div id="system" style="display:block;">
-          <label for="received">System output:</label>
-          <textarea name="received" id="received" cols="80" rows="20"></textarea>
+          <textarea name="shouts" id="shouts" cols="80" rows="20"></textarea>
+          <form id="shoutsInput" style="display:block">
+            <label for="send_shout">Shout:</label>
+            <input type="text" name="send_shout" id="send_shout"/>
+            <input type="submit" name="send_submit" id="send_submit" value="Send"
+                   onclick="tgc.cc.send_shout(); return false"/>
+          </form>
+        <div>
+          <label for="systemLine">System output:</label>
+          <div name="systemLine" id="systemLine"></div>
+        </div>
         </div>
 
         <!--                                             PlayersList         -->
