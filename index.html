@@ -90,13 +90,24 @@
 
         <!--                                             System              -->
         <div id="system" style="display:block;">
-          <textarea name="shouts" id="shouts" cols="80" rows="20"></textarea>
-          <form id="shoutsInput" style="display:block">
-            <label for="send_shout">Shout:</label>
-            <input type="text" name="send_shout" id="send_shout"/>
-            <input type="submit" name="send_submit" id="send_submit" value="Send"
-                   onclick="tgc.cc.send_shout(); return false"/>
-          </form>
+          <div style="float:left">
+            <textarea name="shouts" id="shouts" cols="40" rows="20"></textarea>
+            <form id="shoutsInput" style="display:block">
+              <label for="send_shout">Shout:</label>
+              <input type="text" name="send_shout" id="send_shout"/>
+              <input type="submit" name="send_submit" id="send_submit" value="Send"
+                     onclick="tgc.cc.send_shout(); return false"/>
+            </form>
+          </div>
+          <div>
+            <textarea name="tells" id="tells" cols="40" rows="20"></textarea>
+            <form id="shoutsInput" style="display:block">
+              <label for="send_tell">Tell:</label>
+              <input type="text" name="send_tell" id="send_tell"/>
+              <input type="submit" name="send_submit" id="send_submit" value="Send"
+                     onclick="tgc.cc.send_tell(); return false"/>
+            </form>
+          </div>
         <div>
           <label for="systemLine">System output:</label>
           <div name="systemLine" id="systemLine"></div>

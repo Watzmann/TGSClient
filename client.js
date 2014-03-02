@@ -28,7 +28,9 @@ function loadTGC() {
         players = document.getElementById("players"),
         systemLine = document.getElementById("systemLine"),
         shoutTarget = document.getElementById("shouts"),
+        tellTarget = document.getElementById("tells"),
         shoutField = document.getElementById("send_shout"),
+        tellField = document.getElementById("send_tell"),
         gameLog = document.getElementById("board_received");
 
     function lineBreak(msg) {
@@ -138,6 +140,11 @@ function loadTGC() {
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
+            tells: function (result) {
+                var target = tellTarget;
+                target.value = target.value + result;
+                target.scrollTop = target.scrollHeight - target.clientHeight;
+            },
             gameProtocol: function (result) {
                 var target = gameLog;
                 target.value = target.value + result;
@@ -191,6 +198,16 @@ function loadTGC() {
                         var data = JSON.parse(cmd),
                             line = sprintf("%(name)-15s: %(message)s\n", data)
                         tgc.action.shouts(line);
+                        break;
+                    case "d01":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("-> %(name)-12s: %(message)s\n", data)
+                        tgc.action.tells(line);
+                        break;
+                    case "d02":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("%(name)-15s: %(message)s\n", data)
+                        tgc.action.tells(line);
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
@@ -302,6 +319,10 @@ function loadTGC() {
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
                 input_field.value = "";
+            };
+            tgc.cc.send_tell = function() {
+                ws.send('tell '+tellField.value);
+                tellField.value = "";
             };
             tgc.cc.send_shout = function() {
                 ws.send('shout '+shoutField.value);
