@@ -49,3 +49,10 @@ __________
 
 ------------------------------------------------------------
 
+BUGS
+
+1) UTF8 ef bf bd (ist das wirklich im logfile? siehe shouts sarah before 2014-03-04 23:39:27+0100)
+   bringt den HTML5 Client zum ausloggen
+
+   Shout R<C1><CB><C8><CE><CD><D9>1<D8>^O<FF>^Y"<C6><D8>Ưܷ^Z!^B^A
+   das kann man wohl mit cp1252 lesen
