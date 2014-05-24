@@ -9,6 +9,7 @@
 
 var HOST_PORT = {'rechner1': "192.168.1.204:8001",
                  'rechner2': "192.168.1.201:8001",
+                 'localhost': "127.0.0.1:8001",
                  'TGS': "tigergammon.com:8080"
                  };
 var CLIENT_PROTOCOL = '2010';
