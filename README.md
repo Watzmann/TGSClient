@@ -11,7 +11,5 @@ If you prefer a graphical user interface, you'll pick from a bunch of available 
 
 This repository contains the code for an HTML5 client. The setup for your own client is described in the wiki.
 
-See a prototype installation of this client on [TigerGammon](http://tigergammon.eu/client/).
-
 ## License
 Copyright (c) 2013-2014 Andreas Hausmann. See LICENSE for information (AGPL).
