@@ -44,7 +44,9 @@ hannes rolls 4 and 3.
     draw: function(boardPane, board) {
         var gifRoot = "resources/board/",
             piece = {'player': gifRoot + "playerpiece.gif",
-                     'opponent': gifRoot + "opponentpiece.gif",};
+                     'opponent': gifRoot + "opponentpiece.gif",},
+            oppPiece = {'player': gifRoot + "opponentpiece.gif",
+                        'opponent': gifRoot + "playerpiece.gif",},
             home = {'player': gifRoot + "playerpiecehome.gif",
                     'opponent': gifRoot + "opponentpiecehome.gif",},
             wasteFilter = {'1': '#p6,#p5,#p4,#p3,#p2',
@@ -195,17 +197,27 @@ hannes rolls 4 and 3.
                 return false;
             }
         }
-        function drawPoint(checkers, padding, color) {
+        function drawPoint(checkers, padding, color, captive) {
             /* Returns <checkers> * <img ...></img>.
              * It accounts for padding and stacking */
-            function drawCheckers(checkers, color) {
+            function drawCheckers(checkers, color, captive) {
                 var point = "";
+                var startPiece = 0;
+                var pieces = checkers;
+                if (captive) {
+                    pieces += 1;
+                    startPiece = 1;
+                }
                 if (padding) {
                     /* TODO:03: what do I need 6 checker divs for?? */
-                    var pheight = (6 - Math.min(5,checkers));
+                    var pheight = (6 - Math.min(5,pieces));
                     point = "<div class=\"cs" + pheight + "\"></div>";
                 }
-                for (var c = 0; c < checkers; c++) {
+                if (captive && !padding) {
+                    point += '<img src=' + oppPiece[color] +
+                                                        ' alt=captured>';
+                }
+                for (var c = startPiece; c < pieces; c++) {
                     var stack = '';
                     if (padding && c > 4) {
                         stack = ' class=cp' + c;
@@ -217,12 +229,16 @@ hannes rolls 4 and 3.
                     point += '<img' + stack + ' src=' + piece[color] +
                                                         ' alt=' + color + '>';
                 }
+                if (captive && padding) {
+                    point += '<img src=' + oppPiece[color] +
+                                                        ' alt=captured>';
+                }
                 return point;
             }
             if (checkers == 0) {
                 return "";
             } else {
-                return drawCheckers(Math.abs(checkers), color);
+                return drawCheckers(Math.abs(checkers), color, captive);
             }
         }
         function sendMoveApologies(nrP, more) {
@@ -243,7 +259,7 @@ hannes rolls 4 and 3.
                            'data-target="%(target)s" ' +
                            'data-checkers="%(checkers)s"%(title)s>', values);
         }
-        function composePlayersPoint(container, checkers, padding, home) {
+        function composePlayersPoint(container, checkers, padding, home, captive) {
             var div, point;
             if (checkers > 0) {
                 container['class'] = home ? "starthere home" : "starthere";
@@ -253,10 +269,10 @@ hannes rolls 4 and 3.
             container['checkers'] = checkers;
             container['target'] = "yes";
             div = composeDiv(container);
-            point = drawPoint(checkers, padding, 'player');
+            point = drawPoint(checkers, padding, 'player', captive);
             return div + point + "</div>";
         }
-        function composeOpponentsPoint(container, checkers, padding) {
+        function composeOpponentsPoint(container, checkers, padding, captive) {
             var div, point;
             container['class'] = "neutral";
             container['checkers'] = checkers;
@@ -268,7 +284,7 @@ hannes rolls 4 and 3.
                 container['target'] = "yes";
             }
             div = composeDiv(container);
-            point = drawPoint(checkers, padding, 'opponent');
+            point = drawPoint(checkers, padding, 'opponent', captive);
             return div + point + "</div>";
         }
         function composePlayersDitch(checkers, pt) {
@@ -318,29 +334,47 @@ hannes rolls 4 and 3.
             return '<div id=oBar data-checkers=' + checkers + '>' + point + '</div>';
         }
         function setCheckersX(position, $b) {
-            var checkers, container,
+            var checkers, container, captive,
                 div = "";
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[25-i]);
                 container = {id: i, point: 25-i};
-                if (checkers < 0) {
-                    div += composePlayersPoint(container, -checkers, i<13, i<7);
+                if (checkers > 20) {
+                    captive = true;
+                    checkers -= 20;
+                } else if (checkers < -20) {
+                    captive = true;
+                    checkers += 20;
                 } else {
-                    div += composeOpponentsPoint(container, checkers, i<13);
+                    captive = false;
+                }
+                if (checkers < 0) {
+                    div += composePlayersPoint(container, -checkers, i<13, i<7, captive);
+                } else {
+                    div += composeOpponentsPoint(container, checkers, i<13, captive);
                 }
                 /* TODO:0j: is it a good idea to draw empty points?? */
             }
             jQuery(div).appendTo($b);
         }
         function setCheckersO(position, $b) {
-            var checkers, div, container;
+            var checkers, div, container, captive;
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[i]);
                 container = {id: i, point: i};
-                if (checkers > 0) {
-                    div = composePlayersPoint(container, checkers, i<13, i<7);
+                if (checkers > 20) {
+                    captive = true;
+                    checkers -= 20;
+                } else if (checkers < -20) {
+                    captive = true;
+                    checkers += 20;
                 } else {
-                    div = composeOpponentsPoint(container, -checkers, i<13);
+                    captive = false;
+                }
+                if (checkers > 0) {
+                    div = composePlayersPoint(container, checkers, i<13, i<7, captive);
+                } else {
+                    div = composeOpponentsPoint(container, -checkers, i<13, captive);
                 }
                 /* TODO:0j: is it a good idea to draw empty points?? */
                 jQuery(div).appendTo($b);
