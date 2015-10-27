@@ -41,6 +41,9 @@ hannes rolls 4 and 3.
     showAscii: function(boardPane, result) {
         boardPane.innerHTML = result;
     },
+    setVariant: function(variant) {
+        this.gameVariant = variant;
+    },
     draw: function(boardPane, board) {
         var gifRoot = "resources/board/",
             piece = {'player': gifRoot + "playerpiece.gif",
@@ -59,6 +62,26 @@ hannes rolls 4 and 3.
                 $divs = $board.find('div'),
                 myPoint = element.id,
                 myMove = new Array;
+            var moveStandard = function (start, dice) {
+                return start - dice;
+            }
+            var movePlakoto = function (start, dice) {
+                return start + dice;
+            }
+            var variants = {'plakoto': {'move': movePlakoto,
+                                        'hit': hitPointPlakoto
+                                        },
+                            'portes': {'move': moveStandard,
+                                        'hit': hitPointStandard
+                                        },
+                            'fevga': {'move': moveStandard,
+                                        'hit': hitPointStandard
+                                        },
+                            'standard': {'move': moveStandard,
+                                        'hit': hitPointStandard
+                                        },
+            }
+            var myGame = variants[this.tgc.board.gameVariant];
             if (event.which == 2) {        /* ignore middle clicks */
                 return false;
             } else if (!double && nrMoves == 2 && event.which == 3) {
@@ -90,6 +113,7 @@ hannes rolls 4 and 3.
             function construct($p, diff) {
                 var point, checkers, data, html;
                 var id = $p.attr('id');
+                var captive = $p.attr('data-captive') == "yes";
                 point = $p.attr('data-point');
                 checkers = parseInt($p.attr('data-checkers')) + diff;
                 switch (id) {
@@ -105,9 +129,23 @@ hannes rolls 4 and 3.
                     default:
                         id = parseInt(id.slice(1));
                         data = {'id': id, 'point': point};
-                        html = composePlayersPoint(data, checkers, id<13, id<7);
+                        if (captive && checkers == 0) {
+                            html = composeOpponentsPoint(data, 1, id<13, id<7, false);
+                        } else {
+                            html = composePlayersPoint(data, checkers, id<13, id<7, captive);
+                        }
                         break;
                 }
+                return html;
+            }
+            function constructCaptive($p) {
+                var point, checkers, data, html;
+                var id = $p.attr('id');
+                point = $p.attr('data-point');
+                checkers = 1;
+                id = parseInt(id.slice(1));
+                data = {'id': id, 'point': point};
+                html = composePlayersPoint(data, checkers, id<13, id<7, true);
                 return html;
             }
             function replacePoint($p, diff) {
@@ -121,9 +159,20 @@ hannes rolls 4 and 3.
                 jQuery(div).insertBefore($divs.eq(i));
                 return $r;
             }
-            function hitPoint($p, $o) {
+            function hitPointStandard($p, $o) {
                 var div = construct($p, 0);
                 div += construct($o, +1);
+                var $r = $p.add($o).detach();
+                /* Search the first 'alive' index to insertBefore */
+                var i = 0;
+                while ($divs[i].id == "" || $divs[i].nextSibling == null) {
+                    i++;
+                }
+                jQuery(div).insertBefore($divs.eq(i));
+                return $r;
+            }
+            function hitPointPlakoto($p, $o) {
+                var div = constructCaptive($p);
                 var $r = $p.add($o).detach();
                 /* Search the first 'alive' index to insertBefore */
                 var i = 0;
@@ -137,7 +186,7 @@ hannes rolls 4 and 3.
                 var undo = {'dice': dice.slice()};
                 var used = dice.shift();
                 var waste = '';
-                target = start - used;
+                target = myGame['move'](start, used);
                 if (target < 0) {
                     target = 0;
                     waste = myPoint.slice(1);
@@ -167,7 +216,7 @@ hannes rolls 4 and 3.
                 undo['$sClone'] = $r;
                 myMove.push($r.attr('data-point'));
                 if ( targetType == 'hit') {
-                    $r = hitPoint($t, $board.find('#oBar'));
+                    $r = myGame['hit']($t, $board.find('#oBar'));
                     undo['$tClone'] = $r;
                     myMove.push($t.attr('data-point'));
                 } else {
@@ -248,14 +297,19 @@ hannes rolls 4 and 3.
         function restoreBoard() {
             tgc.cc.sendCmd("board");
         }
-        function composeDiv(values) {
+        function composeDiv(values, captive) {
+            var strCaptive = '';
             if (values['checkers'] > 5) {
                 values['title'] = ' title="' + values['checkers'] + ' checkers"';
             } else {
                 values['title'] = '';
             }
+            if (captive) {
+                strCaptive = 'data-captive="yes" '
+            }
             return sprintf('<div id="p%(id)d" class="%(class)s" ' +
                            'data-point="%(point)s" ' +
+                           strCaptive +
                            'data-target="%(target)s" ' +
                            'data-checkers="%(checkers)s"%(title)s>', values);
         }
@@ -268,7 +322,7 @@ hannes rolls 4 and 3.
             }
             container['checkers'] = checkers;
             container['target'] = "yes";
-            div = composeDiv(container);
+            div = composeDiv(container, captive);
             point = drawPoint(checkers, padding, 'player', captive);
             return div + point + "</div>";
         }
@@ -278,12 +332,14 @@ hannes rolls 4 and 3.
             container['checkers'] = checkers;
             if (checkers > 1) {
                 container['target'] = "no";
-            } else if (checkers == 1) {
+            } else if (checkers == 1 && captive) {
+                container['target'] = "no";
+            } else if (checkers == 1 && !captive) {
                 container['target'] = "hit";
             } else {
                 container['target'] = "yes";
             }
-            div = composeDiv(container);
+            div = composeDiv(container, captive);
             point = drawPoint(checkers, padding, 'opponent', captive);
             return div + point + "</div>";
         }
@@ -300,7 +356,7 @@ hannes rolls 4 and 3.
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + home['player'] + ' alt="home piece player">';
             }
-            return composeDiv(data) + point + '</div>';
+            return composeDiv(data, false) + point + '</div>';
         }
         function composeOpponentsDitch(checkers) {
             var point = "";
@@ -323,7 +379,7 @@ hannes rolls 4 and 3.
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + piece['player'] + ' alt="bar piece player">';
             }
-            return composeDiv(data) + point + '</div>';
+            return composeDiv(data, false) + point + '</div>';
         }
         function composeOpponentsBar(checkers) {
             /* TODO:0j: passen nur 5 auf die Bar :((( */

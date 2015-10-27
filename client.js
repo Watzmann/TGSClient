@@ -229,10 +229,12 @@ function loadTGC() {
             /* Don't use this way of interpretation; instead use msg-ids above. */
             else if (msg.indexOf("running match was loaded.") != -1) {
                 tgc.cc.sendCmd("set b 3");  /* TODO:0k: set this in the server, hard */
+                tgc.board.setVariant("plakoto");
                 tgc.navigate.show("board");
             }
             else if (msg.indexOf("Starting a new game with") != -1) {
                 tgc.cc.sendCmd("set b 3");
+                tgc.board.setVariant("plakoto");
                 tgc.navigate.show("board");
             }
             tgc.action.focus(msg);
