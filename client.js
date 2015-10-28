@@ -7,11 +7,6 @@
  *
 */
 
-var HOST_PORT = {'rechner1': "192.168.1.204:8001",
-                 'rechner2': "192.168.1.201:8001",
-                 'localhost': "127.0.0.1:8001",
-                 'TGS': "tigergammon.com:8080"
-                 };
 var CLIENT_PROTOCOL = '2010';
 
 function loadTGC() {
@@ -263,7 +258,7 @@ function loadTGC() {
                         }
                         var row = "<tr><td>"+choser+"</td><td>"+host+":</td><td>"+h[0]+
                                   "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
-                        $(row).insertAfter($s);
+                        $s.last().after($(row));
                         var $d = $s.find("td").filter("#discard");
                         if ($d.length > 0) {
                             $d.parent().remove();
@@ -290,9 +285,10 @@ function loadTGC() {
                         }
                     };
                 };
-                var multiple = Object.keys(HOST_PORT).length > 1;
-                for (var h in HOST_PORT) {
-                    ping(h, HOST_PORT[h], multiple);
+                var HP = window.tgcConfig.HOST_PORT;
+                var multiple = Object.keys(HP).length > 1;
+                for (var h in HP) {
+                    ping(h, HP[h], multiple);
                 }
             }
         },
