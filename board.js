@@ -1,9 +1,11 @@
 /*
  * Board code for TigerGammonServer HTML5 Client
  *
- * (c) 2013, 2014 Andreas Hausmann
- * Licensed under AGPL3; see LICENSE
+ * This file is licensed under the Affero General Public License
+ * version 3 or later; see LICENSE
  *
+ * @author Andreas Hausmann <andreas@tigergammon.com>
+ * @copyright Andreas Hausmann 2013 - 2015
  *
 */
 
