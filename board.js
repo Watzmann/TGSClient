@@ -59,6 +59,13 @@ hannes rolls 4 and 3.
                            '3': '#p6,#p5,#p4',
                            '4': '#p6,#p5',
                            '5': '#p6'};
+        var homeStandard = function (point) {return point < 7;}
+        var homePlakoto = function (point) {return point > 18;}
+        var variants = {'plakoto': {'home': homePlakoto},
+                        'portes': {'home': homeStandard},
+                        'fevga': {'home': homeStandard},
+                        'standard': {'home': homeStandard},
+        }
         function moveChecker(element, dice, double, nrMoves, event, $board) {
             var target, $t, $s, $r,
                 $divs = $board.find('div'),
@@ -70,17 +77,35 @@ hannes rolls 4 and 3.
             var movePlakoto = function (start, dice) {
                 return start + dice;
             }
+            var targetWasteStandard = function () {
+                if (target < 0) {
+                    target = 0;
+                    waste = myPoint.slice(1);
+                }
+                return target == 0;
+            }
+            var targetWastePlakoto = function () {
+                if (target > 25) {
+                    target = 25;
+                    waste = myPoint.slice(1);
+                }
+                return target == 25;
+            }
             var variants = {'plakoto': {'move': movePlakoto,
-                                        'hit': hitPointPlakoto
+                                        'hit': hitPointPlakoto,
+                                        'waste': targetWastePlakoto
                                         },
                             'portes': {'move': moveStandard,
-                                        'hit': hitPointStandard
+                                        'hit': hitPointStandard,
+                                        'waste': targetWasteStandard
                                         },
                             'fevga': {'move': moveStandard,
-                                        'hit': hitPointStandard
+                                        'hit': hitPointStandard,
+                                        'waste': targetWasteStandard
                                         },
                             'standard': {'move': moveStandard,
-                                        'hit': hitPointStandard
+                                        'hit': hitPointStandard,
+                                        'waste': targetWasteStandard
                                         },
             }
             var myGame = variants[this.tgc.board.gameVariant];
@@ -132,9 +157,9 @@ hannes rolls 4 and 3.
                         id = parseInt(id.slice(1));
                         data = {'id': id, 'point': point};
                         if (captive && checkers == 0) {
-                            html = composeOpponentsPoint(data, 1, id<13, id<7, false);
+                            html = composeOpponentsPoint(data, 1, id<13, false);
                         } else {
-                            html = composePlayersPoint(data, checkers, id<13, id<7, captive);
+                            html = composePlayersPoint(data, checkers, id<13, id, captive);
                         }
                         break;
                 }
@@ -147,7 +172,7 @@ hannes rolls 4 and 3.
                 checkers = 1;
                 id = parseInt(id.slice(1));
                 data = {'id': id, 'point': point};
-                html = composePlayersPoint(data, checkers, id<13, id<7, true);
+                html = composePlayersPoint(data, checkers, id<13, id, true);
                 return html;
             }
             function replacePoint($p, diff) {
@@ -189,11 +214,8 @@ hannes rolls 4 and 3.
                 var used = dice.shift();
                 var waste = '';
                 target = myGame['move'](start, used);
-                if (target < 0) {
-                    target = 0;
-                    waste = myPoint.slice(1);
-                }
-                if (target == 0 && !bearOffPossible(waste)) {
+                var borneoff = myGame['waste']();
+                if (borneoff && !bearOffPossible(waste)) {
                     /* tried bearoff while not possible */
                     dice.push(used);
                     if (double) {
@@ -315,8 +337,9 @@ hannes rolls 4 and 3.
                            'data-target="%(target)s" ' +
                            'data-checkers="%(checkers)s"%(title)s>', values);
         }
-        function composePlayersPoint(container, checkers, padding, home, captive) {
-            var div, point;
+        function composePlayersPoint(container, checkers, padding, point, captive) {
+            var div, html;
+            var home = variants[this.tgc.board.gameVariant]['home'](point);
             if (checkers > 0) {
                 container['class'] = home ? "starthere home" : "starthere";
             } else {
@@ -325,8 +348,8 @@ hannes rolls 4 and 3.
             container['checkers'] = checkers;
             container['target'] = "yes";
             div = composeDiv(container, captive);
-            point = drawPoint(checkers, padding, 'player', captive);
-            return div + point + "</div>";
+            html = drawPoint(checkers, padding, 'player', captive);
+            return div + html + "</div>";
         }
         function composeOpponentsPoint(container, checkers, padding, captive) {
             var div, point;
@@ -392,22 +415,19 @@ hannes rolls 4 and 3.
             return '<div id=oBar data-checkers=' + checkers + '>' + point + '</div>';
         }
         function setCheckersX(position, $b) {
-            var checkers, container, captive,
+            var checkers, container, captive, plr,
                 div = "";
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[25-i]);
+                plr = checkers < 0;
+                checkers = Math.abs(checkers);
                 container = {id: i, point: 25-i};
-                if (checkers > 20) {
-                    captive = true;
+                captive = checkers > 20;
+                if (captive) {
                     checkers -= 20;
-                } else if (checkers < -20) {
-                    captive = true;
-                    checkers += 20;
-                } else {
-                    captive = false;
                 }
-                if (checkers < 0) {
-                    div += composePlayersPoint(container, -checkers, i<13, i<7, captive);
+                if (plr) {
+                    div += composePlayersPoint(container, checkers, i<13, i, captive);
                 } else {
                     div += composeOpponentsPoint(container, checkers, i<13, captive);
                 }
@@ -416,23 +436,20 @@ hannes rolls 4 and 3.
             jQuery(div).appendTo($b);
         }
         function setCheckersO(position, $b) {
-            var checkers, div, container, captive;
+            var checkers, div, container, captive, plr;
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[i]);
+                plr = checkers > 0;
+                checkers = Math.abs(checkers);
                 container = {id: i, point: i};
-                if (checkers > 20) {
-                    captive = true;
+                captive = checkers > 20;
+                if (captive) {
                     checkers -= 20;
-                } else if (checkers < -20) {
-                    captive = true;
-                    checkers += 20;
-                } else {
-                    captive = false;
                 }
-                if (checkers > 0) {
-                    div = composePlayersPoint(container, checkers, i<13, i<7, captive);
+                if (plr) {
+                    div = composePlayersPoint(container, checkers, i<13, i, captive);
                 } else {
-                    div = composeOpponentsPoint(container, -checkers, i<13, captive);
+                    div = composeOpponentsPoint(container, checkers, i<13, captive);
                 }
                 /* TODO:0j: is it a good idea to draw empty points?? */
                 jQuery(div).appendTo($b);
