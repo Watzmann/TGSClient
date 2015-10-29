@@ -102,10 +102,14 @@ class BoardCss():
         left, top, height = self.metrics['pditch']
         print >>css, "#p0 { position:absolute; top:%dpx; left:%dpx; " \
                      "width:%dpx; height:%dpx; }" % (top, left, width, height)
+        print >>css, "#oDitchP { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (top, left, width, height)
         left, top, height = self.metrics['pbar']
         print >>css, "#p25 { position:absolute; top:%dpx; left:%dpx; " \
                      "width:%dpx; height:%dpx; }" % (top, left, width, height)
         left, top, height = self.metrics['oditch']
+        print >>css, "#p0P { position:absolute; top:%dpx; left:%dpx; " \
+                       "width:%dpx; height:%dpx; }" % (top, left, width, height)
         print >>css, "#oDitch { position:absolute; top:%dpx; left:%dpx; " \
                        "width:%dpx; height:%dpx; }" % (top, left, width, height)
         left, top, height = self.metrics['obar']

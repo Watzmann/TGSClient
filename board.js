@@ -61,10 +61,22 @@ hannes rolls 4 and 3.
                            '5': '#p6'};
         var homeStandard = function (point) {return point < 7;}
         var homePlakoto = function (point) {return point > 18;}
-        var variants = {'plakoto': {'home': homePlakoto},
-                        'portes': {'home': homeStandard},
-                        'fevga': {'home': homeStandard},
-                        'standard': {'home': homeStandard},
+        var variants = {'plakoto':  {'home': homePlakoto,
+                                     'pDitch': ['0P', 0],
+                                     'oDitch': '<div id=oDitchP>',
+                                    },
+                        'portes':   {'home': homeStandard,
+                                     'pDitch': ['0', 25],
+                                     'oDitch': '<div id=oDitch>',
+                                    },
+                        'fevga':    {'home': homeStandard,
+                                     'pDitch': ['0', 25],
+                                     'oDitch': '<div id=oDitch>',
+                                    },
+                        'standard': {'home': homeStandard,
+                                     'pDitch': ['0', 25],
+                                    'oDitch': '<div id=oDitch>',
+                                    },
         }
         function moveChecker(element, dice, double, nrMoves, event, $board) {
             var target, $t, $s, $r,
@@ -91,21 +103,39 @@ hannes rolls 4 and 3.
                 }
                 return target == 25;
             }
+            var targetPointStandard = function (target) {
+                if (target == 25) {
+                    return '#p0P';
+                } else {
+                    return '#p' + target;
+                }
+            }
+            var targetPointPlakoto = function (target) {
+                if (target == 25) {
+                    return '#p0P';
+                } else {
+                    return '#p' + target;
+                }
+            }
             var variants = {'plakoto': {'move': movePlakoto,
                                         'hit': hitPointPlakoto,
-                                        'waste': targetWastePlakoto
+                                        'waste': targetWastePlakoto,
+                                        'target': targetPointPlakoto,
                                         },
                             'portes': {'move': moveStandard,
                                         'hit': hitPointStandard,
-                                        'waste': targetWasteStandard
+                                        'waste': targetWasteStandard,
+                                        'target': targetPointStandard,
                                         },
                             'fevga': {'move': moveStandard,
                                         'hit': hitPointStandard,
-                                        'waste': targetWasteStandard
+                                        'waste': targetWasteStandard,
+                                        'target': targetPointStandard,
                                         },
                             'standard': {'move': moveStandard,
                                         'hit': hitPointStandard,
-                                        'waste': targetWasteStandard
+                                        'waste': targetWasteStandard,
+                                        'target': targetPointStandard,
                                         },
             }
             var myGame = variants[this.tgc.board.gameVariant];
@@ -148,6 +178,7 @@ hannes rolls 4 and 3.
                         html = composeOpponentsBar(checkers);
                         break;
                     case 'p0':
+                    case 'p0P':
                         html = composePlayersDitch(checkers, point);
                         break;
                     case 'p25':
@@ -224,7 +255,7 @@ hannes rolls 4 and 3.
                         continue;
                     }
                 }
-                $t = $divs.filter('#p'+target);
+                $t = $divs.filter(myGame['target'](target));
                 var targetType = $t.attr('data-target');
                 if ( targetType == 'no') {
                     dice.push(used);
@@ -331,7 +362,7 @@ hannes rolls 4 and 3.
             if (captive) {
                 strCaptive = 'data-captive="yes" '
             }
-            return sprintf('<div id="p%(id)d" class="%(class)s" ' +
+            return sprintf('<div id="p%(id)s" class="%(class)s" ' +
                            'data-point="%(point)s" ' +
                            strCaptive +
                            'data-target="%(target)s" ' +
@@ -370,8 +401,9 @@ hannes rolls 4 and 3.
         }
         function composePlayersDitch(checkers, pt) {
             var point = "",
-                data = {'id': 0,
-                        'point': pt,
+                ditch = variants[this.tgc.board.gameVariant]['pDitch'];
+            var data = {'id': ditch[0],
+                        'point': ditch[1],
                         'class': "neutral home",
                         'checkers': checkers,
                         'target': 'yes'
@@ -384,11 +416,12 @@ hannes rolls 4 and 3.
             return composeDiv(data, false) + point + '</div>';
         }
         function composeOpponentsDitch(checkers) {
+            var ditch = variants[this.tgc.board.gameVariant]['oDitch'];
             var point = "";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + home['opponent'] + ' alt="home piece opponent">';
             }
-            return '<div id=oDitch>' + point + '</div>';
+            return ditch + point + '</div>';
         }
         function composePlayersBar(checkers, pt) {
             /* TODO:0j: passen nur 5 auf die Bar :((( */
