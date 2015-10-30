@@ -344,7 +344,7 @@ function loadTGC() {
                 return true;
             };
             tgc.cc.reopen = function() {
-                tgc.openConnection();
+                tgc.openConnection();  /* TODO:0j: this function doesn't exist; what was intended? */
             };
         },
         navigate: {

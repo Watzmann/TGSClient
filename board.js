@@ -34,6 +34,7 @@ hannes rolls 4 and 3.
         parts["turn"] = boardParts[32] == boardParts[41];
         parts["dice"] = castInt(boardParts.slice(33,37));
 
+        parts["homePoint"] = boardParts[43];
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
         parts["nrMoves"] = parseInt(boardParts[49]);
@@ -62,19 +63,19 @@ hannes rolls 4 and 3.
         var homeStandard = function (point) {return point < 7;}
         var homePlakoto = function (point) {return point > 18;}
         var variants = {'plakoto':  {'home': homePlakoto,
-                                     'pDitch': ['0P', 0],
+                                     'pDitch': '0P',
                                      'oDitch': '<div id=oDitchP>',
                                     },
                         'portes':   {'home': homeStandard,
-                                     'pDitch': ['0', 25],
+                                     'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
                                     },
                         'fevga':    {'home': homeStandard,
-                                     'pDitch': ['0', 25],
+                                     'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
                                     },
                         'standard': {'home': homeStandard,
-                                     'pDitch': ['0', 25],
+                                     'pDitch': '0',
                                     'oDitch': '<div id=oDitch>',
                                     },
         }
@@ -146,7 +147,7 @@ hannes rolls 4 and 3.
             }
             /* Are checkers on the bar? If so, is this here the bar?? */
             $r = $divs.filter('#p25');
-            if ($r.find('img').length > 0) {
+            if ($r.find('img').length > 0) {   /* TODO:0j: better way to look for data-checkers != 0? */
                 if (myPoint != 'p25') {
                     return false;
                 }
@@ -401,9 +402,8 @@ hannes rolls 4 and 3.
         }
         function composePlayersDitch(checkers, pt) {
             var point = "",
-                ditch = variants[this.tgc.board.gameVariant]['pDitch'];
-            var data = {'id': ditch[0],
-                        'point': ditch[1],
+                data = {'id': variants[this.tgc.board.gameVariant]['pDitch'],
+                        'point': pt,
                         'class': "neutral home",
                         'checkers': checkers,
                         'target': 'yes'
@@ -488,9 +488,9 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
-        function setDitches(home, direction, $b) {
+        function setDitches(home, direction, homePoint, $b) {
             var div;
-            div = composePlayersDitch(home[0], (direction == '-1') ? 0 : 25);
+            div = composePlayersDitch(home[0], homePoint);
             div += composeOpponentsDitch(home[1]);
             jQuery(div).appendTo($b);
         }
@@ -571,10 +571,11 @@ hannes rolls 4 and 3.
             } else {
                 setCheckersO(elements['position'], $board);
             }
-            setDitches(elements['onHome'], elements['direction'], $board);
+            setDitches(elements['onHome'], elements['direction'],
+                       elements['homePoint'], $board);
             setBars(elements['onBar'], elements['direction'], $board);
             var readyToSetCheckers = setDice(elements['dice'], elements['turn'],
-                                                    elements['nrMoves'], $board);
+                                             elements['nrMoves'], $board);
             /* TODO:0j: watchers must not be readyToSetCheckers */
             if (readyToSetCheckers) {
                 initialDice = elements['dice'].slice(0,2);
