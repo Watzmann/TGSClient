@@ -20,9 +20,7 @@
           This is a prototype of the new HTML5 client for TigerGammon online backgammon play.
         </p>
         <p>
-          Just use your normal account.</br>
-          If you don't have an account use one of <strong>test_a</strong>, <strong>test_b</strong> or <strong>test_c</strong>.
-          Password for all three users is <strong>hallo</strong>.
+          Login to tigergammon.com ...</br>
         </p>
       </div>
       <div id="goodbye"  style="display:none;">
@@ -38,7 +36,12 @@
         <input type="button" id="login_submit" value="Login"
                onclick="tgc.openSession();"/>
       </div>
-      <div style="padding-top:20px">available servers:
+      <div id="register"  style="display:block;">
+        <p>
+          ... or register.
+        </p>
+      </div>
+      <div id="switchservers" style="padding-top:20px; display:none;">available servers:
         <table id="sockets">
           <tr>
             <td id="discard">None</td><td></td>
@@ -67,6 +70,13 @@
 
         <!--                                             Board               -->
         <div id="board" style="display:none;" oncontextmenu="return false;">
+          <div style="clear:both;">
+            <p id="toggles">
+              <span class="button" onclick="tgc.navigate.show('players')">greedy</span>
+              <span class="button" onclick="tgc.navigate.show('system')">move</span>
+              <span class="button" onclick="tgc.navigate.show('board')">double</span>
+            </p>
+          </div>
           <div style="position:absolute;">
             <div id="boardBg">
               <img id="pip13" src="resources/board/pip13to24.gif" alt="points 13 to 24">
@@ -82,9 +92,21 @@
             </div>
           </div>
           <div id="board2">
+            <div id="opponentInfo" style="float:left">
+              <div>Clock</div>
+              <div>Opponent</div>
+              <div>pips</div>
+              <div>score</div>
+            </div>
             <label for="board_received">Game protocol:</label>
             <textarea name="board_received" id="board_received"
-                      cols="48" rows="35"></textarea>
+                      cols="48" rows="17"></textarea>
+            <div id="youInfo" style="float:left">
+              <div>Clock</div>
+              <div>You</div>
+              <div>pips</div>
+              <div>score</div>
+            </div>
           </div>
         </div>
 
@@ -108,10 +130,6 @@
                      onclick="tgc.cc.send_tell(); return false"/>
             </form>
           </div>
-        <div>
-          <label for="systemLine">System output:</label>
-          <div name="systemLine" id="systemLine"></div>
-        </div>
         </div>
 
         <!--                                             PlayersList         -->
@@ -134,13 +152,21 @@
           <div class="inviteDialog" id="inviteDialog" style="display:none;">invite</div>
         </div>
 
+        <!--                                             Foot                -->
+        <div id="clientFooter">
+          <div style="clear:both;">
+            <div>
+              <div name="systemLine" id="systemLine">System messages</div>
+            </div>
         <!--                                             CommandLine         -->
-        <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
-          <label for="send_input">Command:</label>
-          <input type="text" name="send_input" id="send_input"/>
-          <input type="submit" name="send_submit" id="send_submit" value="Send"
-                 onclick="tgc.cc.send_data(); return false"/>
-        </form>
+            <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
+              <input type="text" name="send_input" id="send_input" value="Command"
+                      onclick="tgc.cc.clear_command(); return false"/>
+              <input type="submit" name="send_submit" id="send_submit" value="Send"
+                     onclick="tgc.cc.send_data(); return false"/>
+            </form>
+          </div>
+        </div>
 
     </div>
 

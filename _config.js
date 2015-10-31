@@ -21,10 +21,11 @@
 function loadConfig() {
   var tgcConfig = (function() {
     return {
+        DEVELOP_MODE: false,
         HOST_PORT: {//'server1': "192.168.1.1:8001",
                     //'server2': "192.168.1.2:8001",
-                    'localhost': "127.0.0.1:8001",
-                    //'TGS': "tigergammon.com:8080"
+                    //'localhost': "127.0.0.1:8001",
+                    'TGS': "tigergammon.com:8080"
         }
     };
   }());

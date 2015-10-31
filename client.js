@@ -29,7 +29,8 @@ function loadTGC() {
         tellTarget = document.getElementById("tells"),
         shoutField = document.getElementById("send_shout"),
         tellField = document.getElementById("send_tell"),
-        gameLog = document.getElementById("board_received");
+        gameLog = document.getElementById("board_received"),
+        serverChoser = document.getElementById("switchservers");
 
     function lineBreak(msg) {
         return msg + '\n';
@@ -319,6 +320,9 @@ function loadTGC() {
                 };
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
+                input_field.value = "Command";
+            };
+            tgc.cc.clear_command = function() {
                 input_field.value = "";
             };
             tgc.cc.send_tell = function() {
@@ -382,5 +386,8 @@ function loadTGC() {
   }());
   tgc.checkConnections();
   tgc.dialogs = loadDialogs();
+  if (window.tgcConfig.DEVELOP_MODE) {
+    switchservers.style.display = "block";
+  }
   window.tgc = tgc;
 };
