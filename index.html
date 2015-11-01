@@ -101,6 +101,15 @@
             <label for="board_received">Game protocol:</label>
             <textarea name="board_received" id="board_received"
                       cols="48" rows="17"></textarea>
+            <div>
+              <textarea name="says" id="says" cols="40" rows="20"></textarea>
+              <form id="saysInput" style="display:block">
+                <label for="send_say">Tell:</label>
+                <input type="text" name="send_say" id="send_say"/>
+                <input type="submit" name="send_say_submit" id="send_say_submit" value="Send"
+                       onclick="tgc.cc.send_say(); return false"/>
+              </form>
+            </div>
             <div id="youInfo" style="float:left">
               <div>Clock</div>
               <div>You</div>
@@ -117,16 +126,16 @@
             <form id="shoutsInput" style="display:block">
               <label for="send_shout">Shout:</label>
               <input type="text" name="send_shout" id="send_shout"/>
-              <input type="submit" name="send_submit" id="send_submit" value="Send"
+              <input type="submit" name="send_shout_submit" id="send_shout_submit" value="Send"
                      onclick="tgc.cc.send_shout(); return false"/>
             </form>
           </div>
           <div>
             <textarea name="tells" id="tells" cols="40" rows="20"></textarea>
-            <form id="shoutsInput" style="display:block">
+            <form id="tellsInput" style="display:block">
               <label for="send_tell">Tell:</label>
               <input type="text" name="send_tell" id="send_tell"/>
-              <input type="submit" name="send_submit" id="send_submit" value="Send"
+              <input type="submit" name="send_tell_submit" id="send_tell_submit" value="Send"
                      onclick="tgc.cc.send_tell(); return false"/>
             </form>
           </div>

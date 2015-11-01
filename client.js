@@ -29,6 +29,7 @@ function loadTGC() {
         tellTarget = document.getElementById("tells"),
         shoutField = document.getElementById("send_shout"),
         tellField = document.getElementById("send_tell"),
+        sayField = document.getElementById("send_say"),
         gameLog = document.getElementById("board_received"),
         serverChoser = document.getElementById("switchservers");
 
@@ -328,6 +329,10 @@ function loadTGC() {
             tgc.cc.send_tell = function() {
                 ws.send('tell '+tellField.value);
                 tellField.value = "";
+            };
+            tgc.cc.send_say = function() {
+                ws.send('say '+sayField.value);
+                sayField.value = "";
             };
             tgc.cc.send_shout = function() {
                 ws.send('shout '+shoutField.value);
