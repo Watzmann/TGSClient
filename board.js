@@ -59,7 +59,13 @@ hannes rolls 4 and 3.
                            '2': '#p6,#p5,#p4,#p3',
                            '3': '#p6,#p5,#p4',
                            '4': '#p6,#p5',
-                           '5': '#p6'};
+                           '5': '#p6',
+                           '20': '#p19',
+                           '21': '#p19,#p20',
+                           '22': '#p19,#p20,#p21',
+                           '23': '#p19,#p20,#p21,#p22',
+                           '24': '#p19,#p20,#p21,#p22,#p23'
+                           };
         var homeStandard = function (point) {return point < 7;}
         var homePlakoto = function (point) {return point > 18;}
         var variants = {'plakoto':  {'home': homePlakoto,
