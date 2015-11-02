@@ -34,6 +34,12 @@ hannes rolls 4 and 3.
         parts["turn"] = boardParts[32] == boardParts[41];
         parts["dice"] = castInt(boardParts.slice(33,37));
 
+        parts["cubeValue"] = parseInt(boardParts[37]);
+        parts["meMayDouble"] = (boardParts[38] == "1");
+        parts["meMayTurn"] = (boardParts[38] == "1") && parts["turn"] &&
+                               (parts["dice"][0] == 0);
+        parts["cubeWasTurned"] = boardParts[40] == "1";
+
         parts["homePoint"] = boardParts[43];
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
@@ -494,6 +500,50 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
+        function setReject($b) {
+            var pic;
+            function reject() {
+                tgc.cc.sendCmd("reject");
+            }
+            pic = '<img src="'+gifRoot+'reject.gif" alt="reject">';
+            jQuery('<div id="reject">'+pic+'</div>').appendTo($b);
+            jQuery('#reject').dblclick(reject);
+        }
+        function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, $b) {
+            var pic, div, t;
+            function double(picture) {
+                var turnCube = function() {
+                    jQuery('#rollDice').remove();
+                    tgc.cc.sendCmd("double");
+                    jQuery('#cube').attr('class', 'dCube');
+                    jQuery('#cube img').attr('src', picture).attr('alt', 'turned cube');
+                }
+                return turnCube;
+            }
+            function accept() {
+                tgc.cc.sendCmd("accept");
+            }
+            if (cubeWasTurned) {
+                type = "dCube";
+                cubeValue *= 2;
+            } else if (cubeValue < 2) {
+                type = "nCube";
+            } else if (meMayDouble) {
+                type = "pCube";
+            } else {
+                type = "oCube";
+            }
+            pic = '<img src="'+gifRoot+'cube'+cubeValue+'.gif" alt="cube'+cubeValue+'">';
+            jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
+            if (cubeWasTurned) {
+                setReject($b);
+                jQuery('#cube').dblclick(accept);
+            }
+            if (meMayTurn) {
+                pic = gifRoot+'cube' + cubeValue*2 + '.gif';
+                jQuery('#cube').dblclick(double(pic));
+            }
+        }
         function setDitches(home, direction, homePoint, $b) {
             var div;
             div = composePlayersDitch(home[0], homePoint);
@@ -577,6 +627,8 @@ hannes rolls 4 and 3.
             } else {
                 setCheckersO(elements['position'], $board);
             }
+            setCube(elements['cubeValue'], elements['meMayDouble'],
+                    elements["meMayTurn"], elements['cubeWasTurned'], $board);
             setDitches(elements['onHome'], elements['direction'],
                        elements['homePoint'], $board);
             setBars(elements['onBar'], elements['direction'], $board);

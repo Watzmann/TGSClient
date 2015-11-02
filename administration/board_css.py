@@ -13,6 +13,8 @@ class BoardCss():
         self.board_css += self._points()
         self.board_css += self._checkers()
         self.board_css += self._dice()
+        self.board_css += self._cube()
+        self.board_css += self._resign()
         self.board_css += self._decoration()
 
     def _board(self,):
@@ -95,6 +97,35 @@ class BoardCss():
                                 "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
         return css.getvalue()
 
+    def _cube(self,):
+        """Create the boards cube positions."""
+        css = StringIO()
+        dw, dh = self.metrics['cube_dimension']
+        dx, dy = self.metrics['neutral_cube']
+        print >>css, ".nCube { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['doubled_cube']
+        print >>css, ".dCube { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['players_cube']
+        print >>css, ".pCube { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dx, dy = self.metrics['opponents_cube']
+        print >>css, ".oCube { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        return css.getvalue()
+
+    def _resign(self,):
+        """Create the boards resign and reject positions."""
+        css = StringIO()
+        dw, dh, dx, dy = self.metrics['resign']
+        print >>css, "#resign { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        dw, dh, dx, dy = self.metrics['reject']
+        print >>css, "#reject { position:absolute; top:%dpx; left:%dpx; " \
+                     "width:%dpx; height:%dpx; }" % (dy, dx, dw, dh)
+        return css.getvalue()
+
     def _decoration(self,):
         """Create the boards checker positions."""
         css = StringIO()
@@ -140,6 +171,8 @@ class BoardCss():
         'bar_width', 'xposition', 'top_margin', 'bottom_margin',
         'dice_dimension', 'player_dice1', 'player_dice2',
         'opponent_dice1', 'opponent_dice2', 'roll_dice', 'send_move',
+        'dice_dimension', 'neutral_cube', 'doubled_cube', 'players_cube',
+        'opponents_cube', 'resign', 'reject',
         'pditch', 'oditch', 'pbar', 'obar', 'undo',
         'upperpipsX', 'lowerpipsX', 'upperpipsO', 'lowerpipsO',
         )
