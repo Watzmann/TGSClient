@@ -11,6 +11,16 @@
 
 function loadBoard() {
   return {
+    infoParts: {
+            pName: document.getElementById("pName"),
+            pPips: document.getElementById("pPips"),
+            pDiff: document.getElementById("pDiff"),
+            pScore: document.getElementById("pScore"),
+            oName: document.getElementById("oName"),
+            oPips: document.getElementById("oPips"),
+            oDiff: document.getElementById("oDiff"),
+            oScore: document.getElementById("oScore"),
+    },
     parseBoard: function(board) {
         var boardParts = board.split(":");
 /*
@@ -25,7 +35,12 @@ hannes rolls 4 and 3.
             }
             return result;
         }
+        parts["player"] = boardParts[1];
         parts["opponent"] = boardParts[2];
+        parts["ML"] = boardParts[3];
+        parts["pScore"] = boardParts[4];
+        parts["oScore"] = boardParts[5];
+
         parts["position"] = boardParts.slice(6,32);
 
         parts["color"] = boardParts[41];
@@ -44,6 +59,8 @@ hannes rolls 4 and 3.
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
         parts["nrMoves"] = parseInt(boardParts[49]);
+        parts["pPips"] = parseInt(boardParts[53]);
+        parts["oPips"] = parseInt(boardParts[54]);
 
         return parts;
     },
@@ -594,6 +611,22 @@ hannes rolls 4 and 3.
             jQuery('<div id="undo">' + pic + '</div>').appendTo($b);
             jQuery('#undo')[0].onclick = restoreBoard;
         }
+        function setInfo(elements) {
+            var color, p = tgc.board.infoParts;
+            var pdiff = elements['oPips'] - elements['pPips'];
+            p['pName'].innerHTML = elements['player'];
+            p['pPips'].innerHTML = elements['pPips'];
+            p['pDiff'].innerHTML = pdiff;
+            color = pdiff < 0 ? 'Red' : 'Green'
+            p['pDiff'].setAttribute('class', 'iPips pip' + color)
+            p['pScore'].innerHTML = elements['pScore'];
+            p['oName'].innerHTML = elements['opponent'];
+            p['oPips'].innerHTML = elements['oPips'];
+            p['oDiff'].innerHTML = - pdiff;
+            color = - pdiff < 0 ? 'Red' : 'Green'
+            p['oDiff'].setAttribute('class', 'iPips pip' + color)
+            p['oScore'].innerHTML = elements['oScore'];
+        }
         var elements = this.parseBoard(board);
         var setDirection = function($imgs, elements) {
             if (elements['direction'] == '-1') {
@@ -621,6 +654,7 @@ hannes rolls 4 and 3.
                 $r[0].onclick = null;
                 $r.attr('title', 'the game is finished');
             }
+            setInfo(elements);
             $board.find('div').remove();
             if (elements['color'] == "-1") {
                 setCheckersX(elements['position'], $board);

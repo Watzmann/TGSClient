@@ -20,11 +20,11 @@ class BoardCss():
     def _board(self,):
         css = StringIO()
         board = self.metrics['board']
-        print >>css, "#boardBg {background-image: url(resources/board/%s);" \
+        print >>css, "#boardBg {background-image: url(resources/board/%s); " \
                              "width:%dpx; height:%dpx;}" % board
         print >>css, "#board2 { margin-left:%dpx; margin-bottom:%dpx; " \
                                "height:%dpx; width:%dpx;}" \
-                                         % (board[1] + 30, 18, board[2], 350)
+                                         % (board[1] + 30, 18, board[2], 420)
         return css.getvalue()
 
     def _points(self,):

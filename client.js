@@ -227,12 +227,12 @@ function loadTGC() {
             }
             /* Don't use this way of interpretation; instead use msg-ids above. */
             else if (msg.indexOf("running match was loaded.") != -1) {
-                tgc.cc.sendCmd("set b 3");  /* TODO:0k: set this in the server, hard */
+                tgc.cc.sendCmd("set b 6");  /* TODO:0k: set this in the server, hard */
                 tgc.board.setVariant("standard");
                 tgc.navigate.show("board");
             }
             else if (msg.indexOf("Starting a new game with") != -1) {
-                tgc.cc.sendCmd("set b 3");
+                tgc.cc.sendCmd("set b 6");
                 tgc.board.setVariant("standard");
                 tgc.navigate.show("board");
             }
@@ -347,6 +347,9 @@ function loadTGC() {
             };
             tgc.cc.sendCmd = function(msg) {
                 ws.send(msg);
+            };
+            tgc.cc.toggle = function(toggle) {
+                ws.send('toggle ' + toggle);
             };
             tgc.cc.login = function(name, passwd, protVersion) {
                 ws.send("login "+name+" "+passwd+" "+protVersion);

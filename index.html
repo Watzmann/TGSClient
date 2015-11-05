@@ -2,7 +2,7 @@
 
   <head>
     <title>TigerGammon</title>
-    <link rel="stylesheet" type="text/css" href="formate.css">
+    <link rel="stylesheet" type="text/css" href="formats.css">
     <link rel="stylesheet" type="text/css" href="board.css">
     <link rel="stylesheet" type="text/css" href="playersList.css">
   </head>
@@ -72,9 +72,9 @@
         <div id="board" style="display:none;" oncontextmenu="return false;">
           <div style="clear:both;">
             <p id="toggles">
-              <span class="button" onclick="tgc.navigate.show('players')">greedy</span>
-              <span class="button" onclick="tgc.navigate.show('system')">move</span>
-              <span class="button" onclick="tgc.navigate.show('board')">double</span>
+              <span class="toggle" onclick="tgc.cc.toggle('greedy')">greedy</span>
+              <span class="toggle" onclick="tgc.cc.toggle('automove')">move</span>
+              <span class="toggle" onclick="tgc.cc.toggle('autoroll')">double</span>
             </p>
           </div>
           <div style="position:absolute;">
@@ -92,30 +92,45 @@
             </div>
           </div>
           <div id="board2">
-            <div id="opponentInfo" style="float:left">
-              <div>Clock</div>
-              <div>Opponent</div>
-              <div>pips</div>
-              <div>score</div>
+            <div id="opponentInfo" class="matchInfo">
+              <div class="segment sLeft">
+                <div class="clock"></div>
+                <div class="iName" id="oName">Opponent</div>
+              </div>
+              <div class="segment sRight">
+                <div class="iPips" id="oPips">Pips</div>
+                <div class="iPips" id="oDiff">Diff</div>
+              </div>
+              <div class="segment sRight">
+                <div class="iScore" id="oScore">Score</div>
+              </div>
             </div>
+            <div style="float:clear-both"></div>
             <label for="board_received">Game protocol:</label>
             <textarea name="board_received" id="board_received"
                       cols="48" rows="17"></textarea>
             <div>
-              <textarea name="says" id="says" cols="40" rows="20"></textarea>
+              <textarea name="says" id="says" cols="40" rows="15"></textarea>
               <form id="saysInput" style="display:block">
-                <label for="send_say">Tell:</label>
-                <input type="text" name="send_say" id="send_say"/>
+                <input type="text" name="send_say" id="send_say" value="Say:"/>
                 <input type="submit" name="send_say_submit" id="send_say_submit" value="Send"
                        onclick="tgc.cc.send_say(); return false"/>
               </form>
             </div>
-            <div id="youInfo" style="float:left">
-              <div>Clock</div>
-              <div>You</div>
-              <div>pips</div>
-              <div>score</div>
+            <div id="youInfo" class="matchInfo">
+              <div class="segment sLeft">
+                <div class="clock"></div>
+                <div class="iName" id="pName">Player</div>
+              </div>
+              <div class="segment sRight">
+                <div class="iPips" id="pPips">Pips</div>
+                <div class="iPips" id="pDiff">Diff</div>
+              </div>
+              <div class="segment sRight">
+                <div class="iScore" id="pScore">Score</div>
+              </div>
             </div>
+            <div style="float:clear-both"></div>
           </div>
         </div>
 
