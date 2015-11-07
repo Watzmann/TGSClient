@@ -30,7 +30,7 @@ function loadDialogs() {
         },
         sendInvite: function () {
             var variation = $("#invitation input:checked").attr('value'),
-                matchLength = document.getElementById("matchLength"),
+                matchLength = document.getElementById("iMatchLength"),
                 invitation = "invite "+$("#invitation #playerName").html()+" "+matchLength.value;
             if (variation != 'standard') {
                 invitation += ' ' + variation;
