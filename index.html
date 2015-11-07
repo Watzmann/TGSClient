@@ -70,12 +70,15 @@
 
         <!--                                             Board               -->
         <div id="board" style="display:none;" oncontextmenu="return false;">
-          <div style="clear:both;">
-            <p id="toggles">
-              <span class="toggle" onclick="tgc.cc.toggle('greedy')">greedy</span>
-              <span class="toggle" onclick="tgc.cc.toggle('automove')">move</span>
-              <span class="toggle" onclick="tgc.cc.toggle('autoroll')">double</span>
-            </p>
+          <div style="clear:both; margin-bottom: 3px;" id="toggles">
+            <div class="oneLine toggle" onclick="tgc.cc.toggle('greedy')">Resign</div>
+            <div class="oneLine"style="width: 406px;">
+                                      Game <span id="gameCounter">1</span></div>
+            <div class="oneLine" style="width: 70px; margin-right: 30px;">
+                                      ML <span id="matchLength">1</span></div>
+            <div class="oneLine toggle" onclick="tgc.cc.toggle('greedy')">greedy</div>
+            <div class="oneLine toggle" onclick="tgc.cc.toggle('automove')">move</div>
+            <div class="oneLine toggle" onclick="tgc.cc.toggle('autoroll')">double</div>
           </div>
           <div style="position:absolute;">
             <div id="boardBg">
@@ -102,7 +105,7 @@
                 <div class="iPips" id="oDiff">Diff</div>
               </div>
               <div class="segment sRight">
-                <div class="iScore" id="oScore">Score</div>
+                <div class="iScore" id="oScore">Sc</div>
               </div>
             </div>
             <div style="float:clear-both"></div>
@@ -127,7 +130,7 @@
                 <div class="iPips" id="pDiff">Diff</div>
               </div>
               <div class="segment sRight">
-                <div class="iScore" id="pScore">Score</div>
+                <div class="iScore" id="pScore">Sc</div>
               </div>
             </div>
             <div style="float:clear-both"></div>

@@ -129,6 +129,11 @@ body {
     font-size: 33px;
 }
 
+.oneLine {
+    display: inline-block;
+    text-align: right;
+}
+
 .segment {
     display: inline-block;
     float: left;

@@ -20,6 +20,8 @@ function loadBoard() {
             oPips: document.getElementById("oPips"),
             oDiff: document.getElementById("oDiff"),
             oScore: document.getElementById("oScore"),
+            gameCount: document.getElementById("gameCounter"),
+            matchLength: document.getElementById("matchLength"),
     },
     parseBoard: function(board) {
         var boardParts = board.split(":");
@@ -61,6 +63,7 @@ hannes rolls 4 and 3.
         parts["nrMoves"] = parseInt(boardParts[49]);
         parts["pPips"] = parseInt(boardParts[53]);
         parts["oPips"] = parseInt(boardParts[54]);
+        parts["gameCount"] = parseInt(boardParts[55]);
 
         return parts;
     },
@@ -626,6 +629,8 @@ hannes rolls 4 and 3.
             color = - pdiff < 0 ? 'Red' : 'Green'
             p['oDiff'].setAttribute('class', 'iPips pip' + color)
             p['oScore'].innerHTML = elements['oScore'];
+            p['gameCount'].innerHTML = elements['gameCount'];
+            p['matchLength'].innerHTML = elements['ML'];
         }
         var elements = this.parseBoard(board);
         var setDirection = function($imgs, elements) {
