@@ -1,0 +1,14 @@
+
+<form id="cResign">   <!-- muss des ne form sein???? -->
+  <p>
+    <input type="radio" name="value" value="n" checked="checked" />normal<br />
+    <input type="radio" name="value" value="g"/>gammon<br />
+    <input type="radio" name="value" value="b"/>backgammon<br />
+  </p>
+  <p>
+    <input type="submit" name="send_resign" id="send_invite" value="resign"
+         onclick="tgc.dialogs.sendResign(); return false"/>
+    <input type="submit" name="cancel" id="iCancel" value="cancel"
+         onclick="tgc.dialogs.cancelResign(); return false"/>
+  </p>
+</form>

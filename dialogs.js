@@ -17,8 +17,19 @@ function loadDialogs() {
   var dlg = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     return {
+        dialogResign: function () {
+            $("#resignDialog").load('resign.html').show();
+        },
+        sendResign: function () {
+            var value = $("#cResign input:checked").attr('value');
+            tgc.cc.sendCmd("resign " + value);
+            this.cancelResign();
+        },
+        cancelResign: function () {
+            $("#resignDialog").hide();
+        },
         dialogInvite: function (player) {
-            $("#inviteDialog").load('dialogs.html', function() {
+            $("#inviteDialog").load('invite.html', function() {
                     $("#invitation #playerName").html(player)
                 }).show();
         },

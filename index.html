@@ -71,7 +71,7 @@
         <!--                                             Board               -->
         <div id="board" style="display:none;" oncontextmenu="return false;">
           <div style="clear:both; margin-bottom: 3px;" id="toggles">
-            <div class="oneLine toggle" onclick="tgc.cc.toggle('greedy')">Resign</div>
+            <div class="oneLine toggle" onclick="tgc.dialogs.dialogResign();">resign</div>
             <div class="oneLine"style="width: 406px;">
                                       Game <span id="gameCounter">1</span></div>
             <div class="oneLine" style="width: 70px; margin-right: 30px;">
@@ -93,6 +93,7 @@
               <pre id="boardpane">
               </pre>
             </div>
+            <div class="resignDialog" id="resignDialog" style="display:none;">resign</div>
           </div>
           <div id="board2">
             <div id="opponentInfo" class="matchInfo">
