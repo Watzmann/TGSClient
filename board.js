@@ -11,6 +11,7 @@
 
 function loadBoard() {
   return {
+    gifRoot: "resources/board/",
     infoParts: {
             pName: document.getElementById("pName"),
             pPips: document.getElementById("pPips"),
@@ -73,8 +74,30 @@ hannes rolls 4 and 3.
     setVariant: function(variant) {
         this.gameVariant = variant;
     },
+    setReject: function($b) {
+        var pic;
+        function reject() {
+            tgc.cc.sendCmd("reject");
+        }
+        pic = '<img src="'+this.gifRoot+'reject.gif" alt="reject">';
+        jQuery('<div id="reject">'+pic+'</div>').appendTo($b);
+        jQuery('#reject').dblclick(reject);
+    },
+    resign: function(boardPane, data) {
+        var pic;
+        var value = {'1': 'normal', '2': 'gammon', '3': 'backgammon'};
+        var $b = $(boardPane);
+        function accept() {
+            tgc.cc.sendCmd("accept");
+        }
+        pic = '<img src="'+this.gifRoot+'resign'+data['value'][0]+
+              '.gif" alt="resign '+value[data['value']]+'">';
+        jQuery('<div id="resign" class="resign">'+pic+'</div>').appendTo($b);
+        jQuery('#resign').dblclick(accept);
+        this.setReject($b);
+    },
     draw: function(boardPane, board) {
-        var gifRoot = "resources/board/",
+        var gifRoot = this.gifRoot
             piece = {'player': gifRoot + "playerpiece.gif",
                      'opponent': gifRoot + "opponentpiece.gif",},
             oppPiece = {'player': gifRoot + "opponentpiece.gif",
@@ -520,15 +543,6 @@ hannes rolls 4 and 3.
                 jQuery(div).appendTo($b);
             }
         }
-        function setReject($b) {
-            var pic;
-            function reject() {
-                tgc.cc.sendCmd("reject");
-            }
-            pic = '<img src="'+gifRoot+'reject.gif" alt="reject">';
-            jQuery('<div id="reject">'+pic+'</div>').appendTo($b);
-            jQuery('#reject').dblclick(reject);
-        }
         function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, $b) {
             var pic, div, t;
             function double(picture) {
@@ -556,7 +570,7 @@ hannes rolls 4 and 3.
             pic = '<img src="'+gifRoot+'cube'+cubeValue+'.gif" alt="cube'+cubeValue+'">';
             jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
             if (cubeWasTurned) {
-                setReject($b);
+                tgc.board.setReject($b);
                 jQuery('#cube').dblclick(accept);
             }
             if (meMayTurn) {
@@ -738,10 +752,7 @@ hannes rolls 4 and 3.
         };
         $board = $(boardPane);
         setDirection($('#boardBg > img'), elements);
-        drawPosition($(boardPane), elements);
+        drawPosition($board, elements);
     }
   }
 };
-/* cube
- * resign
- */

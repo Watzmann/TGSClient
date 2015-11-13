@@ -209,13 +209,17 @@ function loadTGC() {
                             line = sprintf("%(name)-15s: %(message)s\n", data)
                         tgc.action.tells(line);
                         break;
+                    case "e01":
+                        var data = JSON.parse(cmd);
+                        tgc.board.resign("#boardarea", data);
+                        break;
                     case "g01":
                         tgc.action.who(action_parts);
                         break;
                     case "g02":
                         tgc.action.whoUpdate(action_parts);
                         break;
-                    case "b04":
+                    case "b06":
                         var data = JSON.parse(cmd);
                         tgc.action.delFromPL(data['name']);
                         break;
@@ -227,12 +231,10 @@ function loadTGC() {
             }
             /* Don't use this way of interpretation; instead use msg-ids above. */
             else if (msg.indexOf("running match was loaded.") != -1) {
-                tgc.cc.sendCmd("set b 6");  /* TODO:0k: set this in the server, hard */
                 tgc.board.setVariant("standard");
                 tgc.navigate.show("board");
             }
             else if (msg.indexOf("Starting a new game with") != -1) {
-                tgc.cc.sendCmd("set b 6");
                 tgc.board.setVariant("standard");
                 tgc.navigate.show("board");
             }
