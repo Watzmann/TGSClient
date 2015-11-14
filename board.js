@@ -23,6 +23,7 @@ function loadBoard() {
             oScore: document.getElementById("oScore"),
             gameCount: document.getElementById("gameCounter"),
             matchLength: document.getElementById("matchLength"),
+            gameInfo: document.getElementById("gameInfo"),
     },
     parseBoard: function(board) {
         var boardParts = board.split(":");
@@ -73,6 +74,11 @@ hannes rolls 4 and 3.
     },
     setVariant: function(variant) {
         this.gameVariant = variant;
+    },
+    finish: function(boardPane, data) {
+        this.infoParts["gameInfo"].innerHTML = data['line'];
+        jQuery(data['color']).remove();
+        jQuery(".dice").remove();
     },
     setReject: function($b) {
         var pic;
@@ -378,13 +384,15 @@ hannes rolls 4 and 3.
                                                         ' alt=captured>';
                 }
                 for (var c = startPiece; c < pieces; c++) {
-                    var stack = '';
+                    var stack = ' class="' + color;
                     if (padding && c > 4) {
-                        stack = ' class=cp' + c;
+                        stack += ' cp' + c + '"';
                     } else if (c > 8) {
-                        stack = ' class=c9';
+                        stack += ' c9"';
                     } else if (c > 4) {
-                        stack = ' class=c5';
+                        stack += ' c5"';
+                    } else {
+                        stack += '"';
                     }
                     point += '<img' + stack + ' src=' + piece[color] +
                                                         ' alt=' + color + '>';
@@ -591,7 +599,7 @@ hannes rolls 4 and 3.
             jQuery(div).appendTo($b);
         }
         function setDice(dice, turn, nrMoves, $b) {
-            var pic;
+            var pic, pic0 = '<img class="dice" src="' + gifRoot;
             function rollDice() {
                 tgc.cc.sendCmd("roll");
             }
@@ -599,19 +607,19 @@ hannes rolls 4 and 3.
                 var sortedDice = dice.slice(0,2);
                 sortedDice.sort();
                 sortedDice.reverse();
-                pic = '<img src="' + gifRoot + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
+                pic = pic0 + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
                 jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
-                pic = '<img src="' + gifRoot + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
+                pic = pic0 + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
                 jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
                 jQuery('<div id="sendMove" title="' +
                         sendMoveApologies(nrMoves, false) + '"></div>').appendTo($b);
             } else if (dice[2] != 0) {
-                pic = '<img src="' + gifRoot + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
+                pic = pic0 + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
                 jQuery('<div id="oDice1">'+pic+'</div>').appendTo($b);
-                pic = '<img src="' + gifRoot + 'opponentdie'+dice[3]+'.gif" alt="opponentdie2">';
+                pic = pic0 + 'opponentdie'+dice[3]+'.gif" alt="opponentdie2">';
                 jQuery('<div id="oDice2">'+pic+'</div>').appendTo($b);
             } else if (turn) {
-                pic = '<img src="' + gifRoot + 'rolldice.gif" alt="roll dice" title="click to roll">';
+                pic = pic0 + 'rolldice.gif" alt="roll dice" title="click to roll">';
                 jQuery('<div id="rollDice">' + pic + '</div>').appendTo($b);
                 jQuery('#rollDice')[0].onclick = rollDice;
             }

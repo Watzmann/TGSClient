@@ -191,27 +191,57 @@ function loadTGC() {
                         break;
                     case "c01":
                         var data = JSON.parse(cmd),
-                            line = sprintf("You            : %(message)s\n", data)
+                            line = sprintf("You            : %(message)s\n", data);
                         tgc.action.shouts(line);
                         break;
                     case "c02":
                         var data = JSON.parse(cmd),
-                            line = sprintf("%(name)-15s: %(message)s\n", data)
+                            line = sprintf("%(name)-15s: %(message)s\n", data);
                         tgc.action.shouts(line);
                         break;
                     case "d01":
                         var data = JSON.parse(cmd),
-                            line = sprintf("-> %(name)-12s: %(message)s\n", data)
+                            line = sprintf("-> %(name)-12s: %(message)s\n", data);
                         tgc.action.tells(line);
                         break;
                     case "d02":
                         var data = JSON.parse(cmd),
-                            line = sprintf("%(name)-15s: %(message)s\n", data)
+                            line = sprintf("%(name)-15s: %(message)s\n", data);
                         tgc.action.tells(line);
                         break;
                     case "e01":
                         var data = JSON.parse(cmd);
                         tgc.board.resign("#boardarea", data);
+                        break;
+                    case "e08":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
+                        data['color'] = '.opponent';
+                        tgc.board.finish("#boardarea", data);
+                        break;
+                    case "e09":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("You win the game and get %(value)s. Congratulations!", data);
+                        data['color'] = '.player';
+                        tgc.board.finish("#boardarea", data);
+                        break;
+                    case "e10":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("%(opponent)s gives up. You win %(value)s.", data);
+                        data['color'] = '.player';
+                        tgc.board.finish("#boardarea", data);
+                        break;
+                    case "e11":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("You give up. %(name)s wins %(value)s.", data);
+                        data['color'] = '.opponent';
+                        tgc.board.finish("#boardarea", data);
+                        break;
+                    case "e12":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("%(opponent)s gives up. %(name)s wins %(value)s.", data);
+                        data['color'] = '.player';
+                        tgc.board.finish("#boardarea", data);
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
@@ -220,8 +250,7 @@ function loadTGC() {
                         tgc.action.whoUpdate(action_parts);
                         break;
                     case "b06":
-                        var data = JSON.parse(cmd);
-                        tgc.action.delFromPL(data['name']);
+                        tgc.action.delFromPL(cmd);
                         break;
                     default:
                         tgc.action.focus(msg);
