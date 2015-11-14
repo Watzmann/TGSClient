@@ -75,6 +75,13 @@ hannes rolls 4 and 3.
     setVariant: function(variant) {
         this.gameVariant = variant;
     },
+    finishMatch: function(boardPane, data) {
+        this.infoParts["gameInfo"].innerHTML = data['line'];
+        jQuery("#endOfMatch").html(data['line']).show();
+        setTimeout(function(){
+            jQuery("#endOfMatch").hide();
+        },5000);
+    },
     finish: function(boardPane, data) {
         this.infoParts["gameInfo"].innerHTML = data['line'];
         jQuery(data['color']).remove();

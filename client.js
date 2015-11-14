@@ -243,6 +243,16 @@ function loadTGC() {
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
                         break;
+                    case "e17":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("%(name)s wins the %(ML)s point match %(score)s", data);
+                        tgc.board.finishMatch("#boardarea", data);
+                        break;
+                    case "e18":
+                        var data = JSON.parse(cmd);
+                        data['line'] = sprintf("You win the %(ML)s point match %(score)s", data);
+                        tgc.board.finishMatch("#boardarea", data);
+                        break;
                     case "g01":
                         tgc.action.who(action_parts);
                         break;
