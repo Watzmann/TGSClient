@@ -167,7 +167,7 @@ body {
 
 .clock {
     background-image: url(resources/clock-stub.png);
-    width: 71px;
+    width: 81px;
     height: 33px;
     float: left;
     margin-right: 10px;
