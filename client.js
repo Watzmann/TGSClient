@@ -253,6 +253,34 @@ function loadTGC() {
                         data['line'] = sprintf("You win the %(ML)s point match %(score)s", data);
                         tgc.board.finishMatch("#boardarea", data);
                         break;
+                    case "e19":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("** Player %(name)s has joined you for %(ML)s match of %(variant)s.", data);
+                        tgc.action.system(line);
+                        tgc.board.setVariant(data['variant']);
+                        tgc.navigate.show("board");
+                        break;
+                    case "e20":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("** You are now playing %(ML)s match with %(name)s", data);
+                        tgc.action.system(line);
+                        tgc.board.setVariant(data['variant']);
+                        tgc.navigate.show("board");
+                        break;
+                    case "e21":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("%(name)s has joined you. Your running match was loaded.", data);
+                        tgc.action.system(line);
+                        tgc.board.setVariant(data['variant']);
+                        tgc.navigate.show("board");
+                        break;
+                    case "e22":
+                        var data = JSON.parse(cmd),
+                            line = sprintf("You are now playing with %(name)s. Your running match was loaded.", data);
+                        tgc.action.system(line);
+                        tgc.board.setVariant(data['variant']);
+                        tgc.navigate.show("board");
+                        break;
                     case "g01":
                         tgc.action.who(action_parts);
                         break;
@@ -267,15 +295,6 @@ function loadTGC() {
                     // unterdruecken: "User not known or wrong password" (ist das noch aktuell???)
                 }
                 return;
-            }
-            /* Don't use this way of interpretation; instead use msg-ids above. */
-            else if (msg.indexOf("running match was loaded.") != -1) {
-                tgc.board.setVariant("standard");
-                tgc.navigate.show("board");
-            }
-            else if (msg.indexOf("Starting a new game with") != -1) {
-                tgc.board.setVariant("standard");
-                tgc.navigate.show("board");
             }
             tgc.action.focus(msg);
         },
