@@ -27,6 +27,7 @@ function loadTGC() {
         systemLine = document.getElementById("systemLine"),
         shoutTarget = document.getElementById("shouts"),
         tellTarget = document.getElementById("tells"),
+        sayTarget = document.getElementById("says"),
         shoutField = document.getElementById("send_shout"),
         tellField = document.getElementById("send_tell"),
         sayField = document.getElementById("send_say"),
@@ -141,6 +142,9 @@ function loadTGC() {
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
             tells: function (result) {
+                var target = sayTarget;
+                target.value = target.value + result;
+                target.scrollTop = target.scrollHeight - target.clientHeight;
                 var target = tellTarget;
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
@@ -392,7 +396,12 @@ function loadTGC() {
             };
             tgc.cc.send_say = function() {
                 ws.send('say '+sayField.value);
-                sayField.value = "";
+                sayField.value = "Say: ";
+            };
+            tgc.cc.clear_say = function() {
+                sayField.value = String.fromCharCode(event.keyCode);
+                sayField.onkeydown = null;
+                return false;
             };
             tgc.cc.send_shout = function() {
                 ws.send('shout '+shoutField.value);
@@ -430,7 +439,7 @@ function loadTGC() {
                         /* TODO:0j: Protocol msgs should go to a separate window
                          *          that might be a fly out. This window may be
                          *          invisible; cmp to 'Tasks' in 'gmail'.     */
-                        tgc.cc.sendCmd('board');
+                        //tgc.cc.sendCmd('board');
                         break;
                     case "system":
                         board.style.display = "none";

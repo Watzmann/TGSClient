@@ -111,16 +111,16 @@
               </div>
             </div>
             <div style="float:clear-both"></div>
-            <div>
-              <label for="board_received">Game protocol:</label>
+            <div style="margin-top: 5px;">
               <textarea name="board_received" id="board_received"
-                        cols="48" rows="17"></textarea>
+                        cols="48" rows="15"></textarea>
             </div>
             <div id="gameInfo"><span style="color: grey;">Status infos</span></div>
             <div>
-              <textarea name="says" id="says" cols="40" rows="15"></textarea>
+              <textarea name="says" id="says" cols="48" rows="15"></textarea>
               <form id="saysInput" style="display:block">
-                <input type="text" name="send_say" id="send_say" value="Say:"/>
+                <input type="text" name="send_say" id="send_say" value="Say:" style="color: grey; width: 351px;"
+                       onkeydown="tgc.cc.clear_say(); return false"/>
                 <input type="submit" name="send_say_submit" id="send_say_submit" value="Send"
                        onclick="tgc.cc.send_say(); return false"/>
               </form>
