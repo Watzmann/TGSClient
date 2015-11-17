@@ -23,7 +23,6 @@ function loadBoard() {
             oScore: document.getElementById("oScore"),
             gameCount: document.getElementById("gameCounter"),
             matchLength: document.getElementById("matchLength"),
-            gameInfo: document.getElementById("gameInfo"),
     },
     parseBoard: function(board) {
         var boardParts = board.split(":");
@@ -76,14 +75,12 @@ hannes rolls 4 and 3.
         this.gameVariant = variant;
     },
     finishMatch: function(boardPane, data) {
-        this.infoParts["gameInfo"].innerHTML = data['line'];
         jQuery("#endOfMatch").html(data['line']).show();
         setTimeout(function(){
             jQuery("#endOfMatch").hide();
         },5000);
     },
     finish: function(boardPane, data) {
-        this.infoParts["gameInfo"].innerHTML = data['line'];
         jQuery(data['color']).remove();
         jQuery(".dice").remove();
     },
@@ -673,6 +670,7 @@ hannes rolls 4 and 3.
         }
         var drawPosition = function($board, elements) {
             var availableDice, initialDice, double, nrMoves,
+                fmtMoves = new Array,
                 myMoves = new Array;
             function setAvailableDice(dice, nrmoves) {
                 availableDice = dice;
@@ -680,9 +678,11 @@ hannes rolls 4 and 3.
             }
             function accumulateMoves(move) {
                 myMoves = myMoves.concat(move);
+                fmtMoves = fmtMoves.concat(move.join("/"));
             }
             function sendMove() {
                 tgc.cc.sendCmd("move "+myMoves.join(" "));
+                tgc.action.gameProtocol(sprintf("%-24s", fmtMoves.join(", ")));
                 $board.find('#pDice1,#pDice2').remove();
                 var $r = $board.find('#sendMove');
                 $r[0].onclick = null;

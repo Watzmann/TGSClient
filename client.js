@@ -32,6 +32,7 @@ function loadTGC() {
         tellField = document.getElementById("send_tell"),
         sayField = document.getElementById("send_say"),
         gameLog = document.getElementById("board_received"),
+        gameInfo = document.getElementById("gameInfo"),
         serverChoser = document.getElementById("switchservers");
 
     function lineBreak(msg) {
@@ -168,10 +169,6 @@ function loadTGC() {
                     /* TODO:0j: of course this should be an 'exx#....' message!! */
                     /* Automatically joining the next game in this match. */
                     tgc.cc.sendCmd("join");
-                } else if ((result.indexOf("roll") != -1) ||
-                           (result.indexOf("move") != -1) ||
-                           (result.indexOf("Type 'accept'") != -1))  {
-                    tgc.action.gameProtocol(result);
                 } else {
                     tgc.action.system(result);
                 }
@@ -219,42 +216,39 @@ function loadTGC() {
                         break;
                     case "e08":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
+                        gameInfo.innerHTML = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
                         data['color'] = '.opponent';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e09":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("You win the game and get %(value)s. Congratulations!", data);
+                        gameInfo.innerHTML = sprintf("You win the game and get %(value)s. Congratulations!", data);
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e10":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("%(opponent)s gives up. You win %(value)s.", data);
+                        gameInfo.innerHTML = sprintf("%(opponent)s gives up. You win %(value)s.", data);
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e11":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("You give up. %(name)s wins %(value)s.", data);
+                        gameInfo.innerHTML = sprintf("You give up. %(name)s wins %(value)s.", data);
                         data['color'] = '.opponent';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e12":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("%(opponent)s gives up. %(name)s wins %(value)s.", data);
+                        gameInfo.innerHTML = sprintf("%(opponent)s gives up. %(name)s wins %(value)s.", data);
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e17":
-                        var data = JSON.parse(cmd);
-                        data['line'] = sprintf("%(name)s wins the %(ML)s point match %(score)s", data);
-                        tgc.board.finishMatch("#boardarea", data);
-                        break;
                     case "e18":
                         var data = JSON.parse(cmd);
-                        data['line'] = sprintf("You win the %(ML)s point match %(score)s", data);
+                        data['line'] = sprintf(tgc.dialect[act], data);
+                        gameInfo.innerHTML = data['line'];
                         tgc.board.finishMatch("#boardarea", data);
                         break;
                     case "e19":
@@ -284,6 +278,37 @@ function loadTGC() {
                         tgc.action.system(line);
                         tgc.board.setVariant(data['variant']);
                         tgc.navigate.show("board");
+                        break;
+                    case "e24":
+                    case "e25":
+                        // TODO:10: here we should display the dice in the board and wait a second
+                    case "e28":
+                    case "e33":
+                        var data = JSON.parse(cmd),
+                            roll = sprintf('%(r1)s%(r2)s: ', data);
+                        tgc.action.gameProtocol(roll);
+                        break;
+                    case "e36":
+                        var data = JSON.parse(cmd),
+                            move = sprintf('%-24(move)s', data);
+                        tgc.action.gameProtocol(move);
+                        break;
+                    case "e29":
+                    case "e31":
+                        var data = JSON.parse(cmd),
+                            move = sprintf('%(move)s\n', data);
+                        tgc.action.gameProtocol(move);
+                        break;
+                    case "e30":
+                    case "e35":
+                        tgc.action.gameProtocol(tgc.dialect[act+'b']);
+                    case "e23":
+                    case "e26":
+                    case "e27":
+                    case "e32":
+                    case "e34":
+                        var data = JSON.parse(cmd);
+                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
@@ -380,8 +405,7 @@ function loadTGC() {
                 tgc.action.showClient(false);
             };
             ws.onmessage = function(evt) {
-                    var data = evt.data;
-                    tgc.parse(data);
+                    tgc.parse(evt.data);
                 };
             tgc.cc.send_data = function() {
                 ws.send(input_field.value);
@@ -463,6 +487,7 @@ function loadTGC() {
   }());
   tgc.checkConnections();
   tgc.dialogs = loadDialogs();
+  tgc.dialect = loadDialect();
   if (window.tgcConfig.DEVELOP_MODE) {
     switchservers.style.display = "block";
   }
