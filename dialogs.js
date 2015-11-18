@@ -5,7 +5,7 @@
  * version 3 or later; see LICENSE
  *
  * @author Andreas Hausmann <andreas@tigergammon.com>
- * @copyright Andreas Hausmann 2013 - 2014
+ * @copyright Andreas Hausmann 2013 - 2015
  *
 */
 
