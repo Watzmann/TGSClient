@@ -36,6 +36,7 @@ function loadTGC() {
         gameInfo = document.getElementById("gameInfo"),
         devMessages = document.getElementById("devMessages"),
         serverChoser = document.getElementById("switchservers");
+    var gameLinenumber;
 
     function lineBreak(msg) {
         return msg + '\n';
@@ -157,6 +158,10 @@ function loadTGC() {
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
+            clearGameProtocol: function () {
+                var target = gameLog;
+                target.value = '';
+            },
             devLog: function (result) {
                 var target = devMessages;
                 target.value = target.value + result;
@@ -183,7 +188,8 @@ function loadTGC() {
             focus: null
         },
         parse: function(msg) {
-            var action_parts = msg.split("#");
+            var action_parts = msg.split("#"),
+                gameLineHeader = '';
             tgc.action.devLog(msg+'\n')
             if (action_parts.length > 1) {
                 var act = action_parts[0];
@@ -224,12 +230,14 @@ function loadTGC() {
                         break;
                     case "e08":
                         var data = JSON.parse(cmd);
+                        gameLinenumber = 1;
                         gameInfo.innerHTML = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
                         data['color'] = '.opponent';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e09":
                         var data = JSON.parse(cmd);
+                        gameLinenumber = 1;
                         gameInfo.innerHTML = sprintf("You win the game and get %(value)s. Congratulations!", data);
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
@@ -259,62 +267,53 @@ function loadTGC() {
                         gameInfo.innerHTML = data['line'];
                         tgc.board.finishMatch("#boardarea", data);
                         break;
-                    case "e19":
-                        var data = JSON.parse(cmd),
-                            line = sprintf("** Player %(name)s has joined you for %(ML)s match of %(variant)s.", data);
-                        tgc.action.system(line);
-                        tgc.board.setVariant(data['variant']);
-                        tgc.navigate.show("board");
-                        break;
-                    case "e20":
-                        var data = JSON.parse(cmd),
-                            line = sprintf("** You are now playing %(ML)s match with %(name)s", data);
-                        tgc.action.system(line);
-                        tgc.board.setVariant(data['variant']);
-                        tgc.navigate.show("board");
-                        break;
                     case "e21":
-                        var data = JSON.parse(cmd),
-                            line = sprintf("%(name)s has joined you. Your running match was loaded.", data);
-                        tgc.action.system(line);
-                        tgc.board.setVariant(data['variant']);
-                        tgc.navigate.show("board");
-                        break;
                     case "e22":
+                    case "e19":
+                    case "e20":
+                        gameLinenumber = 1;
                         var data = JSON.parse(cmd),
-                            line = sprintf("You are now playing with %(name)s. Your running match was loaded.", data);
+                            line = sprintf(tgc.dialect[act], data);
                         tgc.action.system(line);
+                        tgc.action.clearGameProtocol();
                         tgc.board.setVariant(data['variant']);
                         tgc.navigate.show("board");
                         break;
                     case "e24":
                     case "e25":
                         // TODO:10: here we should display the dice in the board and wait a second
-                    case "e28":
                     case "e33":
+                        gameLineHeader = sprintf('%2d  ', gameLinenumber++);
+                    case "e28":
                         var data = JSON.parse(cmd),
                             roll = sprintf('%(r1)s%(r2)s: ', data);
-                        tgc.action.gameProtocol(roll);
+                        if (act == "e24" && (data.r2 > data.r1)) {
+                            gameLineHeader += '                           ';
+                        }
+                        tgc.action.gameProtocol(gameLineHeader + roll);
                         break;
                     case "e37":
                         var data = JSON.parse(cmd),
-                            move = sprintf('%(move)-24s', data);
+                            move = sprintf('%(move)-27s', data);
                         tgc.action.gameProtocol(move);
                         break;
                     case "e29":
                     case "e36":
                         var data = JSON.parse(cmd),
-                            move = sprintf('%(move)s\n', data);
+                            move = sprintf(tgc.dialect[act], data);
                         tgc.action.gameProtocol(move);
                         break;
                     case "e30":
                     case "e35":
                         tgc.action.gameProtocol(tgc.dialect[act+'b']);
-                    case "e23":
                     case "e26":
                     case "e27":
                     case "e32":
                     case "e34":
+                        var data = JSON.parse(cmd);
+                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
+                        break;
+                    case "e23":
                         var data = JSON.parse(cmd);
                         gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
                         break;
@@ -471,10 +470,6 @@ function loadTGC() {
                         developpane.style.display = "none";
                         board.style.display = "block";
                         tgc.action.focus = tgc.action.board;
-                        /* TODO:0j: Protocol msgs should go to a separate window
-                         *          that might be a fly out. This window may be
-                         *          invisible; cmp to 'Tasks' in 'gmail'.     */
-                        //tgc.cc.sendCmd('board');
                         break;
                     case "system":
                         board.style.display = "none";
