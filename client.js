@@ -296,13 +296,13 @@ function loadTGC() {
                             roll = sprintf('%(r1)s%(r2)s: ', data);
                         tgc.action.gameProtocol(roll);
                         break;
-                    case "e36":
+                    case "e37":
                         var data = JSON.parse(cmd),
-                            move = sprintf('%-24(move)s', data);
+                            move = sprintf('%(move)-24s', data);
                         tgc.action.gameProtocol(move);
                         break;
                     case "e29":
-                    case "e31":
+                    case "e36":
                         var data = JSON.parse(cmd),
                             move = sprintf('%(move)s\n', data);
                         tgc.action.gameProtocol(move);
@@ -317,6 +317,8 @@ function loadTGC() {
                     case "e34":
                         var data = JSON.parse(cmd);
                         gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
+                        break;
+                    case "e31":
                         break;
                     case "g01":
                         tgc.action.who(action_parts);

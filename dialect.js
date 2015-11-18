@@ -29,7 +29,7 @@ function loadDialect() {
         e34: 'Please move %(nrpieces)s pieces.',
         e35: "You can't move.",
         e35b: '                        ',
-        e36: 'Bearing off: %(move)s',
+        e37: 'Bearing off: %(move)s',
     }
   }());
   return dialect;
