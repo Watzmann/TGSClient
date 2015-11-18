@@ -64,6 +64,7 @@
               <span class="button" onclick="tgc.navigate.show('players')">players</span>
               <span class="button" onclick="tgc.navigate.show('system')">system</span>
               <span class="button" onclick="tgc.navigate.show('board')">board</span>
+              <span class="button" onclick="tgc.navigate.show('develop')" id="developButton" style="display:none">develop</span>
             </p>
           </div>
         </div>
@@ -161,6 +162,13 @@
               <input type="submit" name="send_tell_submit" id="send_tell_submit" value="Send"
                      onclick="tgc.cc.send_tell(); return false"/>
             </form>
+          </div>
+        </div>
+
+        <!--                                             Develop              -->
+        <div id="develop" style="display:none;">
+          <div style="float:left">
+            <textarea name="devMessages" id="devMessages" cols="120" rows="45"></textarea>
           </div>
         </div>
 

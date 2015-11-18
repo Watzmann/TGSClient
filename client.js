@@ -21,6 +21,7 @@ function loadTGC() {
         greeting = document.getElementById("greeting"),
         goodbye = document.getElementById("goodbye"),
         systempane = document.getElementById("system"),
+        developpane = document.getElementById("develop"),
         board = document.getElementById("board"),
         board2 = document.getElementById("board2"),
         players = document.getElementById("players"),
@@ -33,6 +34,7 @@ function loadTGC() {
         sayField = document.getElementById("send_say"),
         gameLog = document.getElementById("board_received"),
         gameInfo = document.getElementById("gameInfo"),
+        devMessages = document.getElementById("devMessages"),
         serverChoser = document.getElementById("switchservers");
 
     function lineBreak(msg) {
@@ -155,6 +157,11 @@ function loadTGC() {
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
+            devLog: function (result) {
+                var target = devMessages;
+                target.value = target.value + result;
+                target.scrollTop = target.scrollHeight - target.clientHeight;
+            },
             board: function (result) {
                 var board2 = document.getElementById("board2"),
                     boardpane = document.getElementById("boardpane");
@@ -177,6 +184,7 @@ function loadTGC() {
         },
         parse: function(msg) {
             var action_parts = msg.split("#");
+            tgc.action.devLog(msg+'\n')
             if (action_parts.length > 1) {
                 var act = action_parts[0];
                 var cmd = action_parts[1];
@@ -458,6 +466,7 @@ function loadTGC() {
                     case "board":
                         systempane.style.display = "none";
                         players.style.display = "none";
+                        developpane.style.display = "none";
                         board.style.display = "block";
                         tgc.action.focus = tgc.action.board;
                         /* TODO:0j: Protocol msgs should go to a separate window
@@ -468,13 +477,21 @@ function loadTGC() {
                     case "system":
                         board.style.display = "none";
                         players.style.display = "none";
+                        developpane.style.display = "none";
                         systempane.style.display = "block";
                         tgc.action.focus = tgc.action.system;
+                        break;
+                    case "develop":
+                        board.style.display = "none";
+                        players.style.display = "none";
+                        developpane.style.display = "block";
+                        systempane.style.display = "none";
                         break;
                     case "players":
                         tgc.cc.sendWho();
                         board.style.display = "none";
                         systempane.style.display = "none";
+                        developpane.style.display = "none";
                         players.style.display = "block";
                         tgc.action.focus = tgc.action.system;
                         break;
@@ -490,6 +507,7 @@ function loadTGC() {
   tgc.dialect = loadDialect();
   if (window.tgcConfig.DEVELOP_MODE) {
     switchservers.style.display = "block";
+    jQuery("#developButton").show()
   }
   window.tgc = tgc;
 };
