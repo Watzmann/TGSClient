@@ -127,19 +127,41 @@ hannes rolls 4 and 3.
                            };
         var homeStandard = function (point) {return point < 7;}
         var homePlakoto = function (point) {return point > 18;}
+        var targetStandard = function (player, checkers, captive) {
+            if (player) { return "yes"; }
+            else if (checkers > 1) { return "no"; }
+            else if (checkers == 1) { return "hit"; }
+            else { return "yes"; }
+        }
+        var targetPlakoto = function (player, checkers, captive) {
+            if (player) { return "yes"; }
+            else if (checkers > 1) { return "no"; }
+            else if (checkers == 1 && captive) { return "no"; }
+            else if (checkers == 1 && !captive) { return "hit"; }
+            else { return "yes"; }
+        }
+        var targetFevga = function (player, checkers, captive) {
+            if (player) { return "yes"; }   // TODO:00: missing: close home board and sixprime
+            else if (checkers > 0) { return "no"; }
+            else { return "yes"; }
+        }
         var variants = {'plakoto':  {'home': homePlakoto,
+                                     'targetType': targetPlakoto,
                                      'pDitch': '0P',
                                      'oDitch': '<div id=oDitchP>',
                                     },
                         'portes':   {'home': homeStandard,
+                                     'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
                                     },
                         'fevga':    {'home': homeStandard,
+                                     'targetType': targetFevga,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
                                     },
                         'standard': {'home': homeStandard,
+                                     'targetType': targetStandard,
                                      'pDitch': '0',
                                     'oDitch': '<div id=oDitch>',
                                     },
@@ -212,7 +234,7 @@ hannes rolls 4 and 3.
             }
             /* Are checkers on the bar? If so, is this here the bar?? */
             $r = $divs.filter('#p25');
-            if ($r.find('img').length > 0) {   /* TODO:0j: better way to look for data-checkers != 0? */
+            if ($r.find('img').length > 0) {   /* TODO:0j: is there a better way to look for data-checkers != 0? */
                 if (myPoint != 'p25') {
                     return false;
                 }
@@ -254,9 +276,11 @@ hannes rolls 4 and 3.
                         id = parseInt(id.slice(1));
                         data = {'id': id, 'point': point};
                         if (captive && checkers == 0) {
-                            html = composeOpponentsPoint(data, 1, id<13, false);
+                            data['color'] = 'opponent';
+                            html = composePoint(data, 1, false);
                         } else {
-                            html = composePlayersPoint(data, checkers, id<13, id, captive);
+                            data['color'] = 'player';
+                            html = composePoint(data, checkers, captive);
                         }
                         break;
                 }
@@ -268,8 +292,8 @@ hannes rolls 4 and 3.
                 point = $p.attr('data-point');
                 checkers = 1;
                 id = parseInt(id.slice(1));
-                data = {'id': id, 'point': point};
-                html = composePlayersPoint(data, checkers, id<13, id, true);
+                data = {'id': id, 'point': point, 'color': 'player'};
+                html = composePoint(data, checkers, true);
                 return html;
             }
             function replacePoint($p, diff) {
@@ -379,7 +403,6 @@ hannes rolls 4 and 3.
                     startPiece = 1;
                 }
                 if (padding) {
-                    /* TODO:03: what do I need 6 checker divs for?? */
                     var pheight = (6 - Math.min(5,pieces));
                     point = "<div class=\"cs" + pheight + "\"></div>";
                 }
@@ -436,36 +459,24 @@ hannes rolls 4 and 3.
                            'data-target="%(target)s" ' +
                            'data-checkers="%(checkers)s"%(title)s>', values);
         }
-        function composePlayersPoint(container, checkers, padding, point, captive) {
-            var div, html;
-            var home = variants[this.tgc.board.gameVariant]['home'](point);
-            if (checkers > 0) {
-                container['class'] = home ? "starthere home" : "starthere";
+        function composePoint(container, checkers, captive) {
+            var div, html,
+                variant = variants[this.tgc.board.gameVariant],
+                player = container['color'] == 'player';
+            if (player && checkers > 0) {
+                if (variant['home'](container['id'])) {
+                    container['class'] = "starthere home";
+                } else {
+                    container['class'] = "starthere";
+                }
             } else {
                 container['class'] = "neutral";
             }
             container['checkers'] = checkers;
-            container['target'] = "yes";
+            container['target'] = variant['targetType'](player, checkers, captive);
             div = composeDiv(container, captive);
-            html = drawPoint(checkers, padding, 'player', captive);
+            html = drawPoint(checkers, container['id'] < 13, container['color'], captive);
             return div + html + "</div>";
-        }
-        function composeOpponentsPoint(container, checkers, padding, captive) {
-            var div, point;
-            container['class'] = "neutral";
-            container['checkers'] = checkers;
-            if (checkers > 1) {
-                container['target'] = "no";
-            } else if (checkers == 1 && captive) {
-                container['target'] = "no";
-            } else if (checkers == 1 && !captive) {
-                container['target'] = "hit";
-            } else {
-                container['target'] = "yes";
-            }
-            div = composeDiv(container, captive);
-            point = drawPoint(checkers, padding, 'opponent', captive);
-            return div + point + "</div>";
         }
         function composePlayersDitch(checkers, pt) {
             var point = "",
@@ -527,11 +538,12 @@ hannes rolls 4 and 3.
                     checkers -= 20;
                 }
                 if (plr) {
-                    div += composePlayersPoint(container, checkers, i<13, i, captive);
+                    container['color'] = 'player';
+                    div += composePoint(container, checkers, captive);
                 } else {
-                    div += composeOpponentsPoint(container, checkers, i<13, captive);
+                    container['color'] = 'opponent';
+                    div += composePoint(container, checkers, captive);
                 }
-                /* TODO:0j: is it a good idea to draw empty points?? */
             }
             jQuery(div).appendTo($b);
         }
@@ -547,9 +559,11 @@ hannes rolls 4 and 3.
                     checkers -= 20;
                 }
                 if (plr) {
-                    div = composePlayersPoint(container, checkers, i<13, i, captive);
+                    container['color'] = 'player';
+                    div = composePoint(container, checkers, captive);
                 } else {
-                    div = composeOpponentsPoint(container, checkers, i<13, captive);
+                    container['color'] = 'opponent';
+                    div = composePoint(container, checkers, captive);
                 }
                 /* TODO:0j: is it a good idea to draw empty points?? */
                 jQuery(div).appendTo($b);
