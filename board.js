@@ -398,18 +398,23 @@ hannes rolls 4 and 3.
                 var point = "";
                 var startPiece = 0;
                 var pieces = checkers;
+                var stacked = checkers > 9;
                 if (captive) {
                     pieces += 1;
                     startPiece = 1;
                 }
                 if (padding) {
                     var pheight = (6 - Math.min(5,pieces));
-                    point = "<div class=\"cs" + pheight + "\"></div>";
+                    var pstacked = stacked ? 's' : '';
+                    point = "<div class=\"cs" + pstacked + pheight + "\"></div>";
+                } else if (stacked) {
+                    point = "<div class=\"css1\"></div>";
                 }
                 if (captive && !padding) {
                     point += '<img src=' + oppPiece[color] +
                                                         ' alt=captured>';
                 }
+                pieces = stacked ? checkers - 6 : checkers;
                 for (var c = startPiece; c < pieces; c++) {
                     var stack = ' class="' + color;
                     if (padding && c > 4) {
@@ -421,8 +426,7 @@ hannes rolls 4 and 3.
                     } else {
                         stack += '"';
                     }
-                    point += '<img' + stack + ' src=' + piece[color] +
-                                                        ' alt=' + color + '>';
+                    point += '<img' + stack + ' src=' + piece[color] + ' alt=' + color + '>';
                 }
                 if (captive && padding) {
                     point += '<img src=' + oppPiece[color] +
@@ -471,6 +475,11 @@ hannes rolls 4 and 3.
                 }
             } else {
                 container['class'] = "neutral";
+            }
+            if (checkers > 9) {
+                container['class'] += " stacked" + (player ? "P" : "O");
+            } else {
+                container['class'] += " point";
             }
             container['checkers'] = checkers;
             container['target'] = variant['targetType'](player, checkers, captive);

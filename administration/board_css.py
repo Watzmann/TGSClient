@@ -5,6 +5,8 @@
 
 from StringIO import StringIO
 
+RESOURCES = 'url(resources/board/%s)'
+
 class BoardCss():
     def __init__(self, filepath):
         """Create the boards CSS."""
@@ -19,9 +21,10 @@ class BoardCss():
 
     def _board(self,):
         css = StringIO()
-        board = self.metrics['board']
-        print >>css, "#boardBg {background-image: url(resources/board/%s); " \
-                             "width:%dpx; height:%dpx;}" % board
+        board = list(self.metrics['board'])
+        board[0] = RESOURCES % board[0]
+        print >>css, "#boardBg {background-image: %s; " \
+                             "width:%dpx; height:%dpx;}" % tuple(board)
         print >>css, "#board2 { margin-left:%dpx; margin-bottom:%dpx; " \
                                "height:%dpx; width:%dpx;}" \
                                          % (board[1] + 30, 18, board[2], 420)
@@ -31,19 +34,20 @@ class BoardCss():
         """Create the boards points."""
         css = StringIO()
         rule = "#p%(point)d {position:absolute; top:%(top)dpx; " \
-               "left:%(left)dpx; width:%(width)dpx; height:%(height)dpx;}"
+               "left:%(left)dpx;}"
         WIDTH = self.metrics['point_width']
         HEIGHT = 6 * self.metrics['piece_dimension'][1]
         BAR_WIDTH = self.metrics['bar_width']
         xpos = self.metrics['xposition']
+        print >>css, ".point {width:%dpx; height:%dpx;}" % (WIDTH, HEIGHT)
+        print >>css, ".stackedP {background-image: %s; width:%dpx; height:%dpx;}" % (RESOURCES % 'playerpiece.gif', WIDTH, HEIGHT)
+        print >>css, ".stackedO {background-image: %s; width:%dpx; height:%dpx;}" % (RESOURCES % 'opponentpiece.gif', WIDTH, HEIGHT)
         for i in range(24):
             values = dict((('point', i+1),
                            ('top', {True: self.metrics['top_margin'],
-                                    False: self.metrics['bottom_margin'] - \
-                                                                HEIGHT}[i>11]),
+                                    False: self.metrics['bottom_margin'] -
+                                    HEIGHT}[i > 11]),
                            ('left', xpos),
-                           ('width', WIDTH),
-                           ('height', HEIGHT),
                           ))
             if i < 11:
                 xpos -= WIDTH
@@ -64,13 +68,15 @@ class BoardCss():
         print >>css, ".c5 { position:relative; top:-%dpx; }" % (4 * h + hh)
         print >>css, ".c9 { position:relative; top:-%dpx; }" % (8 * h)
         offset = {5:8*h+hh, 9:16*h+h, 12:22*h+hh+h}
-        for i in range(5,15): # 5..14
+        for i in range(5,15):  # 5..14
             if i in offset:
                 o = offset[i]
             print >>css, ".cp%d { position:relative; top:-%dpx; }" % \
                                             (i, 2*i*h - o)
-        for i in range(1,6): # 1..5
+        for i in range(1,6):  # 1..5
             print >>css, ".cs%d { height:%dpx; }" % (i, i*h)
+        for i in range(1,6):  # 1..5
+            print >>css, ".css%d { height:%dpx; }" % (i, i*h - hh)
         return css.getvalue()
 
     def _dice(self,):
