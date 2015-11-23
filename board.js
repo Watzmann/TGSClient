@@ -404,7 +404,7 @@ hannes rolls 4 and 3.
                     startPiece = 1;
                 }
                 if (padding) {
-                    var pheight = (6 - Math.min(5,pieces));
+                    var pheight = 6 - Math.min(5,(stacked ? pieces - 6 : pieces));
                     var pstacked = stacked ? 's' : '';
                     point = "<div class=\"cs" + pstacked + pheight + "\"></div>";
                 } else if (stacked) {
@@ -414,9 +414,13 @@ hannes rolls 4 and 3.
                     point += '<img src=' + oppPiece[color] +
                                                         ' alt=captured>';
                 }
-                pieces = stacked ? checkers - 6 : checkers;
+                pieces = stacked ? pieces - 6 : pieces;
                 for (var c = startPiece; c < pieces; c++) {
                     var stack = ' class="' + color;
+                    if (captive && padding && (c == 5)) {
+                        point += '<img src=' + oppPiece[color] + ' alt=captured>';
+                        captive = false;
+                    }
                     if (padding && c > 4) {
                         stack += ' cp' + c + '"';
                     } else if (c > 8) {
@@ -429,8 +433,7 @@ hannes rolls 4 and 3.
                     point += '<img' + stack + ' src=' + piece[color] + ' alt=' + color + '>';
                 }
                 if (captive && padding) {
-                    point += '<img src=' + oppPiece[color] +
-                                                        ' alt=captured>';
+                    point += '<img src=' + oppPiece[color] + ' alt=captured>';
                 }
                 return point;
             }
