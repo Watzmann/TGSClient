@@ -114,6 +114,9 @@ hannes rolls 4 and 3.
                         'opponent': gifRoot + "playerpiece.gif",},
             home = {'player': gifRoot + "playerpiecehome.gif",
                     'opponent': gifRoot + "opponentpiecehome.gif",},
+            transPosStandard = [0,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+            //transPosFevga = [0,12,11,10,9,8,7,6,5,4,3,2,1,24,23,22,21,20,19,18,17,16,15,14,13],
+            transPosFevga = [0,13,14,15,16,17,18,19,20,21,22,23,24,1,2,3,4,5,6,7,8,9,10,11,12],
             wasteFilter = {'1': '#p6,#p5,#p4,#p3,#p2',
                            '2': '#p6,#p5,#p4,#p3',
                            '3': '#p6,#p5,#p4',
@@ -149,21 +152,25 @@ hannes rolls 4 and 3.
                                      'targetType': targetPlakoto,
                                      'pDitch': '0P',
                                      'oDitch': '<div id=oDitchP>',
+                                     'transPos': transPosStandard,
                                     },
                         'portes':   {'home': homeStandard,
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
+                                     'transPos': transPosStandard,
                                     },
                         'fevga':    {'home': homeStandard,
                                      'targetType': targetFevga,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
+                                     'transPos': transPosFevga,
                                     },
                         'standard': {'home': homeStandard,
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                     'oDitch': '<div id=oDitch>',
+                                     'transPos': transPosStandard,
                                     },
         }
         function moveChecker(element, dice, double, nrMoves, event, $board) {
@@ -539,12 +546,13 @@ hannes rolls 4 and 3.
         }
         function setCheckersX(position, $b) {
             var checkers, container, captive, plr,
-                div = "";
+                div = "",
+                tp = variants[this.tgc.board.gameVariant]['transPos'];
             for (var i=1; i<25; i++) {
-                checkers = parseInt(position[25-i]);
+                checkers = parseInt(position[tp[i]]);
                 plr = checkers < 0;
                 checkers = Math.abs(checkers);
-                container = {id: i, point: 25-i};
+                container = {id: i, point: tp[i]};
                 captive = checkers > 20;
                 if (captive) {
                     checkers -= 20;
@@ -686,13 +694,8 @@ hannes rolls 4 and 3.
         }
         var elements = this.parseBoard(board);
         var setDirection = function($imgs, elements) {
-            if (elements['direction'] == '-1') {
-                $imgs.filter('#pip13').attr('class', 'upperpipsO');
-                $imgs.filter('#pip12').attr('class', 'lowerpipsO');
-            } else {
-                $imgs.filter('#pip12').attr('class', 'upperpipsX');
-                $imgs.filter('#pip13').attr('class', 'lowerpipsX');
-            }
+            $imgs.filter('#pip13').attr('class', 'upperpipsX');
+            $imgs.filter('#pip12').attr('class', 'lowerpipsX');
         }
         var drawPosition = function($board, elements) {
             var availableDice, initialDice, double, nrMoves,
