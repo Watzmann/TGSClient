@@ -21,6 +21,7 @@ function loadBoard() {
             oPips: document.getElementById("oPips"),
             oDiff: document.getElementById("oDiff"),
             oScore: document.getElementById("oScore"),
+            gameVariantText: document.getElementById("gameVariant"),
             gameCount: document.getElementById("gameCounter"),
             matchLength: document.getElementById("matchLength"),
     },
@@ -689,6 +690,9 @@ hannes rolls 4 and 3.
             color = - pdiff < 0 ? 'Red' : 'Green'
             p['oDiff'].setAttribute('class', 'iPips pip' + color)
             p['oScore'].innerHTML = elements['oScore'];
+            var variant = this.tgc.board.gameVariant;
+            variant = variant[0].toUpperCase() + variant.slice(1);
+            p['gameVariantText'].innerHTML = variant;
             p['gameCount'].innerHTML = elements['gameCount'];
             p['matchLength'].innerHTML = elements['ML'];
         }

@@ -267,24 +267,29 @@ function loadTGC() {
                         gameInfo.innerHTML = data['line'];
                         tgc.board.finishMatch("#boardarea", data);
                         break;
-                    case "e21":
-                    case "e22":
                     case "e19":
                     case "e20":
+                    case "e21":
+                    case "e22":
                         gameLinenumber = 1;
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
                         tgc.action.system(line);
                         tgc.action.clearGameProtocol();
-                        tgc.board.setVariant(data['variant']);
                         tgc.navigate.show("board");
                         break;
-                    case "e24":
+                    case "e23":
+                        var data = JSON.parse(cmd),
+                            line = sprintf(tgc.dialect[act], data);
+                        tgc.board.setVariant(data['variant']);
+                        tgc.action.system(line);
+                        break;
                     case "e25":
+                    case "e26":
                         // TODO:10: here we should display the dice in the board and wait a second
-                    case "e33":
+                    case "e34":
                         gameLineHeader = sprintf('%2d  ', gameLinenumber++);
-                    case "e28":
+                    case "e29":
                         var data = JSON.parse(cmd),
                             roll = sprintf('%(r1)s%(r2)s: ', data);
                         if (act == "e24" && (data.r2 > data.r1)) {
@@ -292,32 +297,33 @@ function loadTGC() {
                         }
                         tgc.action.gameProtocol(gameLineHeader + roll);
                         break;
-                    case "e37":
+                    case "e38":
                         var data = JSON.parse(cmd),
                             move = sprintf('%(move)-27s', data);
                         tgc.action.gameProtocol(move);
                         break;
-                    case "e29":
-                    case "e36":
+                    case "e30":
+                    case "e37":
                         var data = JSON.parse(cmd),
                             move = sprintf(tgc.dialect[act], data);
                         tgc.action.gameProtocol(move);
                         break;
-                    case "e30":
-                    case "e35":
-                        tgc.action.gameProtocol(tgc.dialect[act+'b']);
-                    case "e26":
-                    case "e27":
-                    case "e32":
-                    case "e34":
-                        var data = JSON.parse(cmd);
-                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
-                        break;
-                    case "e23":
-                        var data = JSON.parse(cmd);
-                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
-                        break;
                     case "e31":
+                    case "e36":
+                        tgc.action.gameProtocol(tgc.dialect[act+'b']);
+                    case "e27":
+                    case "e28":
+                    case "e33":
+                    case "e35":
+                        var data = JSON.parse(cmd);
+                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
+                        break;
+                    case "e24":
+                        var data = JSON.parse(cmd);
+                        tgc.board.setVariant(data['variant']);
+                        gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
+                        break;
+                    case "e32":
                         break;
                     case "g01":
                         tgc.action.who(action_parts);
