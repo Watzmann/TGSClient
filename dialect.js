@@ -14,7 +14,7 @@ function loadDialect() {
     return {
         e17: '%(name)s wins the %(ML)s point match %(score)s',
         e18: 'You win the %(ML)s point match %(score)s',
-        e19: '** Player %(name)s has joined you for %(ML)s match of %(variant)s.',
+        e19: '** Player %(name)s has joined you for %(ML)s match.',
         e20: '** You are now playing %(ML)s match with %(name)s',
         e21: '%(name)s has joined you. Your running match was loaded.',
         e22: 'You are now playing with %(name)s. Your running match was loaded.',
