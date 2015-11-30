@@ -170,7 +170,7 @@ hannes rolls 4 and 3.
                         'standard': {'home': homeStandard,
                                      'targetType': targetStandard,
                                      'pDitch': '0',
-                                    'oDitch': '<div id=oDitch>',
+                                     'oDitch': '<div id=oDitch>',
                                      'transPos': transPosStandard,
                                     },
         }
@@ -243,7 +243,7 @@ hannes rolls 4 and 3.
             /* Are checkers on the bar? If so, is this here the bar?? */
             $r = $divs.filter('#p25');
             if ($r.find('img').length > 0) {   /* TODO:0j: is there a better way to look for data-checkers != 0? */
-                if (myPoint != 'p25') {
+                if (myPoint != 'p25') {        /*          YES, use property 'data-checkers' */
                     return false;
                 }
             }
@@ -558,18 +558,14 @@ hannes rolls 4 and 3.
                 if (captive) {
                     checkers -= 20;
                 }
-                if (plr) {
-                    container['color'] = 'player';
-                    div += composePoint(container, checkers, captive);
-                } else {
-                    container['color'] = 'opponent';
-                    div += composePoint(container, checkers, captive);
-                }
+                container['color'] = plr ? 'player' : 'opponent';
+                div += composePoint(container, checkers, captive);
             }
             jQuery(div).appendTo($b);
         }
         function setCheckersO(position, $b) {
-            var checkers, div, container, captive, plr;
+            var checkers, container, captive, plr,
+                div = "";
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[i]);
                 plr = checkers > 0;
@@ -579,16 +575,10 @@ hannes rolls 4 and 3.
                 if (captive) {
                     checkers -= 20;
                 }
-                if (plr) {
-                    container['color'] = 'player';
-                    div = composePoint(container, checkers, captive);
-                } else {
-                    container['color'] = 'opponent';
-                    div = composePoint(container, checkers, captive);
-                }
-                /* TODO:0j: is it a good idea to draw empty points?? */
-                jQuery(div).appendTo($b);
+                container['color'] = plr ? 'player' : 'opponent';
+                div += composePoint(container, checkers, captive);
             }
+            jQuery(div).appendTo($b);
         }
         function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, $b) {
             var pic, div, t;
