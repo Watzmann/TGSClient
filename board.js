@@ -116,8 +116,8 @@ hannes rolls 4 and 3.
             home = {'player': gifRoot + "playerpiecehome.gif",
                     'opponent': gifRoot + "opponentpiecehome.gif",},
             transPosStandard = [0,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
-            //transPosFevga = [0,12,11,10,9,8,7,6,5,4,3,2,1,24,23,22,21,20,19,18,17,16,15,14,13],
             transPosFevga = [0,13,14,15,16,17,18,19,20,21,22,23,24,1,2,3,4,5,6,7,8,9,10,11,12],
+            starthereHooksFevga = {'blocked': false},
             wasteFilter = {'1': '#p6,#p5,#p4,#p3,#p2',
                            '2': '#p6,#p5,#p4,#p3',
                            '3': '#p6,#p5,#p4',
@@ -153,25 +153,29 @@ hannes rolls 4 and 3.
                                      'targetType': targetPlakoto,
                                      'pDitch': '0P',
                                      'oDitch': '<div id=oDitchP>',
-                                     'transPos': transPosStandard,
+                                     'setCheckers': {'O': setCheckersO,
+                                                     'X': setCheckersX},
                                     },
                         'portes':   {'home': homeStandard,
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
-                                     'transPos': transPosStandard,
+                                     'setCheckers': {'O': setCheckersO,
+                                                     'X': setCheckersX},
                                     },
                         'fevga':    {'home': homeStandard,
                                      'targetType': targetFevga,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
-                                     'transPos': transPosFevga,
+                                     'setCheckers': {'O': setCheckersFevgaO,
+                                                     'X': setCheckersFevgaX},
                                     },
                         'standard': {'home': homeStandard,
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
-                                     'transPos': transPosStandard,
+                                     'setCheckers': {'O': setCheckersO,
+                                                     'X': setCheckersX},
                                     },
         }
         function moveChecker(element, dice, double, nrMoves, event, $board) {
@@ -213,25 +217,39 @@ hannes rolls 4 and 3.
                     return '#p' + target;
                 }
             }
+            var releasePlacebo = function ($point) {}
+            var releaseBlockedPoint = function (id) {
+                if (starthereHooksFevga['blocked']) {
+                    if (parseInt(id.slice(1)) < 12) {
+                        $point = $divs.filter('#p24');
+                        $point.attr('class', $point.attr('class').replace('neutral', 'starthere'));
+                        starthereHooksFevga['blocked'] = false;
+                    }
+                }
+            }
             var variants = {'plakoto': {'move': movePlakoto,
                                         'hit': hitPointPlakoto,
                                         'waste': targetWastePlakoto,
                                         'target': targetPointPlakoto,
+                                        'release': releasePlacebo,
                                         },
                             'portes': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
+                                        'release': releasePlacebo,
                                         },
                             'fevga': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
+                                        'release': releaseBlockedPoint,
                                         },
                             'standard': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
+                                        'release': releasePlacebo,
                                         },
             }
             var myGame = variants[this.tgc.board.gameVariant];
@@ -285,9 +303,11 @@ hannes rolls 4 and 3.
                         data = {'id': id, 'point': point};
                         if (captive && checkers == 0) {
                             data['color'] = 'opponent';
+                            data['dynamic'] = false;
                             html = composePoint(data, 1, false);
                         } else {
                             data['color'] = 'player';
+                            data['dynamic'] = checkers > 0;
                             html = composePoint(data, checkers, captive);
                         }
                         break;
@@ -300,7 +320,8 @@ hannes rolls 4 and 3.
                 point = $p.attr('data-point');
                 checkers = 1;
                 id = parseInt(id.slice(1));
-                data = {'id': id, 'point': point, 'color': 'player'};
+                data = {'id': id, 'point': point,
+                        'color': 'player', 'dynamic': true};
                 html = composePoint(data, checkers, true);
                 return html;
             }
@@ -313,6 +334,7 @@ hannes rolls 4 and 3.
                     i++;
                 }
                 jQuery(div).insertBefore($divs.eq(i));
+                myGame['release']($r.attr('id'))
                 return $r;
             }
             function hitPointStandard($p, $o) {
@@ -478,7 +500,7 @@ hannes rolls 4 and 3.
             var div, html,
                 variant = variants[this.tgc.board.gameVariant],
                 player = container['color'] == 'player';
-            if (player && checkers > 0) {
+            if (container['dynamic']) {
                 if (variant['home'](container['id'])) {
                     container['class'] = "starthere home";
                 } else {
@@ -548,7 +570,7 @@ hannes rolls 4 and 3.
         function setCheckersX(position, $b) {
             var checkers, container, captive, plr,
                 div = "",
-                tp = variants[this.tgc.board.gameVariant]['transPos'];
+                tp = transPosStandard;
             for (var i=1; i<25; i++) {
                 checkers = parseInt(position[tp[i]]);
                 plr = checkers < 0;
@@ -559,6 +581,7 @@ hannes rolls 4 and 3.
                     checkers -= 20;
                 }
                 container['color'] = plr ? 'player' : 'opponent';
+                container['dynamic'] = plr && (checkers > 0);
                 div += composePoint(container, checkers, captive);
             }
             jQuery(div).appendTo($b);
@@ -576,6 +599,78 @@ hannes rolls 4 and 3.
                     checkers -= 20;
                 }
                 container['color'] = plr ? 'player' : 'opponent';
+                container['dynamic'] = plr && (checkers > 0);
+                div += composePoint(container, checkers, captive);
+            }
+            jQuery(div).appendTo($b);
+        }
+        function setCheckersFevgaX(position, $b) {
+            var checkers, container, captive, plr, blocked,
+                div = "",
+                tp = transPosFevga;
+            function notPassed() {
+                return (position[12] == -14) &&
+                            (position[23] > -1) &&
+                            (position[22] > -1) &&
+                            (position[21] > -1) &&
+                            (position[20] > -1) &&
+                            (position[19] > -1) &&
+                            (position[18] > -1) &&
+                            (position[17] > -1) &&
+                            (position[16] > -1) &&
+                            (position[15] > -1) &&
+                            (position[14] > -1) &&
+                            (position[13] > -1) &&
+                            (position[24] > -1);
+            }
+            for (var i=1; i<25; i++) {
+                checkers = parseInt(position[tp[i]]);
+                plr = checkers < 0;
+                checkers = Math.abs(checkers);
+                container = {id: i, point: tp[i]};
+                captive = checkers > 20;
+                if (captive) {
+                    checkers -= 20;
+                }
+                blocked = (i == 24) && notPassed();
+                starthereHooksFevga['blocked'] = blocked;
+                container['color'] = plr ? 'player' : 'opponent';
+                container['dynamic'] = plr && (checkers > 0) && !blocked;
+                div += composePoint(container, checkers, captive);
+            }
+            jQuery(div).appendTo($b);
+        }
+        function setCheckersFevgaO(position, $b) {
+            var checkers, container, captive, plr, blocked,
+                div = "";
+            function notPassed() {
+                return (position[24] == 14) &&
+                            (position[11] < 1) &&
+                            (position[10] < 1) &&
+                            (position[9] < 1) &&
+                            (position[8] < 1) &&
+                            (position[7] < 1) &&
+                            (position[6] < 1) &&
+                            (position[5] < 1) &&
+                            (position[4] < 1) &&
+                            (position[3] < 1) &&
+                            (position[2] < 1) &&
+                            (position[1] < 1) &&
+                            (position[12] < 1);
+            }
+            for (var i=1; i<25; i++) {
+                checkers = parseInt(position[i]);
+                plr = checkers > 0;
+                checkers = Math.abs(checkers);
+                container = {id: i, point: i};
+                captive = checkers > 20;
+                if (captive) {
+                    checkers -= 20;
+                }
+                blocked = (i == 24) && notPassed();
+                starthereHooksFevga['blocked'] = blocked;
+                container['color'] = plr ? 'player' : 'opponent';
+                container['dynamic'] = plr && (checkers > 0) && !blocked;
                 div += composePoint(container, checkers, captive);
             }
             jQuery(div).appendTo($b);
@@ -693,6 +788,7 @@ hannes rolls 4 and 3.
         }
         var drawPosition = function($board, elements) {
             var availableDice, initialDice, double, nrMoves,
+                setCheckers = variants[this.tgc.board.gameVariant]['setCheckers'],
                 fmtMoves = new Array,
                 myMoves = new Array;
             function setAvailableDice(dice, nrmoves) {
@@ -714,9 +810,9 @@ hannes rolls 4 and 3.
             setInfo(elements);
             $board.find('div').remove();
             if (elements['color'] == "-1") {
-                setCheckersX(elements['position'], $board);
+                setCheckers['X'](elements['position'], $board);
             } else {
-                setCheckersO(elements['position'], $board);
+                setCheckers['O'](elements['position'], $board);
             }
             setCube(elements['cubeValue'], elements['meMayDouble'],
                     elements["meMayTurn"], elements['cubeWasTurned'], $board);
