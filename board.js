@@ -149,10 +149,43 @@ hannes rolls 4 and 3.
             else if (checkers > 0) { return "no"; }
             else { return "yes"; }
         }
+        var constraintsPlacebo = function (data) {
+        }
+        var constraintsFevga = function (data) {
+            if (data.moves == 1) {
+                var $s = $('#p24,#p23,#p22,#p21,#p20,#p19'),
+                    $a = $s.filter('.neutral');
+                if ($a.length == 0) {
+                    $('.starthere').each(function () {
+                        var $e = jQuery(this);
+                        $e.attr('class', $e.attr('class').replace('starthere', 'neutral'));
+                        }
+                    );
+                    $s.each(function () {
+                        var $e = jQuery(this);
+                        if ($e.attr('data-checkers') == 1) {
+                            $e.attr('class', $e.attr('class').replace('neutral', 'starthere'));
+                        }
+                    }
+                    );
+                }
+                else if ($a.length == 1) {
+                    var tid = $a.attr('id').slice(1),
+                        sid = parseInt(tid) + data.dice[0];
+                    if (sid < 25) {
+                        $p = $('#p' + sid);
+                        if ($p.attr('data-checkers') > 0) {
+                            $p.attr('class', $p.attr('class').replace('starthere', 'neutral'));
+                        }
+                    }
+                }
+            }
+        }
         var variants = {'plakoto':  {'home': homePlakoto,
                                      'targetType': targetPlakoto,
                                      'pDitch': '0P',
                                      'oDitch': '<div id=oDitchP>',
+                                     'constraints': constraintsPlacebo,
                                      'setCheckers': {'O': setCheckersO,
                                                      'X': setCheckersX},
                                     },
@@ -160,6 +193,7 @@ hannes rolls 4 and 3.
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
+                                     'constraints': constraintsPlacebo,
                                      'setCheckers': {'O': setCheckersO,
                                                      'X': setCheckersX},
                                     },
@@ -167,6 +201,7 @@ hannes rolls 4 and 3.
                                      'targetType': targetFevga,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
+                                     'constraints': constraintsFevga,
                                      'setCheckers': {'O': setCheckersFevgaO,
                                                      'X': setCheckersFevgaX},
                                     },
@@ -174,6 +209,7 @@ hannes rolls 4 and 3.
                                      'targetType': targetStandard,
                                      'pDitch': '0',
                                      'oDitch': '<div id=oDitch>',
+                                     'constraints': constraintsPlacebo,
                                      'setCheckers': {'O': setCheckersO,
                                                      'X': setCheckersX},
                                     },
@@ -789,6 +825,7 @@ hannes rolls 4 and 3.
         var drawPosition = function($board, elements) {
             var availableDice, initialDice, double, nrMoves,
                 setCheckers = variants[this.tgc.board.gameVariant]['setCheckers'],
+                checkConstraints = variants[this.tgc.board.gameVariant]['constraints'],
                 fmtMoves = new Array,
                 myMoves = new Array;
             function setAvailableDice(dice, nrmoves) {
@@ -853,6 +890,7 @@ hannes rolls 4 and 3.
                                 $board.find('.starthere').each(clearAction);
                                 if (resulting['moves'] > 0) {
                                     /* There are moves left; set hotspots accordingly */
+                                    checkConstraints(resulting);
                                     $board.find('.starthere').each(setAction);
                                     $board.find('#sendMove').attr('title',
                                         sendMoveApologies(resulting['moves'], true));
