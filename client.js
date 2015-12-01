@@ -37,6 +37,15 @@ function loadTGC() {
         devMessages = document.getElementById("devMessages"),
         serverChoser = document.getElementById("switchservers");
     var gameLinenumber;
+    var variantMapper = {
+            standard: ['standard', 'Game'],
+            nack: ['standard', 'Nackgammon'],
+            hyper: ['standard', 'Hypergammon'],
+            tavli: ['portes', 'Portes'],
+            portes: ['portes', 'Portes'],
+            plakoto: ['plakoto', 'Plakoto'],
+            fevga: ['fevga', 'Fevga'],
+    }
 
     function lineBreak(msg) {
         return msg + '\n';
@@ -281,7 +290,7 @@ function loadTGC() {
                     case "e23":
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
-                        tgc.board.setVariant(data['variant']);
+                        tgc.board.setVariant(variantMapper[data['variant']]);
                         tgc.action.system(line);
                         break;
                     case "e25":
@@ -320,7 +329,7 @@ function loadTGC() {
                         break;
                     case "e24":
                         var data = JSON.parse(cmd);
-                        tgc.board.setVariant(data['variant']);
+                        tgc.board.setVariant(variantMapper[data['variant']]);
                         gameInfo.innerHTML = sprintf(tgc.dialect[act], data);
                         break;
                     case "e32":

@@ -288,7 +288,7 @@ hannes rolls 4 and 3.
                                         'release': releasePlacebo,
                                         },
             }
-            var myGame = variants[this.tgc.board.gameVariant];
+            var myGame = variants[this.tgc.board.gameVariant[0]];
             if (event.which == 2) {        /* ignore middle clicks */
                 return false;
             } else if (!double && nrMoves == 2 && event.which == 3) {
@@ -534,7 +534,7 @@ hannes rolls 4 and 3.
         }
         function composePoint(container, checkers, captive) {
             var div, html,
-                variant = variants[this.tgc.board.gameVariant],
+                variant = variants[this.tgc.board.gameVariant[0]],
                 player = container['color'] == 'player';
             if (container['dynamic']) {
                 if (variant['home'](container['id'])) {
@@ -558,7 +558,7 @@ hannes rolls 4 and 3.
         }
         function composePlayersDitch(checkers, pt) {
             var point = "",
-                data = {'id': variants[this.tgc.board.gameVariant]['pDitch'],
+                data = {'id': variants[this.tgc.board.gameVariant[0]]['pDitch'],
                         'point': pt,
                         'class': "neutral home",
                         'checkers': checkers,
@@ -572,7 +572,7 @@ hannes rolls 4 and 3.
             return composeDiv(data, false) + point + '</div>';
         }
         function composeOpponentsDitch(checkers) {
-            var ditch = variants[this.tgc.board.gameVariant]['oDitch'];
+            var ditch = variants[this.tgc.board.gameVariant[0]]['oDitch'];
             var point = "";
             for (var c = 0; c < checkers; c++) {
                 point += '<img src=' + home['opponent'] + ' alt="home piece opponent">';
@@ -811,9 +811,7 @@ hannes rolls 4 and 3.
             color = - pdiff < 0 ? 'Red' : 'Green'
             p['oDiff'].setAttribute('class', 'iPips pip' + color)
             p['oScore'].innerHTML = elements['oScore'];
-            var variant = this.tgc.board.gameVariant;
-            variant = variant[0].toUpperCase() + variant.slice(1);
-            p['gameVariantText'].innerHTML = variant;
+            p['gameVariantText'].innerHTML = this.tgc.board.gameVariant[1];
             p['gameCount'].innerHTML = elements['gameCount'];
             p['matchLength'].innerHTML = elements['ML'];
         }
@@ -824,8 +822,8 @@ hannes rolls 4 and 3.
         }
         var drawPosition = function($board, elements) {
             var availableDice, initialDice, double, nrMoves,
-                setCheckers = variants[this.tgc.board.gameVariant]['setCheckers'],
-                checkConstraints = variants[this.tgc.board.gameVariant]['constraints'],
+                setCheckers = variants[this.tgc.board.gameVariant[0]]['setCheckers'],
+                checkConstraints = variants[this.tgc.board.gameVariant[0]]['constraints'],
                 fmtMoves = new Array,
                 myMoves = new Array;
             function setAvailableDice(dice, nrmoves) {
