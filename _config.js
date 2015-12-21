@@ -21,6 +21,7 @@
 function loadConfig() {
   var tgcConfig = (function() {
     return {
+        VERSION: '1.0',
         DEVELOP_MODE: false,
         HOST_PORT: {//'server1': "192.168.1.1:8001",
                     //'server2': "192.168.1.2:8001",
