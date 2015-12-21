@@ -9,7 +9,7 @@
  *
 */
 
-var CLIENT_LABEL = 'TigerGammon-' + window.tgcConfig.VERSION;
+var CLIENT_LABEL = 'TiGa-' + window.tgcConfig.VERSION;
 var CLIENT_PROTOCOL = '2010';
 
 function loadTGC() {
