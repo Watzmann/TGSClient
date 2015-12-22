@@ -415,7 +415,7 @@ function loadTGC() {
             /* TODO:0j: das muss doch hier drin gemacht werden;
              *          aber 'ws' muss bekannt sein */
         },
-        openSession: function() {
+        openSession: function(mode) {
             var hp = $("#sockets").attr('data-host');
             var ws = new WebSocket("ws://"+hp+"/ws");
             ws.onopen = function() {
@@ -470,7 +470,7 @@ function loadTGC() {
                 ws.send('toggle ' + toggle);
             };
             tgc.cc.login = function(name, passwd, label, protVersion) {
-                ws.send("login "+name+" "+passwd+" "+label+" "+protVersion);
+                ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
                 return true;
             };
             tgc.cc.reopen = function() {

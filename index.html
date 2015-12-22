@@ -17,10 +17,10 @@
       </div>
       <div id="greeting"  style="display:block;">
         <p>
-          This is a prototype of the new HTML5 client for TigerGammon online backgammon play.
+          This is your alpha version of the new HTML5 client for TigerGammon online Backgammon play.
         </p>
         <p>
-          Login to tigergammon.com ...</br>
+          Login to tigergammon.com or register if you are new!</br>
         </p>
       </div>
       <div id="goodbye"  style="display:none;">
@@ -29,17 +29,17 @@
         </p>
       </div>
       <div>
-        <label for="login_name">name:</label>
+        <label for="login_name">name:</label><br/>
         <input type="text" name="name" id="login_name"/><br/>
-        <label for="login_password">password:</label>
-        <input type="password" name="password" id="login_password"/>
+        <label for="login_password">password:</label><br/>
+        <input type="password" name="password" id="login_password"/><br/>
+        <div style="margin-top: 1em;">
         <input type="button" id="login_submit" value="Login"
-               onclick="tgc.openSession();"/>
-      </div>
-      <div id="register"  style="display:block;">
-        <p>
-          ... or register.
-        </p>
+               onclick="tgc.openSession('login');"/>
+        <span style="padding-left: 35px;">
+        <input type="button" id="register_submit" value="Register"
+               onclick="tgc.openSession('register');"/>
+        </span></div>
       </div>
       <div id="switchservers" style="padding-top:20px; display:none;">available servers:
         <table id="sockets">
