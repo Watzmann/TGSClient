@@ -56,16 +56,19 @@
 
 #   e) match/game/board
 
-    'resign_offer': 'e01#{"name":"%(name)s",'      # user wants to resign. You will win 1 point. Type 'accept' or 'reject'.
-                         '"value":"%(value)s"}',
-    'you_offer_resign': 'e02#%(value)s',           # You want to resign. user will win 1 point.
-    'watch_resign_offer': 'e03#{"name":"%(name)s",' # user1 wants to resign. user2 will win 1 point.
+    'resign_offer': 'e01#{"name":"%(name)s",'      # %(name)s wants to resign. You will win %(value)s. Type 'accept' or 'reject'.
+                         '"resigned":"%(offered)s",'
+    		         '"value":"%(value)s"}',
+    'you_offer_resign': 'e02#{"value":"%(value)s",' # You want to resign. user will win %(value)s.
+                             '"resigned":"%(offered)s"}',
+    'watch_resign_offer': 'e03#{"name":"%(name)s",' # %(name)s wants to resign. %(opponent)s will win %(value)s.
                                '"opponent":"%(opponent)s",'
-    		               '"value":"%(value)s"}',
-    'accept_resign': 'e04#{"name":"%(name)s",'     # user accepts and wins 1 point.
+                               '"resigned":"%(offered)s",'
+                               '"value":"%(value)s"}',
+    'accept_resign': 'e04#{"name":"%(name)s",'     # %(name)s accepts and wins %(value)s.
                           '"value":"%(value)s"}',
-    'you_accept_resign': 'e05#%(value)s',          # You accept and win 1 point.
-    'reject_resign': 'e06#%(name)s',               # user rejects. The game continues.
+    'you_accept_resign': 'e05#%(value)s',          # You accept and win %(value)s.
+    'reject_resign': 'e06#%(name)s',               # %(name)s rejects. The game continues.
     'you_reject_resign': 'e07#{}',                 # You reject. The game continues.
 
     'opp_wins_game': 'e08#{"name":"%(name)s",'     # %(name)s wins the game and gets %(value)s.%(addon)s

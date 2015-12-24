@@ -90,7 +90,7 @@ hannes rolls 4 and 3.
         function reject() {
             tgc.cc.sendCmd("reject");
         }
-        pic = '<img src="'+this.gifRoot+'reject.gif" alt="reject">';
+        pic = '<img src="'+this.gifRoot+'reject.gif" alt="reject" title="doubleclick to reject">';
         jQuery('<div id="reject">'+pic+'</div>').appendTo($b);
         jQuery('#reject').dblclick(reject);
     },
@@ -101,8 +101,8 @@ hannes rolls 4 and 3.
         function accept() {
             tgc.cc.sendCmd("accept");
         }
-        pic = '<img src="'+this.gifRoot+'resign'+data['value'][0]+
-              '.gif" alt="resign '+value[data['value']]+'">';
+        pic = '<img src="'+this.gifRoot+'resign'+value[data['resigned']][0]+
+              '.gif" alt="resign '+value[data['resigned']]+'" title="doubleclick to accept">';
         jQuery('<div id="resign" class="resign">'+pic+'</div>').appendTo($b);
         jQuery('#resign').dblclick(accept);
         this.setReject($b);
