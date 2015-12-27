@@ -1,0 +1,325 @@
+#
+# Nomenclature for HTML5 client (TGC) messages:
+#
+# Messages are categorized according to message window, the message is intended
+# for. There are the following windows:
+#   a) Player list window
+#   b) Notification area (login/logout, ...)
+#   c) shouts, ...
+#   d) personal chats, ....
+#   e) match/game/board
+#   f) messages
+#   g) who
+#   h) system messages (leading '** ')
+#   q) system messages (leading '** ') as 'h' cannot hold more than 99 messages
+#   i) information messages
+#   l) login/registration messages
+#
+# In addition the messages are uniquely numbered within each category.
+#
+# Messages with a single data variable are not in JSON format, as the client
+# may simply parse that variable itself.
+
+
+#   a) Player list window
+
+
+#   b) Notification area (login/logout, ...)
+
+    'login_msg': 'b01#%(name)s',                   # <name> logs in.  CLIP 7
+    'wave_msg': 'b02#%(name)s',                    # <name> waves goodbye.
+    'you_wave': 'b03#{}',                          # You wave goodbye.
+    'wave_again_msg': 'b04#%(name)s',              # <name> waves goodbye again.
+    'you_wave_again': 'b05#{}',                    # You wave goodbye again and log out.
+    'drop_conn_msg': 'b06#%(name)s',               # <name> drops connection.
+
+#   c) shouts, ...
+
+    'you_shout': 'c01#{"message":"%(message)s"}',  # shout: <msg>
+    'shout': 'c02#{"name":"%(name)s",'             # <name> shouts: <msg>
+             '"message":"%(message)s"}',
+
+
+#   d) personal chats, ....
+
+    'you_say': 'd01#{"name":"%(name)s",'           # CLIP 16  hier mach ich nur n Häkchen :)
+               '"message":"%(message)s"}',
+    'say': 'd02#{"name":"%(name)s",'	           # CLIP 12
+           '"message":"%(message)s"}',
+    'you_whisper': 'd03#%(message)s',
+    'whisper': 'd04#{"name":"%(name)s",'
+               '"message":"%(message)s"}',
+    'you_kibitz': 'd05#%s',
+    'kibitz': 'd06#{"name":"%(name)s",'
+              '"message":"%(message)s"}',
+
+
+#   e) match/game/board
+
+    'resign_offer': 'e01#{"name":"%(name)s",'      # user wants to resign. You will win 1 point. Type 'accept' or 'reject'.
+                         '"value":"%(value)s"}',
+    'you_offer_resign': 'e02#%(value)s',           # You want to resign. user will win 1 point.
+    'watch_resign_offer': 'e03#{"name":"%(name)s",' # user1 wants to resign. user2 will win 1 point.
+                               '"opponent":"%(opponent)s",'
+    		               '"value":"%(value)s"}',
+    'accept_resign': 'e04#{"name":"%(name)s",'     # user accepts and wins 1 point.
+                          '"value":"%(value)s"}',
+    'you_accept_resign': 'e05#%(value)s',          # You accept and win 1 point.
+    'reject_resign': 'e06#%(name)s',               # user rejects. The game continues.
+    'you_reject_resign': 'e07#{}',                 # You reject. The game continues.
+
+    'opp_wins_game': 'e08#{"name":"%(name)s",'     # %(name)s wins the game and gets %(value)s.%(addon)s
+    		          '"addon":"%(addon)s",'
+                          '"value":"%(value)s"}',
+    'you_win_game': 'e09#{"value":"%(value)s"}',   # win the game and get %(value)s. Congratulations!
+
+    'opp_gives_up': 'e10#{"value":"%(value)s",'    # %(opponent)s gives up. You win %(value)s.
+                         '"opponent":"%(opponent)s"}',
+    'you_give_up': 'e11#{"name":"%(name)s",'       # You give up. %(name)s wins %(value)s.
+                        '"value":"%(value)s"}',
+    'watch_give_up': 'e12#{"name":"%(name)s",'     # %(opponent)s gives up. %(name)s wins %(value)s.
+                          '"opponent":"%(opponent)s",'
+                          '"value":"%(value)s"}',
+
+#e13 #score in n point match: user1-n user2-n
+#e14 #score in unlimited match: user1-n user2-n
+
+#e15 #Type 'join' if you want to play the next game, type 'leave' if you don't.
+#e16 #** Please wait for user to join too.
+
+    'wins_match': 'e17#{"ML":"%(ML)d",'            # %(name)s wins the %(ML)d point match %(score)s
+                       '"name":"%(name)s",'
+                       '"score":"%(score)s"}',
+    'you_win_match': 'e18#{"ML":"%(ML)d",'         # You win the %(ML)d point match %(score)s
+                       '"score":"%(score)s"}',
+
+    'inv_match': 'e19#{"ML":"%(ML)s",'             # ** Player %(name)s has joined you for %(ML)s match.
+                      '"name":"%(name)s"}',
+    'join_match': 'e20#{"ML":"%(ML)s",'            # ** You are now playing %(ML)s match with %(name)s
+                       '"name":"%(name)s"}',
+    'inv_resume': 'e21#{"name":"%(name)s"}',       # %(name)s has joined you. Your running match was loaded.
+    'join_resume': 'e22#{"name":"%(name)s"}',      # You are now playing with %(name)s. Your running match was loaded.
+    'resume_data': 'e23#{"name":"%(name)s",'       # turn: %(name)s.\n%(ML)s\npoints for %(player)s: %(score1)d\npoints for %(opponent)s: %(score2)d
+                        '"variant":"%(variant)s"}',
+
+# START a GAME
+    'new_game': 'e24#{"name":"%(name)s",'          # Starting a new game with %(name)s.
+                     '"variant":"%(variant)s"}',
+    'first_roll': 'e25#{"opp":"%(opp)s",'          # You rolled %(1)d, %(opp)s rolled %(2)d
+                       '"r1":"%(1)s", "r2":"%(2)s"}',
+    'watch_first_roll': 'e26#{"name":"%(name)s",'  # %(name)s rolled %(1)d, %(opp)s rolled %(2)d
+                             '"opp":"%(opp)s",'
+                             '"r1":"%(1)s", "r2":"%(2)s"}',
+    'opp_first': 'e27#{"name":"%(name)s"}',        # %(name)s makes the first move.
+    'you_first': 'e28#{}',                         # It's your turn to move.
+
+# OPPONENT
+    'opp_rolls': 'e29#{"name":"%(name)s",'         # %(name)s rolls %(1)d and %(2)d.
+                      '"r1":"%(1)s", "r2":"%(2)s"}',
+    'opp_moves': 'e30#{"name":"%(name)s",'         # %(name)s moves %(move)s .
+                      '"move":"%(tgcmove)s"}',
+    'opp_cant': 'e31#{"name":"%(name)s"}',         # %(name)s can't move.
+    'poss_move': 'e32#{"move":"%(move)s"}',        # The only possible move is %(move)s .
+    'bearoff': 'e33#{"move":"%(move)s"}',          # Bearing off: %(move)s
+
+# PLAYER
+    'you_roll': 'e34#{"r1":"%(1)s", "r2":"%(2)s"}', # You roll %(1)d and %(2)d.
+    'you_move': 'e35#{"nrpieces":"%(nrp)s"}',      # Please move %(nrp)d pieces.
+    'you_cant': 'e36#{}',                          # You can't move.
+    'you_poss_move': 'e37#{"move":"%(tgcmove)s"}', # The only possible move is %(move)s .
+    'you_bearoff': 'e38#{"move":"%(tgcmove)s"}',   # Bearing off: %(move)s
+
+# INVITATIONS
+    'invitation': 'e39#{"name":"%(name)s",'        # %(name)s wants to play a%(ML)s match%(variant)s with you.%(nack)s\nType 'join %(name)s' to accept.
+                        '"ML":"%(ML)s",'
+                        '"variant":"%(variant)s",'
+                        '"nack":"%(nack)s"}',
+    'resume_sg': 'e40#{"name":"%(name)s"}',        # %(name)s wants to resume a saved match with you.\nType 'join %(name)s' to accept.
+    'have_sg': 'e41#{"name":"%(name)s",'           # WARNING: You have a saved %(ML)s match with %(name)s you might want to finish first!
+                    '"ML":"%(ML)s"}',
+
+#   f) messages
+
+    'message_online': 'f01#Message from %(name)s: %(message)s',
+    'message_offline': 'f02#From %(name)s (%(stamp)s): %(message)s',
+    # f03 Clip Message delivered 10
+    # f04 Clip Message saved 11
+    # f03 Clip Message delivered 10
+    # f03 Clip Message delivered 10
+    # f04 There are no new messages for you.
+
+
+#   g) who et al.
+    # g01 Clip Who Info 5 list
+    # g02 Clip Who Info 5 Update single line
+    # g03 You are not waiting for any
+    # g04 You are waiting for user
+    # g05 You are waiting for the following
+    # g06 Look behind you. Maybe
+    # g07 You'll receive a message when 'user' logs in.
+    # g08
+
+#   h) system messages (leading '** ')
+    # h01 unknown command
+    # h02 Please type 'toggle silent'
+    # h03 Clip kibitz 19
+    # h04 your not watching
+    'noo_called': 'h05#{"name":"%(name)s"}',       # There is no one called %(name)s.
+
+    # h06 name won't listen to you
+    # h07 You can't talk if you won't listen
+    # h08 You say to yourself: messag
+    # h09 'say' can't be used outside a game
+    # h10 1 user heard you.
+    # h11 n users heard you.
+    # h12 But nobody heard you.
+
+    # h13 Don't know user user.
+
+    # h14 usage: message <user> <text>          usage h14
+    # h15 'user' is already logged in.
+    'invite_who': 'h16#{}',                        # invite who?
+    'refusing_games': 'h17#{"name":"%(name)s"}',   # %(name)s is refusing games.
+    'halr_playing': 'h18#{"name":"%(name)s"}',     # %(name)s is already playing with someone else.
+
+    'inv_2arg': 'h19#{}',                          # The second argument to 'invite' has to be a number or the word 'unlimited'
+    # h20 The third argument to 'invite' has to be a 'nack' or 'hyper'
+    'you_invited': 'h21#{"name":"%(name)s",'       # You invited %(name)s to a %(ML)s point match%(variant)s.
+                        '"ML":"%(ML)s",'
+                        '"variant":"%(variant)s"}',
+    'lack_exp': 'h22#{}',                          # You're not experienced enough to play a match of that length.
+    'you_inv_unl':'h23#{}',                        # You invited user to an unlimited match.
+    'you_inv_res': 'h24#{"name":"%(name)s"}',      # You invited %(name)s to resume a saved match.
+    # h25 There's no saved match with user. Please give a match length.
+    'alr_playing': 'h26#{}',                       # You are already playing.
+    'inv_away': 'h27#{"name":"%(name)s",'          # user is away: message
+                     '"message":"%(message)s",'
+                     '"awmsg":"%(awmsg)s"}',
+    'inv_yourself': 'h28#{}',                      # You can't invite yourself.
+
+    # h29 Error: Join who?
+    # h31 user didn't invite you.
+    # h32 You are now playing a n point match with user
+    # h33 You are now playing with user. Your running match was loaded
+    # h34 ERROR: Saved match is corrupt. Please start another one.
+    # h35 You can't play two games at once
+
+    # h36 You stop watching user.
+    # h37 Watch who?
+    # h38 user doesn't want you to watch.
+    # h39 You're now watching user.
+    # h40 user is not doing anything interesting.
+    # h41 Use a mirror to do that.
+    # h42 user1 and user2 start a n point match.
+    # h43 user1 and user2 are resuming their n-point match.
+    # h44 user1 and user2 start a n point match.** You can't watch the match between user1 and user2.
+    # h45 You can't watch another game while you're playing.
+    # h46 You stop watching user.
+    # h47 You're not watching.
+    # h48 Look at who?
+    # h49 user is not playing.
+    # h50 user doesn't want you to look.
+    # h51 You look great.
+    ## h52 usage: oldboard <name>
+    'no_sg': 'h53#{"name":"%(name)s"}',            # There's no saved match with a player called 'user'.
+    ## h54 You can't do this while playing.
+    # h55 You're away. Please type 'back'
+    # h56 Welcome back.
+    # h57 You're not away.
+    # h58 You wave goodbye.
+    # h59 You wave goodbye again and log out.
+
+    # h60 Don't know how to toggle arg
+    # h61 You allow the use the server's 'pip' command.
+    # h62 You don't allow the use of the server's 'pip' command.
+    # h63 The board will be refreshed after every move.
+    # h64 The board won't be refreshed after every move.
+    # h65 You agree that doublets during opening double the cube.
+    # h66 You don't agree that doublets during opening double the cube.
+    # h67 Forced moves will be done automatically.
+    # h68 Forced moves won't be done automatically.
+    # h69 Your terminal will ring the bell if someone talks to you or invites you
+    # h70 Your terminal won't ring the bell if someone talks to you or invites you
+    # h71 You insist on playing with the Crawford rule
+    # h72 You would like to play without using the Crawford rule.
+    # h73 You will be asked if you want to double.
+    # h74 You won't be asked if you want to double.
+    # h75 Will use automatic greedy bearoffs.
+    # h76 Won't use automatic greedy bearoffs.
+    # h77 Will send rawboards after rolling.
+    # h78 Won't send rawboards after rolling.
+    # h79 You want a list of moves after this game.
+    # h80 You won't see a list of moves after this game.
+    # h81 You'll be notified when new users log in.
+    # h82 You won't be notified when new users log in.
+    # h83 You'll see how the rating changes are calculated.
+    # h84 You won't see how the rating changes are calculated.
+    # h85 You're now ready to invite or join someone.
+    # h86 You're now refusing to play with someone.
+    # h87 You will be informed about starting and ending matches.
+    # h88 You won't be informed about starting and ending matches.
+    # h89 You will hear what other players shout.
+    # h90 You won't hear what other players shout.
+
+    # h95 Invalid argument. Type 'help set'.
+    # h96 Value of 'boardstyle' is value
+    # h97 set boardstyle value
+    # h98 Valid arguments are the numbers 1 to 3.
+    # h99 Value of 'linelength' is value
+
+# geht nich über 100
+    # q01 Value of 'linelength' set to value.
+    # q02 Value of 'linelength' set to 0
+    # q03 Valid arguments are the numbers 0 to 999. Use 0 for no linelength.
+    # q04 Value of 'pagelength' is value
+    # q05 Value of 'pagelength' is value
+    # q06 Value of 'pagelength' set to 0.
+    # q07 Valid arguments are the numbers 0 to 999. Use 0 for no pagelength.
+    # q08 Value of 'redoubles' is value
+    # q09 Value of 'redoubles' set to num_value.
+    # q10 Value of 'redoubles' set to 'str_value'
+    # q11 Valid arguments are 'none', 'unlimited' and the numbers 1 to 99.
+    'smi_number': 'q12#{}',                        # q12 Give a saved match id as a number with prefix '#'.
+
+#   i) information messages
+    # i01 ** Gagged users: <list>
+    # i02 You gag user.
+    # i03 You ungag user.
+    # i04 You talk too much, don't you?
+    # i05 ** Blinded users: <list>
+    # i06 You blind user.
+    # i07 You unblind user.
+    # i08 You can't read this message now, can you?
+    # i09 None of the users is away.
+    # i10 The following users are away: <list>
+    # i11
+    # i12
+    # i13
+    # i14
+    # i15
+    # i16
+    # i17
+    # i18
+    # i19
+    # i20 Clock: timer start "i20 60 178" (grace) or "i20 0 178" (reserve)
+    # i21
+    # i22
+
+
+#   l) login/registration messages
+    # l01 banner
+    # l02 welcome
+    # l03 registration intro
+    # l04 beginner intro
+    # l05 use another name
+    # l06 your name may only contain
+    # l07 your name will be.....Type in .....
+    # l08 pls give your password
+    # l09 no password given
+    # l10 minimal password length
+    # l11 pls retype your password
+    # l12 passwords not identical
+    # l13 you are registered
+    # l14 Clip Welcome 1
+    # l15 Clip Own Info 2
+    # l16 Clip Motd 3  4

@@ -9,6 +9,7 @@
  *
 */
 
+var CLIENT_LABEL = 'TiGa-' + window.tgcConfig.VERSION;
 var CLIENT_PROTOCOL = '2010';
 
 function loadTGC() {
@@ -464,13 +465,13 @@ function loadTGC() {
             /* TODO:0j: das muss doch hier drin gemacht werden;
              *          aber 'ws' muss bekannt sein */
         },
-        openSession: function() {
+        openSession: function(mode) {
             var hp = $("#sockets").attr('data-host');
             var ws = new WebSocket("ws://"+hp+"/ws");
             ws.onopen = function() {
                 var name = document.getElementById("login_name"),
                     passwd = document.getElementById("login_password");
-                tgc.cc.login(name.value, passwd.value, CLIENT_PROTOCOL);
+                tgc.cc.login(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
                 tgc.action.focus = tgc.action.system;
                 tgc.board = loadBoard();
             };
@@ -518,15 +519,15 @@ function loadTGC() {
             tgc.cc.toggle = function(toggle) {
                 ws.send('toggle ' + toggle);
             };
-            tgc.cc.login = function(name, passwd, protVersion) {
-                ws.send("login "+name+" "+passwd+" "+protVersion);
+            tgc.cc.login = function(name, passwd, label, protVersion) {
+                ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
                 return true;
             };
             tgc.cc.reopen = function() {
                 tgc.openConnection();  /* TODO:0j: this function doesn't exist; what was intended? */
             };
         },
-        navigate: {
+        navigate: {                     /* TODO:0j: this can be compressed using arrays */
             show: function(element) {
                 switch (element) {
                     case "board":
