@@ -263,29 +263,37 @@ hannes rolls 4 and 3.
                     }
                 }
             }
+            var blockedPlacebo = function (id, ch) {return false;}
+            var blockedFevga = function (id, ch) {
+                return (ch == 14) && (id == 24);
+            }
             var variants = {'plakoto': {'move': movePlakoto,
                                         'hit': hitPointPlakoto,
                                         'waste': targetWastePlakoto,
                                         'target': targetPointPlakoto,
                                         'release': releasePlacebo,
+                                        'blocked': blockedPlacebo,
                                         },
                             'portes': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
                                         'release': releasePlacebo,
+                                        'blocked': blockedPlacebo,
                                         },
                             'fevga': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
                                         'release': releaseBlockedPoint,
+                                        'blocked': blockedFevga,
                                         },
                             'standard': {'move': moveStandard,
                                         'hit': hitPointStandard,
                                         'waste': targetWasteStandard,
                                         'target': targetPointStandard,
                                         'release': releasePlacebo,
+                                        'blocked': blockedPlacebo,
                                         },
             }
             var myGame = variants[this.tgc.board.gameVariant[0]];
@@ -343,7 +351,7 @@ hannes rolls 4 and 3.
                             html = composePoint(data, 1, false);
                         } else {
                             data['color'] = 'player';
-                            data['dynamic'] = checkers > 0;
+                            data['dynamic'] = (checkers > 0) && !myGame['blocked'](id, checkers);
                             html = composePoint(data, checkers, captive);
                         }
                         break;
