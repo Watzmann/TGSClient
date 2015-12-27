@@ -10,7 +10,7 @@
 */
 
 var dlgHtml = {
-    invite: "<div class=\"inviteDialog\">hallo</div>",
+    invite: "<div class=\"generalDialog inviteDialog\">hallo</div>",
 };
 
 function loadDialogs() {
@@ -29,9 +29,12 @@ function loadDialogs() {
             $("#resignDialog").hide();
         },
         dialogInvite: function (player) {
-            $("#inviteDialog").load('invite.html', function() {
-                    $("#invitation #playerName").html(player)
-                }).show();
+            tgc.blackBoard['savedGamesFocusOld'] = tgc.blackBoard['savedGamesFocus']
+            tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
+            tgc.cc.sendCmd("savedgame " + player);
+            $("#invitation #playerName").html(player);
+            $("#inviteDialog").show();
+            //tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld']
         },
         invite: function (player) {
             return function(event) {

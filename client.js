@@ -60,11 +60,22 @@ function loadTGC() {
                            'end':  '</td></tr>',
                            'running':  '</td><td>',
                             },
+            sgRowElement: {'start': '<tr class="sglEntry"><td>',
+                           'end':  '</td></tr>',
+                           'running':  '</td><td>',
+                            },
             access_denied: function (nick) {
                 denied.style.display = "block";
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
                 tgc.cc.reopen();
+            },
+            hideElement: function (e) {
+                $(e).hide();
+            },
+            hideSavedGamesList: function (e) {
+                $(e).hide();
+                jQuery("#generalAlert.gaContent").html("Content");
             },
             showBye: function () {
                 greeting.style.display = "none";
@@ -145,6 +156,39 @@ function loadTGC() {
             delFromPL: function (player) {
                 delete this.playersList[player];
                 this.displayPlayersList(this.playersList);
+            },
+            savedGames: function (listOfGames) {
+                var s = this.sgRowElement.start,
+                    e = this.sgRowElement.end,
+                    r = this.sgRowElement.running;
+                function displaySavedGames() {
+                    $("tr.sglEntry").remove();
+                    var $h = $("#sglHeading"),
+                        score, line = '';
+                    this.gamesList = {};
+                    for (var g = 1; g < listOfGames.length; g++) {
+                        var sg = JSON.parse(listOfGames[g]);
+                        if (this.gamesList[sg['opponent']] === undefined) {
+                            this.gamesList[sg['opponent']] = [sg];
+                        } else {
+                            this.gamesList[sg['opponent']].push(sg);
+                        }
+                    }
+                    for (var o in this.gamesList) {                             // TODO:00: sort alphabetically
+                        for (g = 0, gl = this.gamesList[o]; g < gl.length; g++) {
+                                                                                // TODO:00: andreas  5 games       click displays list of 5 games
+                                                                                // TODO:00: hannes   7 games
+                                                                                // TODO:00: playerX  3 0 - 2       only a single game
+                            sg = gl[g];
+                            score = sprintf("%2s - %2s", sg.sc1, sg.sc2);
+                            line += s+sg.status+r+sg.opponent+r+sg.ML+r+score+r+sg.mid+r+sg.hold+sg.dele+r+sg.variation+e;
+                        }
+                    }
+                    $h.last().after($(line));
+                    jQuery(tgc.blackBoard['savedGamesFocus']).show();
+                }
+
+                jQuery(tgc.blackBoard['savedGamesFocus']+" .gaContent").load('savedGames.html', displaySavedGames);
             },
             system: function (result) {
                 var target = systemLine;
@@ -344,6 +388,9 @@ function loadTGC() {
                     case "b06":
                         tgc.action.delFromPL(cmd);
                         break;
+                    case "q13":
+                        tgc.action.savedGames(action_parts);
+                        break;
                     default:
                         tgc.action.focus(msg);
                     // unterdruecken: "User not known or wrong password" (ist das noch aktuell???)
@@ -351,6 +398,9 @@ function loadTGC() {
                 return;
             }
             tgc.action.focus(msg);
+        },
+        blackBoard: { /* This is a container for communication between calls;
+                 sort of tmp, for some of them. Do not litter! */
         },
         connectionData: { /* This is a container for connection calls;
                  they are constructed during the checkConnection() call. */
@@ -516,6 +566,7 @@ function loadTGC() {
     };
   }());
   tgc.checkConnections();
+  tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
   tgc.dialect = loadDialect();
   if (window.tgcConfig.DEVELOP_MODE) {
