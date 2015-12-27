@@ -118,7 +118,7 @@ body {
 .green {background-color:green; color:white; padding: 0px 6px;}
 .orange {background-color:#FF8040; color:blue; padding: 0px 6px;}
 
-.inviteDialog {
+.generalDialog {
     position: absolute;
     top: 90px;
     left: 275px;
@@ -126,18 +126,14 @@ body {
    -webkit-box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
       -moz-box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
            box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
+}
+
+.inviteDialog {
     width: 170px;
     height: 170px;
 }
 
 .resignDialog {
-    position: absolute;
-    top: 90px;
-    left: 275px;
-    background-color: lightgrey;
-   -webkit-box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
-      -moz-box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
-           box-shadow: 15px 15px 45px 17px rgba(244,244,244,1);
     width: 170px;
     height: 170px;
 }

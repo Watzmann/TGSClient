@@ -95,8 +95,8 @@
               <pre id="boardpane">
               </pre>
             </div>
-            <div class="resignDialog" id="resignDialog" style="display:none;">resign</div>
-            <div class="resignDialog" id="endOfMatch" style="display:none;">Match finished</div>
+            <div class="generalDialog resignDialog" id="resignDialog" style="display:none;">resign</div>
+            <div class="generalDialog" id="endOfMatch" style="display:none;">Match finished</div>
           </div>
           <div id="board2">
             <div id="opponentInfo" class="matchInfo">
@@ -191,8 +191,44 @@
               <td>----</td><td>-</td><td>1500.00</td><td>0</td><td>0.0</td>
             </tr>
           </table>
-          <div class="inviteDialog" id="inviteDialog" style="display:none;">invite</div>
+          <div class="generalDialog" id="inviteDialog" style="display:none;">
+            <form id="invitation">   <!-- muss des ne form sein???? -->
+              <p>
+                Invite <span id="playerName"></span>
+              </p>
+              <div name="inviteSavedGames" id="inviteSavedGames" cols="32" style="display:none;">
+                <div class="gaContent">
+                  saved games list goes here
+                </div>
+              </div>
+              <p>
+                <input type="radio" name="variation" value="standard" checked="checked" />Standard<br />
+                <input type="radio" name="variation" value="nack"/>Nack<br />
+                <input type="radio" name="variation" value="hyper"/>Hyper<br />
+              </p>
+              <p>
+                <input type="text" name="matchLength" id="iMatchLength" size="2"/>
+                <input type="submit" name="send_invite" id="send_invite" value="Invite"
+                     onclick="tgc.dialogs.sendInvite(); return false"/>
+                <input type="submit" name="cancelInvite" id="cancelInvite" value="Cancel"
+                     onclick="tgc.action.hideElement('#inviteDialog'); return false"/>
+              </p>
+            </form>
+          </div>
         </div>
+
+        <!--                                             General ubiquitus   -->
+        <div class="generalDialog" id="generalAlert" style="display:none;">
+          <form id="gaForm">   <!-- muss des ne form sein???? -->
+            <div class="gaContent">
+              General Alert
+            </div>
+            <div>
+              <input type="submit" name="quitGeneralAlert" id="quitGeneralAlert" value="Ok"
+                   onclick="tgc.action.hideSavedGamesList('#generalAlert'); return false"/>
+            </div>
+          </form>
+          </div>
 
         <!--                                             Foot                -->
         <div id="clientFooter">
