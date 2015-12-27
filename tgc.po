@@ -282,7 +282,8 @@
     # q09 Value of 'redoubles' set to num_value.
     # q10 Value of 'redoubles' set to 'str_value'
     # q11 Valid arguments are 'none', 'unlimited' and the numbers 1 to 99.
-    'smi_number': 'q12#{}',                        # q12 Give a saved match id as a number with prefix '#'.
+    'smi_number': 'q12#{}',                        # Give a saved match id as a number with prefix '#'.
+    'xxxxxxxxxx': 'q13#{}',                        # q13 There is no text to be translated. This is a placeholder.
 
 #   i) information messages
     # i01 ** Gagged users: <list>
