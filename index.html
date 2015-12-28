@@ -60,10 +60,10 @@
             <span id="quit" onclick="tgc.cc.shutdown(); return false">Quit</span>
           </div>
           <div style="clear:both;">
-            <p id="tabs">
-              <span class="button" onclick="tgc.navigate.show('players')">players</span>
-              <span class="button" onclick="tgc.navigate.show('system')">system</span>
-              <span class="button" onclick="tgc.navigate.show('board')">board</span>
+            <p>
+              <span class="button" id="playersButton" onclick="tgc.navigate.show('players')">players</span>
+              <span class="button" id="systemButton" onclick="tgc.navigate.show('system')">system</span>
+              <span class="button" id="boardButton" onclick="tgc.navigate.show('board')">board</span>
               <span class="button" onclick="tgc.navigate.show('develop')" id="developButton" style="display:none">develop</span>
             </p>
           </div>

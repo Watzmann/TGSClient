@@ -52,6 +52,15 @@ function loadTGC() {
         return msg + '\n';
     }
 
+    function sAlarm() {
+        var $sb = $('#systemButton'),
+            sbc = $sb.attr('class');
+        if ((sbc.indexOf('bselected') == -1) && (sbc.indexOf('alarm') == -1)) {
+            $sb.attr('class', sbc+' alarm');
+            $sb.attr('title', 'there are messages for you')
+        }
+    }
+
     return {
         action: {
             playersList: {},
@@ -196,11 +205,15 @@ function loadTGC() {
             },
             shouts: function (result) {
                 var target = shoutTarget;
+                sAlarm();
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
             tells: function (result) {
                 var target = sayTarget;
+                if ($('#boardButton').attr('class').indexOf('bselected') == -1) {
+                    sAlarm();
+                }
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
                 var target = tellTarget;
@@ -257,6 +270,7 @@ function loadTGC() {
                         break;
                     case "001":
                         tgc.action.set_nick(cmd);
+                        tgc.navigate.show("players");
                         break;
                     case "c01":
                         var data = JSON.parse(cmd),
@@ -274,6 +288,8 @@ function loadTGC() {
                         tgc.action.tells(line);
                         break;
                     case "d02":
+                    case "d04":
+                    case "d06":
                         var data = JSON.parse(cmd),
                             line = sprintf("%(name)-15s: %(message)s\n", data);
                         tgc.action.tells(line);
@@ -472,7 +488,6 @@ function loadTGC() {
                 var name = document.getElementById("login_name"),
                     passwd = document.getElementById("login_password");
                 tgc.cc.login(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
-                tgc.action.focus = tgc.action.system;
                 tgc.board = loadBoard();
             };
             ws.onclose = function(event) {
@@ -529,8 +544,10 @@ function loadTGC() {
         },
         navigate: {                     /* TODO:0j: this can be compressed using arrays */
             show: function(element) {
+                $('.button.bselected').attr('class', 'button');
                 switch (element) {
                     case "board":
+                        $('#boardButton').attr('class', 'button bselected');
                         systempane.style.display = "none";
                         players.style.display = "none";
                         developpane.style.display = "none";
@@ -538,6 +555,7 @@ function loadTGC() {
                         tgc.action.focus = tgc.action.board;
                         break;
                     case "system":
+                        $('#systemButton').attr('class', 'button bselected').removeAttr('title');
                         board.style.display = "none";
                         players.style.display = "none";
                         developpane.style.display = "none";
@@ -545,12 +563,14 @@ function loadTGC() {
                         tgc.action.focus = tgc.action.system;
                         break;
                     case "develop":
+                        $('#developButton').attr('class', 'button bselected');
                         board.style.display = "none";
                         players.style.display = "none";
                         developpane.style.display = "block";
                         systempane.style.display = "none";
                         break;
                     case "players":
+                        $('#playersButton').attr('class', 'button bselected');
                         tgc.cc.sendWho();
                         board.style.display = "none";
                         systempane.style.display = "none";

@@ -82,6 +82,21 @@ body {
    border: solid 3px rgba(255,132,0,1);
 }
 
+.alarm {
+   -webkit-box-shadow: 3px -2px 7px 2px rgba(240,22,120,1);
+      -moz-box-shadow: 3px -2px 7px 2px rgba(240,22,120,1);
+           box-shadow: 3px -2px 7px 2px rgba(240,22,120,1);
+}
+
+.bselected {
+   -webkit-box-shadow: 0px 0px 0px 0px rgba(255,255,255,1);
+      -moz-box-shadow: 0px 0px 0px 0px rgba(255,255,255,1);
+           box-shadow: 0px 0px 0px 0px rgba(255,255,255,1);
+   position: relative;
+   top: -2px;
+   left: 2px;
+}
+
 .toggle {
     display: inline;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e8e9ea));
