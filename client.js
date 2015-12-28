@@ -36,7 +36,9 @@ function loadTGC() {
         gameLog = document.getElementById("board_received"),
         gameInfo = document.getElementById("gameInfo"),
         devMessages = document.getElementById("devMessages"),
-        serverChoser = document.getElementById("switchservers");
+        serverChoser = document.getElementById("switchservers"),
+        alarmSound = document.getElementById("soundSuccess");
+
     var gameLinenumber;
     var variantMapper = {
             standard: ['standard', 'Game'],
@@ -57,7 +59,8 @@ function loadTGC() {
             sbc = $sb.attr('class');
         if ((sbc.indexOf('bselected') == -1) && (sbc.indexOf('alarm') == -1)) {
             $sb.attr('class', sbc+' alarm');
-            $sb.attr('title', 'there are messages for you')
+            $sb.attr('title', 'there are messages for you');
+            alarmSound.play();
         }
     }
 
