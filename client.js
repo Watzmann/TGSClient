@@ -231,19 +231,26 @@ function loadTGC() {
                 jQuery(focus+" .gaContent").load(itype+'.html', displaySavedGames);
             },
             invite: function (text, data) {
+                var join_ = function () { return (function () {
+                        tgc.cc.sendCmd("join " + data.name);
+                        hide();
+                        });
+                    }();
+                var decline_ = function () { return (function () {
+                        tgc.cc.sendCmd("tell " + data.name +
+                            " Sorry, not now. Thanks for the invitation.");
+                        hide();
+                        });
+                    }();
+                function hide () {
+                    jQuery("#gotInvitation").hide()
+                    jQuery("#gotInvitation #joinInvitation").off( "click", join_)
+                    jQuery("#gotInvitation #rejectInvitation").off( "click", decline_);
+                }
                 jQuery("#gotInvitation .giContent").html(text);
-                jQuery("#gotInvitation #joinInvitation").click(function () {
-                    tgc.cc.sendCmd("join " + data.name);
-                    jQuery("#gotInvitation").hide();
-                    });
-                jQuery("#gotInvitation #rejectInvitation").click(function () {
-                    tgc.cc.sendCmd("tell " + data.name +
-                        " Sorry, not now. Thanks for the invitation.");
-                    jQuery("#gotInvitation").hide();
-                    });
+                jQuery("#gotInvitation #joinInvitation").click(join_);
+                jQuery("#gotInvitation #rejectInvitation").click(decline_);
                 jQuery("#gotInvitation").show();
-
-
             },
             system: function (result) {
                 var target = systemLine;
@@ -255,9 +262,9 @@ function loadTGC() {
                 target.value = target.value + result;
                 target.scrollTop = target.scrollHeight - target.clientHeight;
             },
-            tells: function (result) {
+            tells: function (result, alarm) {
                 var target = sayTarget;
-                if ($('#boardButton').attr('class').indexOf('bselected') == -1) {
+                if (alarm && $('#boardButton').attr('class').indexOf('bselected') == -1) {
                     sAlarm();
                 }
                 target.value = target.value + result;
@@ -331,14 +338,14 @@ function loadTGC() {
                     case "d01":
                         var data = JSON.parse(cmd),
                             line = sprintf("-> %(name)-12s: %(message)s\n", data);
-                        tgc.action.tells(line);
+                        tgc.action.tells(line, false);
                         break;
                     case "d02":
                     case "d04":
                     case "d06":
                         var data = JSON.parse(cmd),
                             line = sprintf("%(name)-15s: %(message)s\n", data);
-                        tgc.action.tells(line);
+                        tgc.action.tells(line, true);
                         break;
                     case "e01":
                         var data = JSON.parse(cmd);
