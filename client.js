@@ -86,8 +86,8 @@ function loadTGC() {
             hideElement: function (e) {
                 $(e).hide();
             },
-            hideSavedGamesList: function (e) {
-                $(e).hide();
+            hideSavedGamesList: function () {
+                $("#generalAlert").hide();
                 jQuery("#generalAlert .gaContent").html("Content");
             },
             showBye: function () {
@@ -178,16 +178,17 @@ function loadTGC() {
                     e,
                     focus = tgc.blackBoard['savedGamesFocus'],
                     itype = focus == '#inviteSavedGames' ? 'inviteSavedGames' : 'savedGames';
-                function setInvite(name, id) { return (
+                function setInvite(name, id, hide) { return (
                     function () {
                         tgc.cc.sendCmd("invite "+name +" #"+id);
+                        hide();
                         return false;
                     });
                 }
                 function displaySavedGames() {
                     $("tr.sglEntry").remove();
                     var $h = $("#sglHeading"),
-                        score, opp, status, line;
+                        score, opp, hideAway, status, line;
                     this.gamesList = {};
                     for (var g = 1; g < listOfGames.length; g++) {
                         var sg = JSON.parse(listOfGames[g]);
@@ -206,8 +207,10 @@ function loadTGC() {
                             score = sprintf("%2s - %2s", sg.sc1, sg.sc2);
                             if (focus == '#inviteSavedGames') {
                                 opp = '';
+                                hideAway = tgc.dialogs.hideInvite;
                             } else {
                                 opp = sg.opponent+r;
+                                hideAway = tgc.action.hideSavedGamesList;
                             }
                             status = parseInt(sg.status);
                             e = status > 1 ? er : en;
@@ -216,7 +219,7 @@ function loadTGC() {
                             $h = $(".sglEntry").last();
                             if (status > 1) {
                                 $sbl = $(".sglEntry button").last()
-                                $sbl.click(setInvite(sg.opponent,sg.mid))
+                                $sbl.click(setInvite(sg.opponent,sg.mid,hideAway))
                                 if (status == 2) {
                                     $sbl.attr('disabled', 'disabled')
                                 }
