@@ -54,7 +54,7 @@ function loadDialogs() {
                 invitation += ' ' + variation;
             }
             tgc.cc.sendCmd(invitation);
-            hideInvite();
+            this.hideInvite();
         },
     }
   }());
