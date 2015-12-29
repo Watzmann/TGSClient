@@ -230,6 +230,21 @@ function loadTGC() {
                 }
                 jQuery(focus+" .gaContent").load(itype+'.html', displaySavedGames);
             },
+            invite: function (text, data) {
+                jQuery("#gotInvitation .giContent").html(text);
+                jQuery("#gotInvitation #joinInvitation").click(function () {
+                    tgc.cc.sendCmd("join " + data.name);
+                    jQuery("#gotInvitation").hide();
+                    });
+                jQuery("#gotInvitation #rejectInvitation").click(function () {
+                    tgc.cc.sendCmd("tell " + data.name +
+                        " Sorry, not now. Thanks for the invitation.");
+                    jQuery("#gotInvitation").hide();
+                    });
+                jQuery("#gotInvitation").show();
+
+
+            },
             system: function (result) {
                 var target = systemLine;
                 target.innerHTML = result;
@@ -408,6 +423,11 @@ function loadTGC() {
                         var data = JSON.parse(cmd),
                             move = sprintf(tgc.dialect[act], data);
                         tgc.action.gameProtocol(move);
+                        break;
+                    case "e39":
+                    case "e40":
+                        var data = JSON.parse(cmd);
+                        tgc.action.invite(sprintf(tgc.dialect[act], data), data);
                         break;
                     case "e31":
                     case "e36":
