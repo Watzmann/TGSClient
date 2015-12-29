@@ -73,7 +73,8 @@ function loadTGC() {
                            'running':  '</td><td>',
                             },
             sgRowElement: {'start': '<tr class="sglEntry"><td>',
-                           'end':  '</td></tr>',
+                           'end':  '</td><td></td></tr>',
+                           'endResume':  '</td><td><button>Resume</button></td></tr>',
                            'running':  '</td><td>',
                             },
             access_denied: function (nick) {
@@ -87,7 +88,7 @@ function loadTGC() {
             },
             hideSavedGamesList: function (e) {
                 $(e).hide();
-                jQuery("#generalAlert.gaContent").html("Content");
+                jQuery("#generalAlert .gaContent").html("Content");
             },
             showBye: function () {
                 greeting.style.display = "none";
@@ -171,12 +172,22 @@ function loadTGC() {
             },
             savedGames: function (listOfGames) {
                 var s = this.sgRowElement.start,
-                    e = this.sgRowElement.end,
-                    r = this.sgRowElement.running;
+                    en = this.sgRowElement.end,
+                    er = this.sgRowElement.endResume,
+                    r = this.sgRowElement.running,
+                    e,
+                    focus = tgc.blackBoard['savedGamesFocus'],
+                    itype = focus == '#inviteSavedGames' ? 'inviteSavedGames' : 'savedGames';
+                function setInvite(name, id) { return (
+                    function () {
+                        tgc.cc.sendCmd("invite "+name +" #"+id);
+                        return false;
+                    });
+                }
                 function displaySavedGames() {
                     $("tr.sglEntry").remove();
                     var $h = $("#sglHeading"),
-                        score, line = '';
+                        score, opp, status, line;
                     this.gamesList = {};
                     for (var g = 1; g < listOfGames.length; g++) {
                         var sg = JSON.parse(listOfGames[g]);
@@ -185,22 +196,36 @@ function loadTGC() {
                         } else {
                             this.gamesList[sg['opponent']].push(sg);
                         }
-                    }
+                    }                                                           // TODO:00: if #opponents > 0 else "no saved games"
                     for (var o in this.gamesList) {                             // TODO:00: sort alphabetically
                         for (g = 0, gl = this.gamesList[o]; g < gl.length; g++) {
                                                                                 // TODO:00: andreas  5 games       click displays list of 5 games
-                                                                                // TODO:00: hannes   7 games
+                                                                                // TODO:00: hannes   7 games       if #opponents > 1
                                                                                 // TODO:00: playerX  3 0 - 2       only a single game
                             sg = gl[g];
                             score = sprintf("%2s - %2s", sg.sc1, sg.sc2);
-                            line += s+sg.status+r+sg.opponent+r+sg.ML+r+score+r+sg.mid+r+sg.hold+sg.dele+r+sg.variation+e;
+                            if (focus == '#inviteSavedGames') {
+                                opp = '';
+                            } else {
+                                opp = sg.opponent+r;
+                            }
+                            status = parseInt(sg.status);
+                            e = status > 1 ? er : en;
+                            line = s+opp+sg.ML+r+score+r+sg.hold+sg.dele+r+sg.variation+e;
+                            $h.after($(line));
+                            $h = $(".sglEntry").last();
+                            if (status > 1) {
+                                $sbl = $(".sglEntry button").last()
+                                $sbl.click(setInvite(sg.opponent,sg.mid))
+                                if (status == 2) {
+                                    $sbl.attr('disabled', 'disabled')
+                                }
+                            }
                         }
                     }
-                    $h.last().after($(line));
-                    jQuery(tgc.blackBoard['savedGamesFocus']).show();
+                    jQuery(focus).show();
                 }
-
-                jQuery(tgc.blackBoard['savedGamesFocus']+" .gaContent").load('savedGames.html', displaySavedGames);
+                jQuery(focus+" .gaContent").load(itype+'.html', displaySavedGames);
             },
             system: function (result) {
                 var target = systemLine;
@@ -409,6 +434,8 @@ function loadTGC() {
                         break;
                     case "q13":
                         tgc.action.savedGames(action_parts);
+                        break;
+                    case "q14":
                         break;
                     default:
                         tgc.action.focus(msg);

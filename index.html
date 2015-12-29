@@ -196,23 +196,40 @@
               <p>
                 Invite <span id="playerName"></span>
               </p>
-              <div name="inviteSavedGames" id="inviteSavedGames" cols="32" style="display:none;">
+              <div id="inviteSavedGames" style="display:none;">
+                Saved games:
                 <div class="gaContent">
                   saved games list goes here
                 </div>
               </div>
-              <p>
-                <input type="radio" name="variation" value="standard" checked="checked" />Standard<br />
-                <input type="radio" name="variation" value="nack"/>Nack<br />
-                <input type="radio" name="variation" value="hyper"/>Hyper<br />
-              </p>
-              <p>
-                <input type="text" name="matchLength" id="iMatchLength" size="2"/>
+              <div>
+                A new match of matchlength
+                <input type="text" name="matchLength" id="iMatchLength" size="2"
+                       title="insert a number as matchlength or the word 'unlimited' for Money Game"/>
+              </div>
+              <div>
+                Backgammon variation:
+                <table>
+                  <tr>
+                    <td><input type="radio" name="variation" value="standard" checked="checked" />Standard</td>
+                    <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="variation" value="nack"/>Nack</td>
+                    <td><input type="radio" name="variation" value="plakoto"/>Plakoto</td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="variation" value="hyper"/>Hyper</td>
+                    <td><input type="radio" name="variation" value="fevga"/>Fevga</td>
+                  </tr>
+                </table>
+              </div>
+              <div style="text-align:right;">
                 <input type="submit" name="send_invite" id="send_invite" value="Invite"
                      onclick="tgc.dialogs.sendInvite(); return false"/>
                 <input type="submit" name="cancelInvite" id="cancelInvite" value="Cancel"
-                     onclick="tgc.action.hideElement('#inviteDialog'); return false"/>
-              </p>
+                     onclick="tgc.dialogs.hideInvite(); return false"/>
+              </div>
             </form>
           </div>
         </div>

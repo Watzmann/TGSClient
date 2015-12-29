@@ -34,13 +34,17 @@ function loadDialogs() {
             tgc.cc.sendCmd("savedgame " + player);
             $("#invitation #playerName").html(player);
             $("#inviteDialog").show();
-            //tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld']
         },
         invite: function (player) {
             return function(event) {
                 dlg.dialogInvite(player);
                 return false;
             };
+        },
+        hideInvite: function () {
+            $("#inviteDialog").hide();
+            $('#inviteSavedGames .gaContent table').remove()
+            tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld'];
         },
         sendInvite: function () {
             var variation = $("#invitation input:checked").attr('value'),
@@ -50,7 +54,7 @@ function loadDialogs() {
                 invitation += ' ' + variation;
             }
             tgc.cc.sendCmd(invitation);
-            $("#inviteDialog").hide();
+            hideInvite();
         },
     }
   }());
