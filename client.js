@@ -18,6 +18,7 @@ function loadTGC() {
     var input_field = document.getElementById("send_input");
     var login = document.getElementById("login"),
         denied = document.getElementById("denied"),
+        regismsg = document.getElementById("registration"),
         client = document.getElementById("client"),
         greeting = document.getElementById("greeting"),
         goodbye = document.getElementById("goodbye"),
@@ -82,6 +83,13 @@ function loadTGC() {
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
                 tgc.cc.reopen();
+            },
+            registration: function (msg) {
+                if (msg.indexOf('** ') > -1) {
+                    regismsg.innerHTML = msg;
+                    regismsg.style.display = "block";
+                    tgc.cc.reopen();
+                }
             },
             hideElement: function (e) {
                 $(e).hide();
@@ -547,8 +555,13 @@ function loadTGC() {
             ws.onopen = function() {
                 var name = document.getElementById("login_name"),
                     passwd = document.getElementById("login_password");
-                tgc.cc.login(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
-                tgc.board = loadBoard();
+                if (name.value == '' || passwd.value == '') {
+                    tgc.action.registration('** please give a name and a password');
+                } else {
+                    tgc.action.focus = tgc.action.registration;
+                    tgc.cc.login(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
+                    tgc.board = loadBoard();
+                }
             };
             ws.onclose = function(event) {
                 tgc.action.showBye();
@@ -595,6 +608,8 @@ function loadTGC() {
                 ws.send('toggle ' + toggle);
             };
             tgc.cc.login = function(name, passwd, label, protVersion) {
+                denied.style.display = "none";
+                regismsg.style.display = "none";
                 ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
                 return true;
             };
