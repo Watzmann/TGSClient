@@ -82,13 +82,11 @@ function loadTGC() {
                 denied.style.display = "block";
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
-                tgc.cc.reopen();
             },
             registration: function (msg) {
                 if (msg.indexOf('** ') > -1) {
                     regismsg.innerHTML = msg;
                     regismsg.style.display = "block";
-                    tgc.cc.reopen();
                 }
             },
             hideElement: function (e) {
@@ -613,9 +611,6 @@ function loadTGC() {
                 regismsg.style.display = "none";
                 ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
                 return true;
-            };
-            tgc.cc.reopen = function() {
-                tgc.openConnection();  /* TODO:0j: this function doesn't exist; what was intended? */
             };
         },
         navigate: {                     /* TODO:0j: this can be compressed using arrays */
