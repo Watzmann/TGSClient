@@ -188,6 +188,7 @@ function loadTGC() {
                     itype = focus == '#inviteSavedGames' ? 'inviteSavedGames' : 'savedGames';
                 function setInvite(name, id, hide) { return (
                     function () {
+                        id = (id == '' ? '1' : id);
                         tgc.cc.sendCmd("invite "+name +" #"+id);
                         hide();
                         return false;
