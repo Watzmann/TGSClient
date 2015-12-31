@@ -114,6 +114,9 @@ function loadTGC() {
                 var target = document.getElementById("nick");
                 target.innerHTML = nick;
                 tgc.selfNick = nick;
+                window.onbeforeunload = function(){
+                    return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
+                };
             },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
@@ -329,6 +332,7 @@ function loadTGC() {
                         tgc.action.access_denied(cmd);
                         break;
                     case "001":
+                        regismsg.style.display = "none";
                         tgc.action.set_nick(cmd);
                         tgc.navigate.show("players");
                         break;
@@ -596,6 +600,9 @@ function loadTGC() {
             tgc.cc.shutdown = function() {
                 ws.send("ciao");
                 ws.close();
+                window.onbeforeunload = function(){
+                    return null;
+                };
             };
             tgc.cc.sendWho = function() {
                 ws.send("who");
@@ -608,7 +615,6 @@ function loadTGC() {
             };
             tgc.cc.login = function(name, passwd, label, protVersion) {
                 denied.style.display = "none";
-                regismsg.style.display = "none";
                 ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
                 return true;
             };
