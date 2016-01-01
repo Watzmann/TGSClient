@@ -56,10 +56,19 @@
     <div id=client style="display:none; width:1200px;">
         <!--                                             Head                -->
         <div>
-          <div id="clientTitle">client demo</div>
           <div id="identity">
-            Logged in as <span id="nick">players</span>
-            <span id="quit" onclick="tgc.cc.shutdown(); return false">Quit</span>
+            <div id="clientTitle">TigerGammon</div>
+            <div class="identity" style="float: left; padding-left: 7px">
+              <span id="selfClient">clientVersion</span>
+            </div>
+            <div class="identity">
+              <span id="selfStatus" style="margin-right: 15px;">status</span>
+              <span id="selfRating" style="margin-right: 15px;">rating</span>
+              <span id="selfExp" style="margin-right: 20px;">experience</span>
+              <span id="selfNick">nick</span>
+              <span id="selfLogin" style="margin-right: 15px;">login</span>
+              <span id="quit" onclick="tgc.cc.shutdown(); return false">Quit</span>
+            </div>
           </div>
           <div style="clear:both;">
             <p>

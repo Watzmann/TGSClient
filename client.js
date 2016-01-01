@@ -16,7 +16,12 @@ function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var input_field = document.getElementById("send_input");
-    var login = document.getElementById("login"),
+    var selfrating = document.getElementById("selfRating"),
+        selfexp = document.getElementById("selfExp"),
+        selflogin = document.getElementById("selfLogin"),
+        selfclient = document.getElementById("selfClient"),
+        selfstatus = document.getElementById("selfStatus"),
+        login = document.getElementById("login"),
         denied = document.getElementById("denied"),
         regismsg = document.getElementById("registration"),
         client = document.getElementById("client"),
@@ -111,12 +116,39 @@ function loadTGC() {
             },
             set_nick: function (nick) {
                 this.showClient(true);
-                var target = document.getElementById("nick");
+                var target = document.getElementById("selfNick");
                 target.innerHTML = nick;
                 tgc.selfNick = nick;
+                selfclient.innerHTML = 'v'+window.tgcConfig.VERSION;
                 window.onbeforeunload = function(){
                     return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
                 };
+            },
+            updateSelf: function (data) {
+                var status, color, w;
+                selfrating.innerHTML = data.rating;
+                selfexp.innerHTML = data.experience;
+                selflogin.innerHTML = data.login;
+                if (data.ready) {
+                    color = 0x008000;
+                    w = 0x000080;
+                    status = 'ready';
+                } else {
+                    color = 0xB00000;
+                    w = 0x008000;
+                    status = 'not ready';
+                }
+                if (data.watching != "-") {
+                    color += w;
+                    status = 'watching';
+                }
+                if (data.away) {
+                    color += 0x303030;
+                    status = 'away';
+                }
+                $(".identity").css("background-color",color.toString(16));
+                selfstatus.innerHTML = status;
+//                data.idle
             },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
@@ -162,15 +194,14 @@ function loadTGC() {
             },
             who: function (list_of_players) {
                 this.playersList = {};
-                for (var p = 1, len = list_of_players.length-1; p < len; p++) {
-                    var po = JSON.parse(list_of_players[p]);
-                    this.playersList[po['user']] = po;
-                }
-                this.displayPlayersList(this.playersList);
+                this.whoUpdate(list_of_players);
             },
             whoUpdate: function (list_of_players) {
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
                     var po = JSON.parse(list_of_players[p]);
+                    if (po.user == tgc.selfNick) {
+                        this.updateSelf(po);
+                    }
                     this.playersList[po['user']] = po;
                 }
                 this.displayPlayersList(this.playersList);
