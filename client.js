@@ -31,10 +31,12 @@ function loadTGC() {
         client = document.getElementById("client"),
         greeting = document.getElementById("greeting"),
         goodbye = document.getElementById("goodbye"),
-        systempane = document.getElementById("system"),
+        communicationpane = document.getElementById("communication"),
         developpane = document.getElementById("develop"),
         board = document.getElementById("board"),
         board2 = document.getElementById("board2"),
+        information = document.getElementById("information"),
+        settings = document.getElementById("settings"),
         players = document.getElementById("players"),
         systemLine = document.getElementById("systemLine"),
         shoutTarget = document.getElementById("shouts"),
@@ -63,10 +65,14 @@ function loadTGC() {
 
     function sAlarm() {
         var $sb = $('#systemButton'),
-            sbc = $sb.attr('class');
-        if ((sbc.indexOf('bselected') == -1) && (sbc.indexOf('alarm') == -1)) {
-            $sb.attr('class', sbc+' alarm');
-            $sb.attr('title', 'there are messages for you');
+            $pb = $('#playersButton'),
+            sbc = $sb.attr('class'),
+            pbc = $pb.attr('class'),
+            tmsg = 'there are messages for you';
+        if (((sbc.indexOf('bselected') == -1) && (pbc.indexOf('bselected') == -1))
+                                              && (sbc.indexOf('alarm') == -1)) {
+            $sb.attr({'class': sbc+' alarm', 'title': tmsg});
+            $pb.attr({'class': pbc+' alarm', 'title': tmsg});
             alarmSound.play();
         }
     }
@@ -649,34 +655,36 @@ function loadTGC() {
                 switch (element) {
                     case "board":
                         $('#boardButton').attr('class', 'button bselected');
-                        systempane.style.display = "none";
-                        players.style.display = "none";
+                        information.style.display = "none";
                         developpane.style.display = "none";
                         board.style.display = "block";
                         tgc.action.focus = tgc.action.board;
                         break;
                     case "system":
                         $('#systemButton').attr('class', 'button bselected').removeAttr('title');
+                        $('#playersButton').attr('class', 'button').removeAttr('title');
                         board.style.display = "none";
-                        players.style.display = "none";
                         developpane.style.display = "none";
-                        systempane.style.display = "block";
+                        information.style.display = "block";
+                        players.style.display = "none";
+                        settings.style.display = "block";
                         tgc.action.focus = tgc.action.system;
                         break;
                     case "develop":
                         $('#developButton').attr('class', 'button bselected');
                         board.style.display = "none";
-                        players.style.display = "none";
                         developpane.style.display = "block";
-                        systempane.style.display = "none";
+                        information.style.display = "none";
                         break;
                     case "players":
-                        $('#playersButton').attr('class', 'button bselected');
+                        $('#playersButton').attr('class', 'button bselected').removeAttr('title');
+                        $('#systemButton').attr('class', 'button').removeAttr('title');
                         tgc.cc.sendWho();
                         board.style.display = "none";
-                        systempane.style.display = "none";
                         developpane.style.display = "none";
+                        information.style.display = "block";
                         players.style.display = "block";
+                        settings.style.display = "none";
                         tgc.action.focus = tgc.action.system;
                         break;
                     default:
