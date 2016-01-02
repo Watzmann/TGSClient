@@ -132,10 +132,9 @@
             <div>
               <textarea name="says" id="says" cols="55" rows="17" style="font-size: smaller;"></textarea>
               <form id="saysInput" style="display:block">
-                <input type="text" name="send_say" id="send_say" value="Say:" style="color: grey; width: 351px;"
-                       onkeydown="tgc.cc.clear_say(); return false"/>
+                <input type="text" name="send_say" id="send_say" placeholder="Say" style="width: 351px;"/>
                 <input type="submit" name="send_say_submit" id="send_say_submit" value="Send"
-                       onclick="tgc.cc.send_say(); return false"/>
+                       onclick="tgc.cc.sendSay(); return false"/>
               </form>
             </div>
             <div id="youInfo" class="matchInfo">
@@ -275,8 +274,7 @@
             </div>
         <!--                                             CommandLine         -->
             <form id="control" style="display:block">   <!-- muss des ne form sein???? -->
-              <input type="text" name="send_input" id="send_input" value="Command"
-                      onclick="tgc.cc.clear_command(); return false"/>
+              <input type="text" name="send_input" id="send_input" placeholder="Command"/>
               <input type="submit" name="send_submit" id="send_submit" value="Send"
                      onclick="tgc.cc.send_data(); return false"/>
             </form>

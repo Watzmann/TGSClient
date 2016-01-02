@@ -15,7 +15,8 @@ var CLIENT_PROTOCOL = '2010';
 function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
-    var input_field = document.getElementById("send_input");
+    var $inputField = jQuery("#send_input"),
+        $sayField = jQuery("#send_say");
     var selfrating = document.getElementById("selfRating"),
         selfexp = document.getElementById("selfExp"),
         selflogin = document.getElementById("selfLogin"),
@@ -38,7 +39,6 @@ function loadTGC() {
         sayTarget = document.getElementById("says"),
         shoutField = document.getElementById("send_shout"),
         tellField = document.getElementById("send_tell"),
-        sayField = document.getElementById("send_say"),
         gameLog = document.getElementById("board_received"),
         gameInfo = document.getElementById("gameInfo"),
         devMessages = document.getElementById("devMessages"),
@@ -605,24 +605,16 @@ function loadTGC() {
                     tgc.parse(evt.data);
                 };
             tgc.cc.send_data = function() {
-                ws.send(input_field.value);
-                input_field.value = "Command";
-            };
-            tgc.cc.clear_command = function() {
-                input_field.value = "";
+                ws.send($inputField.val());
+                $inputField.val("");
             };
             tgc.cc.send_tell = function() {
                 ws.send('tell '+tellField.value);
                 tellField.value = "";
             };
-            tgc.cc.send_say = function() {
-                ws.send('say '+sayField.value);
-                sayField.value = "Say: ";
-            };
-            tgc.cc.clear_say = function() {
-                sayField.value = String.fromCharCode(event.keyCode);
-                sayField.onkeydown = null;
-                return false;
+            tgc.cc.sendSay = function() {
+                ws.send('say '+$sayField.val());
+                $sayField.val("");
             };
             tgc.cc.send_shout = function() {
                 ws.send('shout '+shoutField.value);
