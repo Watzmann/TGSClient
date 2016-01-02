@@ -156,22 +156,21 @@
 
         <!--                                             System              -->
         <div id="system" style="display:block;">
-          <div style="float:left">
-            <textarea name="shouts" id="shouts" cols="40" rows="20"></textarea>
+          <div style="float:left; margin-right: 1em;">
+            <textarea name="shouts" id="shouts" cols="40" rows="20" style="margin-bottom: 0.5em;"></textarea>
             <form id="shoutsInput" style="display:block">
-              <label for="send_shout">Shout:</label>
-              <input type="text" name="send_shout" id="send_shout"/>
+              <input type="text" name="send_shout" id="send_shout" placeholder="Shout" style="width: 21em;"/>
               <input type="submit" name="send_shout_submit" id="send_shout_submit" value="Send"
-                     onclick="tgc.cc.send_shout(); return false"/>
+                     onclick="tgc.cc.sendShout(); return false" style="margin-left: 7px;"/>
             </form>
           </div>
           <div>
-            <textarea name="tells" id="tells" cols="40" rows="20"></textarea>
+            <textarea name="tells" id="tells" cols="40" rows="20" style="margin-bottom: 0.5em;"></textarea>
             <form id="tellsInput" style="display:block">
-              <label for="send_tell">Tell:</label>
-              <input type="text" name="send_tell" id="send_tell"/>
+              <input type="text" name="adr_tell" id="adr_tell" placeholder="Name" style="width: 5em;"/>
+              <input type="text" name="send_tell" id="send_tell" placeholder="Tell" style="width: 16em;"/>
               <input type="submit" name="send_tell_submit" id="send_tell_submit" value="Send"
-                     onclick="tgc.cc.send_tell(); return false"/>
+                     onclick="tgc.cc.sendTell(); return false" style="margin-left: 3px;"/>
             </form>
           </div>
         </div>

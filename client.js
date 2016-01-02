@@ -16,6 +16,9 @@ function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var $inputField = jQuery("#send_input"),
+        $shoutField = jQuery("#send_shout"),
+        $tellField = jQuery("#send_tell"),
+        $adrTellField = jQuery("#adr_tell"),
         $sayField = jQuery("#send_say");
     var selfrating = document.getElementById("selfRating"),
         selfexp = document.getElementById("selfExp"),
@@ -37,8 +40,6 @@ function loadTGC() {
         shoutTarget = document.getElementById("shouts"),
         tellTarget = document.getElementById("tells"),
         sayTarget = document.getElementById("says"),
-        shoutField = document.getElementById("send_shout"),
-        tellField = document.getElementById("send_tell"),
         gameLog = document.getElementById("board_received"),
         gameInfo = document.getElementById("gameInfo"),
         devMessages = document.getElementById("devMessages"),
@@ -608,17 +609,17 @@ function loadTGC() {
                 ws.send($inputField.val());
                 $inputField.val("");
             };
-            tgc.cc.send_tell = function() {
-                ws.send('tell '+tellField.value);
-                tellField.value = "";
+            tgc.cc.sendTell = function() {
+                ws.send('tell '+$adrTellField.val()+' '+$tellField.val());
+                $tellField.val("");
             };
             tgc.cc.sendSay = function() {
                 ws.send('say '+$sayField.val());
                 $sayField.val("");
             };
-            tgc.cc.send_shout = function() {
-                ws.send('shout '+shoutField.value);
-                shoutField.value = "";
+            tgc.cc.sendShout = function() {
+                ws.send('shout '+$shoutField.val());
+                $shoutField.val("");
             };
             tgc.cc.shutdown = function() {
                 ws.send("ciao");
