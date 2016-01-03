@@ -80,10 +80,13 @@ function loadTGC() {
     return {
         action: {
             playersList: {},
-            plRowElement: {'start': '<tr class="playersList"><td>',
-                           'starto': '<tr class="playersList"><td class="playersName">',
+            plRowElement: {'start': '<tr class="playersEntry"><td class="la self">',
+                           'starto': '<tr class="playersEntry"><td class="la">',
+                           'starti': '<tr class="playersEntry"><td class="la invitable">',
                            'end':  '</td></tr>',
                            'running':  '</td><td>',
+                           'runningLeft':  '</td><td class="la">',
+                           'runningLeftPadding':  '</td><td class="lap">',
                             },
             sgRowElement: {'start': '<tr class="sglEntry"><td>',
                            'end':  '</td><td></td></tr>',
@@ -159,10 +162,18 @@ function loadTGC() {
             },
             whoFormat1Head: function () {
                 var heading = {user: "Name",
+//  Gender
                                status: " S ",
                                rating: "Rating",
                                experience: "Exp",
                                idle: "Idle",
+//  Country
+                               mail: "Email",
+//  Hostname
+                               client: "Client",
+//  Opponent
+//  Watching
+//  login
                                };
                 var line = sprintf("%(user)-24s %(status)4s %(rating)7s %(experience)5s %(idle)5s", heading);
                 return "<span style=\"font-weight:bold\">" + line + "</span>";
@@ -184,20 +195,25 @@ function loadTGC() {
                                 tgc.dialogs.invite(name)(event);
                                 });
                 }
-                $("tr.playersList").remove();
+                $("tr.playersEntry").remove();
                 var $h = $("tr.playersHeading"),
                     s = this.plRowElement.start,
                     so = this.plRowElement.starto,
+                    si = this.plRowElement.starti,
                     e = this.plRowElement.end,
-                    r = this.plRowElement.running;
+                    r = this.plRowElement.running,
+                    rl = this.plRowElement.runningLeft,
+                    rlp = this.plRowElement.runningLeftPadding;
                 for (var pl in playerList) {
                     var p = playerList[pl],
                         st = "-R"[p['ready']] + " ",
-                        sx = p.user == tgc.selfNick ? s : so,
-                        line = sx+p.user+r+st+r+p.rating+r+p.experience+r+p.idle+e;
-                    $h.last().after($(line));
+                        sx = p.user == tgc.selfNick ? s : (p.ready && !p.away) ? si : so,
+                        line = sx+p.user+rl+st+r+p.rating+r+p.experience+r+
+                                p.idle+rlp+p.email+rl+p.client+e;
+                    $h.after($(line));
+                    $h = $(".playersEntry").last();
                 }
-                $("#playersList td.playersName").each(setInvite);
+                $("#playersList td.invitable").each(setInvite);
             },
             who: function (list_of_players) {
                 this.playersList = {};

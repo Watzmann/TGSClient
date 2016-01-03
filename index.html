@@ -164,21 +164,23 @@
         <!--                                           Information  -->
         <div id="information" style="display:none;">
           <!--                                         PlayersList / System  -->
-          <div id="leftPanel" style="float: left; padding: 20px; height: 638px; width: 736;">
-            <div id="players" style="display:none; background-color:#FFFF99;">
-              <p>This Players list is just a DEMO</p>
+          <div id="leftPanel" style="float: left; padding: 20px; height: 638px; width: 705;">
+            <div id="players" style="display:none;">
               <table name="players_list" class="playersList" id="playersList">
                 <colgroup>
-                  <col width="80">
-                  <col width="80">
-                  <col width="80">
-                  <col width="80">
-                  <col width="80">
+                  <col style="width: 12em;">
+                  <col style="width: 3em;">
+                  <col style="width: 6em;">
+                  <col style="width: 6em;">
+                  <col style="width: 5em;">
+                  <col style="width: 18em;">
+                  <col style="width: 16em;">
                 </colgroup>
                 <tr class="playersHeading">
-                  <th>Name</th><th>S</th><th>Rating</th><th>Exp</th><th>Idle</th>
+                  <th class="la">Name</th><th class="la">S</th><th>Rating</th><th>Exp</th><th>Idle</th>
+                  <th class="lap">E-Mail</th><th class="la">Client</th>
                 </tr>
-                <tr class="playersList">
+                <tr class="playersEntry">
                   <td>----</td><td>-</td><td>1500.00</td><td>0</td><td>0.0</td>
                 </tr>
               </table>
@@ -234,7 +236,7 @@
           <!--                                         Communication         -->
           <div id="communication" style="margin-left: 20px;">
             <div>
-              <textarea name="shouts" id="shouts" cols="40" rows="20" style="margin-bottom: 0.5em;"></textarea>
+              <textarea name="shouts" id="shouts" cols="52" rows="20" style="margin-bottom: 0.5em;"></textarea>
               <form id="shoutsInput" style="display:block">
                 <input type="text" name="send_shout" id="send_shout" placeholder="Shout" style="width: 21em;"/>
                 <input type="submit" name="send_shout_submit" id="send_shout_submit" value="Send"
@@ -242,7 +244,7 @@
               </form>
             </div>
             <div>
-              <textarea name="tells" id="tells" cols="40" rows="20" style="margin-bottom: 0.5em;"></textarea>
+              <textarea name="tells" id="tells" cols="52" rows="20" style="margin-bottom: 0.5em;"></textarea>
               <form id="tellsInput" style="display:block">
                 <input type="text" name="adr_tell" id="adr_tell" placeholder="Name" style="width: 5em;"/>
                 <input type="text" name="send_tell" id="send_tell" placeholder="Tell" style="width: 16em;"/>
