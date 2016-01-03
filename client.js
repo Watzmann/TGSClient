@@ -222,6 +222,9 @@ function loadTGC() {
             whoUpdate: function (list_of_players) {
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
                     var po = JSON.parse(list_of_players[p]);
+                    if ('>=<?'.indexOf(po.client[0]) > -1) {    // TODO:01: let this be handled by the server
+                        po.client = "JavaFIBS 2001";
+                    }
                     if (po.user == tgc.selfNick) {
                         this.updateSelf(po);
                     }
