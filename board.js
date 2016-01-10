@@ -844,7 +844,6 @@ hannes rolls 4 and 3.
             }
             function sendMove() {
                 tgc.cc.sendCmd("move "+myMoves.join(" "));
-                tgc.action.gameProtocol(sprintf("%-24s", fmtMoves.join(", ")));
                 $board.find('#pDice1,#pDice2').remove();
                 var $r = $board.find('#sendMove');
                 $r[0].onclick = null;
