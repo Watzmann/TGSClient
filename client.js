@@ -88,6 +88,10 @@ function loadTGC() {
                            'runningLeft':  '</td><td class="la">',
                            'runningLeftPadding':  '</td><td class="lap">',
                             },
+            tlRowElement: {'start': '<tr class="toggleEntry"><td>',
+                           'end':  '</td></tr>',
+                           'running':  '</td><td>',
+                            },
             sgRowElement: {'start': '<tr class="sglEntry"><td>',
                            'end':  '</td><td></td></tr>',
                            'endResume':  '</td><td><button>Resume</button></td></tr>',
@@ -133,6 +137,37 @@ function loadTGC() {
                 window.onbeforeunload = function(){
                     return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
                 };
+            },
+            togglesList: function (msg) {
+                function setToggle(index, element) {
+                    var $e = $(element),
+                        name = $e.html();
+                    $e.on("mousedown", function(event) {
+                                tgc.dialogs.invite(name)(event);
+                                });
+                }
+                $("tr.toggleEntry").remove();
+                var toggles = msg.split("\n"),
+                    $h = $("tr.toggleHeading"),
+                    s = this.tlRowElement.start,
+                    e = this.tlRowElement.end,
+                    r = this.tlRowElement.running;
+                for (var tl in toggles) {
+                    if (tl == 0) {
+                        continue;
+                    }
+                    var t = toggles[tl].split(' '),
+                        n = t[0],
+                        x = t[t.length-1],
+                        line;
+                    if (!(n in tgc.toggles)) {
+                        continue;
+                    }
+                    line = s+n+r+x+r+tgc.toggles[n][x]+e;
+                    $h.after($(line));
+                    $h = $(".toggleEntry").last();
+                }
+                //$("#playersList td.invitable").each(setInvite);
             },
             updateSelf: function (data) {
                 var status, color, w;
@@ -541,6 +576,9 @@ function loadTGC() {
                 }
                 return;
             }
+            if (msg.indexOf("The current settings are:") != -1) {
+                tgc.action.togglesList(msg);
+            }
             tgc.action.focus(msg);
         },
         blackBoard: { /* This is a container for communication between calls;
@@ -716,7 +754,9 @@ function loadTGC() {
   tgc.checkConnections();
   tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
-  tgc.dialect = loadDialect();
+  var messages = loadDialect();
+  tgc.dialect = messages[0];
+  tgc.toggles = messages[1];
   if (window.tgcConfig.DEVELOP_MODE) {
     switchservers.style.display = "block";
     jQuery("#developButton").show()

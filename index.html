@@ -82,7 +82,7 @@
 
         <!--                                           Board                 -->
         <div id="board" style="display:none;" oncontextmenu="return false;">
-          <div style="clear:both; margin-bottom: 3px;" id="toggles">
+          <div style="clear:both; margin-bottom: 3px;" id="boardToggles">
             <div class="oneLine toggle" onclick="tgc.dialogs.dialogResign();">resign</div>
             <div class="oneLine"style="width: 406px;">
               <span id="gameVariant" style="padding-right: 1em;">Game</span><span id="gameCounter">1</span>
@@ -229,6 +229,26 @@
             <div id="settings" style="display:none; background-color:#99FFFF;">
               <div>
                 Here you soon will find ways to change your individual settings.
+                <div id="setToggles" style="float: left;">
+                  <p class="settings">Toggles</p>
+                  <table>
+                  <colgroup>
+                    <col style="width: 5em;">
+                    <col style="width: 3em;">
+                    <col style="width: 21em;">
+                  </colgroup>
+                    <tr class="toggleHeading">
+                      <td>Toggle</td><td></td><td>Explanation</td>
+                    </tr>
+                    <tr class="toggleEntry">
+                      <td>allowpip</td><td>ON</td><td>You allow the use of the servers pip-count.</td>
+                    </tr>
+                  </table>
+                </div>
+                <div id="setSettings" style="float: left;">
+                  <p class="settings">Settings</p>
+                  <div></div>
+                </div>
               </div>
             </div>
           </div>

@@ -135,6 +135,16 @@ body {
 .green {background-color:green; color:white; padding: 0px 6px;}
 .orange {background-color:#FF8040; color:blue; padding: 0px 6px;}
 
+p.settings {
+    font-size: 14px;
+    /*font-weight: bold;*/
+    padding-right: 1em;
+}
+
+table {
+    font-size: small;
+}
+
 .generalDialog {
     padding: 1em;
     position: absolute;
