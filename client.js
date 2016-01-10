@@ -391,14 +391,17 @@ function loadTGC() {
             },
             board: function (result) {
                 var board2 = document.getElementById("board2"),
+                    bigBoard,
                     boardpane = document.getElementById("boardpane");
                     // TODO:0j: das hier soll nur einmal gemacht werden. Also hoch in das Objekt.
                 if (result.indexOf("BAR") != -1) {
                     tgc.board.showAscii(boardpane, result);
                 } else if (result.indexOf("board:") != -1) {
                     /* Rendering of board-string "board:......" */
+                    bigBoard = result.split('M');   // TODO:00: watch out! .... don't split nicknames!!
+                    this.gameProtocol(bigBoard[1])
                     boardpane.style.display = "none";
-                    tgc.board.draw("#boardarea", result);
+                    tgc.board.draw("#boardarea", bigBoard[0]);
                 } else if (result.indexOf("Type 'join' if you want") != -1) {
                     /* TODO:0j: of course this should be an 'exx#....' message!! */
                     /* Automatically joining the next game in this match. */
@@ -436,7 +439,7 @@ function loadTGC() {
                     case "c02":
                         var data = JSON.parse(cmd),
                             line = sprintf("%(name)-15s: %(message)s\n", data);
-                        tgc.action.shouts(line);
+                        tgc.action.shouts(line);    // TODO:00: tells and shouts can contain " and #!!!!!!!!
                         break;
                     case "d01":
                         var data = JSON.parse(cmd),
@@ -514,25 +517,10 @@ function loadTGC() {
                     case "e26":
                         // TODO:10: here we should display the dice in the board and wait a second
                     case "e34":
-                        gameLineHeader = sprintf('%2d  ', gameLinenumber++);
                     case "e29":
-                        var data = JSON.parse(cmd),
-                            roll = sprintf('%(r1)s%(r2)s: ', data);
-                        if (act == "e24" && (data.r2 > data.r1)) {
-                            gameLineHeader += '                           ';
-                        }
-                        tgc.action.gameProtocol(gameLineHeader + roll);
-                        break;
                     case "e38":
-                        var data = JSON.parse(cmd),
-                            move = sprintf('%(move)-27s', data);
-                        tgc.action.gameProtocol(move);
-                        break;
                     case "e30":
                     case "e37":
-                        var data = JSON.parse(cmd),
-                            move = sprintf(tgc.dialect[act], data);
-                        tgc.action.gameProtocol(move);
                         break;
                     case "e39":
                     case "e40":
@@ -541,7 +529,6 @@ function loadTGC() {
                         break;
                     case "e31":
                     case "e36":
-                        tgc.action.gameProtocol(tgc.dialect[act+'b']);
                     case "e27":
                     case "e28":
                     case "e33":
@@ -578,8 +565,11 @@ function loadTGC() {
             }
             if (msg.indexOf("The current settings are:") != -1) {
                 tgc.action.togglesList(msg);
+            } else if (msg.indexOf("board:") != -1) {
+                tgc.action.board(msg);
+            } else {
+                tgc.action.focus(msg);
             }
-            tgc.action.focus(msg);
         },
         blackBoard: { /* This is a container for communication between calls;
                  sort of tmp, for some of them. Do not litter! */
