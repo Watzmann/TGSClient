@@ -135,6 +135,10 @@ body {
 .green {background-color:green; color:white; padding: 0px 6px;}
 .orange {background-color:#FF8040; color:blue; padding: 0px 6px;}
 
+.normalText {
+    font-size: small;
+}
+
 p.settings {
     font-size: 14px;
     /*font-weight: bold;*/

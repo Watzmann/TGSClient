@@ -90,7 +90,11 @@ function loadTGC() {
                             },
             tlRowElement: {'start': '<tr class="toggleEntry"><td>',
                            'end':  '</td></tr>',
-                           'running':  '</td><td>',
+                           'running':  '</td><td><input type="checkbox" id="',
+                           'runningON':  'Toggle" checked value="',
+                           'runningOFF':  'Toggle" value="',
+                           'value': '"></td><td id="',
+                           'eulav': '">',
                             },
             sgRowElement: {'start': '<tr class="sglEntry"><td>',
                            'end':  '</td><td></td></tr>',
@@ -139,19 +143,23 @@ function loadTGC() {
                 };
             },
             togglesList: function (msg) {
-                function setToggle(index, element) {
-                    var $e = $(element),
-                        name = $e.html();
-                    $e.on("mousedown", function(event) {
-                                tgc.dialogs.invite(name)(event);
-                                });
+                function flipToggle() {
+                    var name = $(this).val();
+                    var value = $(this).prop('checked') ? "YES" : "NO";
+                    tgc.cc.sendCmd("to "+ name);
+                    $("#"+name+"Explanation").html(tgc.toggles[name][value]);
                 }
                 $("tr.toggleEntry").remove();
                 var toggles = msg.split("\n"),
                     $h = $("tr.toggleHeading"),
                     s = this.tlRowElement.start,
                     e = this.tlRowElement.end,
-                    r = this.tlRowElement.running;
+                    vs = this.tlRowElement.value,
+                    ve = this.tlRowElement.eulav,
+                    rs = this.tlRowElement.running,
+                    r1 = this.tlRowElement.runningON,
+                    r0 = this.tlRowElement.runningOFF,
+                    re;
                 for (var tl in toggles) {
                     if (tl == 0) {
                         continue;
@@ -161,13 +169,15 @@ function loadTGC() {
                         x = t[t.length-1],
                         line;
                     if (!(n in tgc.toggles)) {
+                        /* If this entry is NOT found in dialect, it simply is skipped */
                         continue;
                     }
-                    line = s+n+r+x+r+tgc.toggles[n][x]+e;
+                    re = x == "YES" ? r1 : r0;
+                    line = s+n+rs+n+re+n+vs+n+'Explanation'+ve+tgc.toggles[n][x]+e;
                     $h.after($(line));
                     $h = $(".toggleEntry").last();
+                    $h.find("input:checkbox").change(flipToggle);
                 }
-                //$("#playersList td.invitable").each(setInvite);
             },
             updateSelf: function (data) {
                 var status, color, w;
@@ -430,6 +440,7 @@ function loadTGC() {
                         regismsg.style.display = "none";
                         tgc.action.set_nick(cmd);
                         tgc.navigate.show("players");
+                        tgc.cc.sendCmd("toggle");
                         break;
                     case "c01":
                         var data = JSON.parse(cmd),
