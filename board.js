@@ -77,6 +77,7 @@ hannes rolls 4 and 3.
     },
     finishMatch: function(boardPane, data) {
         jQuery("#endOfMatch").html(data['line']).show();
+        jQuery("#downloadMatchfile").show();
         setTimeout(function(){
             jQuery("#endOfMatch").hide();
         },5000);

@@ -393,6 +393,7 @@ function loadTGC() {
             clearGameProtocol: function () {
                 var target = gameLog;
                 target.value = '';
+                jQuery("#downloadMatchfile").hide();
             },
             devLog: function (result) {
                 var target = devMessages;
