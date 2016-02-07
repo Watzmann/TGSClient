@@ -474,6 +474,7 @@ function loadTGC() {
                         gameLinenumber = 1;
                         gameInfo.innerHTML = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
                         data['color'] = '.opponent';
+                        jQuery("#downloadMatchfile a").attr("href", "/matchfiles/"+data['matchfile']);
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e09":
@@ -481,6 +482,7 @@ function loadTGC() {
                         gameLinenumber = 1;
                         gameInfo.innerHTML = sprintf("You win the game and get %(value)s. Congratulations!", data);
                         data['color'] = '.player';
+                        jQuery("#downloadMatchfile a").attr("href", "/matchfiles/"+data['matchfile']);
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e10":
