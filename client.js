@@ -48,7 +48,6 @@ function loadTGC() {
         serverChoser = document.getElementById("switchservers"),
         alarmSound = document.getElementById("soundSuccess");
 
-    var gameLinenumber;
     var variantMapper = {
             standard: ['standard', 'Game'],
             nack: ['standard', 'Nackgammon'],
@@ -471,7 +470,7 @@ function loadTGC() {
                         break;
                     case "e08":
                         var data = JSON.parse(cmd);
-                        gameLinenumber = 1;
+                        tgc.clocks.stopClock();
                         gameInfo.innerHTML = sprintf("%(name)s wins the game and gets %(value)s.%(addon)s", data);
                         data['color'] = '.opponent';
                         jQuery("#downloadMatchfile a").attr("href", "/matchfiles/"+data['matchfile']);
@@ -479,7 +478,7 @@ function loadTGC() {
                         break;
                     case "e09":
                         var data = JSON.parse(cmd);
-                        gameLinenumber = 1;
+                        tgc.clocks.stopClock();
                         gameInfo.innerHTML = sprintf("You win the game and get %(value)s. Congratulations!", data);
                         data['color'] = '.player';
                         jQuery("#downloadMatchfile a").attr("href", "/matchfiles/"+data['matchfile']);
@@ -487,12 +486,14 @@ function loadTGC() {
                         break;
                     case "e10":
                         var data = JSON.parse(cmd);
+                        tgc.clocks.stopClock();
                         gameInfo.innerHTML = sprintf("%(opponent)s gives up. You win %(value)s.", data);
                         data['color'] = '.player';
                         tgc.board.finish("#boardarea", data);
                         break;
                     case "e11":
                         var data = JSON.parse(cmd);
+                        tgc.clocks.stopClock();
                         gameInfo.innerHTML = sprintf("You give up. %(name)s wins %(value)s.", data);
                         data['color'] = '.opponent';
                         tgc.board.finish("#boardarea", data);
@@ -514,7 +515,6 @@ function loadTGC() {
                     case "e20":
                     case "e21":
                     case "e22":
-                        gameLinenumber = 1;
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
                         tgc.action.system(line);
@@ -564,8 +564,15 @@ function loadTGC() {
                         tgc.action.whoUpdate(action_parts);
                         break;
                     case "i20":
-                        var data = JSON.parse(cmd);
-                        tgc.clocks.startClock('player', data.reserve, data.grace);
+                    case "i21":
+                        var data = JSON.parse(cmd),
+                            p = (act == "i20") ? 'player' : 'opponent';
+                        if (data.start) {
+                            tgc.clocks.startClock(p, data.reserve, data.grace);
+                        } else {
+                            tgc.clocks.stopClock();
+                            tgc.clocks.setSeconds(p, data.reserve, data.grace);
+                        }
                         break;
                     case "b06":
                         tgc.action.delFromPL(cmd);

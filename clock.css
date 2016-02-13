@@ -11,7 +11,7 @@
     margin-right: 10px;
 }
 
-.clock .display{
+.display{
 	text-align:center;
 	padding: 2px 1px 1px;
 	border-radius:6px;
@@ -25,26 +25,26 @@
 --------------------------*/
 
 
-.clock .light{
+.light{
 	background-color:#f3f3f3;
 	color:#272e38;
 }
 
-.clock .light:after{
+.light:after{
 	box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
-.clock .light .digits div span{
+.light .digits div span{
 	background-color:#272e38;
 	border-color:#272e38;	
 }
 
-.clock .light .digits div.dots:before,
+.light .digits div.dots:before,
 .clock .light .digits div.dots:after{
 	background-color:#272e38;
 }
 
-.clock .light .display{
+.light .display{
 	background-color:#dddddd;
 	box-shadow:0 1px 1px rgba(0,0,0,0.08) inset, 0 1px 1px #fafafa;
 }

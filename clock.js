@@ -97,7 +97,9 @@ var clocks = (function() {
         	tgc.clocks.run(user)
 		},
 		stopClock: function () {
-		    clearInterval(tgc.clocks.timer);   // TODO:00: stop clock
+		    if (tgc.clocks.timer > 0) {
+		        clearInterval(tgc.clocks.timer);
+		    }
 		    tgc.clocks.timer = 0;
 		    if (tgc.clocks.user !== undefined) {
 		        tgc.clocks.graceBar[tgc.clocks.user].hide();
