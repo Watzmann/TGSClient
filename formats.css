@@ -193,14 +193,6 @@ table {
 .iName {
 }
 
-.clock {
-    background-image: url(resources/clock-stub.png);
-    width: 81px;
-    height: 33px;
-    float: left;
-    margin-right: 10px;
-}
-
 .sRight {
     position: relative;
 }

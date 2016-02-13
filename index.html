@@ -3,6 +3,7 @@
   <head>
     <title>TigerGammon</title>
     <link rel="stylesheet" type="text/css" href="formats.css">
+    <link rel="stylesheet" type="text/css" href="clock.css">
     <link rel="stylesheet" type="text/css" href="board.css">
     <link rel="stylesheet" type="text/css" href="playersList.css">
   </head>
@@ -112,7 +113,12 @@
           <div id="board2">
             <div id="opponentInfo" class="matchInfo">
               <div class="segment sLeft">
-                <div class="clock"></div>
+                <div id="opponentClock" class="clock light">
+                  <div class="display">
+                      <div class="digits"></div>
+                      <div id="oClockGraceBar" class="graceBar"></div>
+                  </div>
+                </div>
                 <div class="iName" id="oName">Opponent</div>
               </div>
               <div class="segment sRight">
@@ -146,7 +152,12 @@
             </div>
             <div id="youInfo" class="matchInfo">
               <div class="segment sLeft">
-                <div class="clock"></div>
+                <div id="playerClock" class="clock light">
+                  <div class="display">
+                      <div class="digits"></div>
+                      <div id="pClockGraceBar" class="graceBar"></div>
+                  </div>
+                </div>
                 <div class="iName" id="pName">Player</div>
               </div>
               <div class="segment sRight">
@@ -335,6 +346,7 @@
     <script src="board.js"></script>
     <script src="client.js"></script>
     <script>loadTGC();</script>
+    <script src="clock.js"></script>
 
   </body>
 

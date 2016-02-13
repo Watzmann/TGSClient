@@ -844,11 +844,12 @@ hannes rolls 4 and 3.
                 fmtMoves = fmtMoves.concat(move.join("/"));
             }
             function sendMove() {
+                tgc.clocks.stopClock();
                 tgc.cc.sendCmd("move "+myMoves.join(" "));
                 $board.find('#pDice1,#pDice2').remove();
                 var $r = $board.find('#sendMove');
                 $r[0].onclick = null;
-                $r.attr('title', 'the game is finished');
+                $r.attr('title', 'the game is finished');       // TODO:00: what is this funny line??
             }
             setInfo(elements);
             $board.find('div').remove();

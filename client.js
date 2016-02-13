@@ -563,6 +563,10 @@ function loadTGC() {
                     case "g02":
                         tgc.action.whoUpdate(action_parts);
                         break;
+                    case "i20":
+                        var data = JSON.parse(cmd);
+                        tgc.clocks.startClock('player', data.reserve, data.grace);
+                        break;
                     case "b06":
                         tgc.action.delFromPL(cmd);
                         break;
