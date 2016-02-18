@@ -43,8 +43,8 @@ function loadDialect() {
   var toggles = (function() {
     return {
         'allowclock': {'name': "allowclock",
-                       'YES': "clock will soon be available",
-                       'NO': "clock will soon be available"},
+                       'YES': "You would like to play using the clock",
+                       'NO': "You don't allow the use of the servers clock"},
 //                       'YES': "You allow the use of the servers clock",
 //                       'NO': "You don't allow the use of the servers clock"},
         'allowpip': {'name': "allowpip",
