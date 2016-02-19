@@ -408,7 +408,7 @@ function loadTGC() {
                     tgc.board.showAscii(boardpane, result);
                 } else if (result.indexOf("board:") != -1) {
                     /* Rendering of board-string "board:......" */
-                    bigBoard = result.split('M');   // TODO:00: watch out! .... don't split nicknames!!
+                    bigBoard = result.split('$');   // TODO:00: watch out! .... don't split nicknames!!
                     this.gameProtocol(bigBoard[1])
                     boardpane.style.display = "none";
                     tgc.board.draw("#boardarea", bigBoard[0]);
