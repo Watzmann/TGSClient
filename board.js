@@ -12,6 +12,7 @@
 function loadBoard() {
   return {
     gifRoot: "resources/board/",
+    watching: false,
     infoParts: {
             pName: document.getElementById("pName"),
             pPips: document.getElementById("pPips"),
@@ -746,13 +747,15 @@ hannes rolls 4 and 3.
             }
             pic = '<img src="'+gifRoot+'cube'+cubeValue+'.gif" alt="cube'+cubeValue+'">';
             jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
-            if (cubeWasTurned) {
-                tgc.board.setReject($b);
-                jQuery('#cube').dblclick(accept);
-            }
-            if (meMayTurn) {
-                pic = gifRoot+'cube' + cubeValue*2 + '.gif';
-                jQuery('#cube').dblclick(double(pic));
+            if (! tgc.board.watching) {
+                if (cubeWasTurned) {
+                    tgc.board.setReject($b);
+                    jQuery('#cube').dblclick(accept);
+                }
+                if (meMayTurn) {
+                    pic = gifRoot+'cube' + cubeValue*2 + '.gif';
+                    jQuery('#cube').dblclick(double(pic));
+                }
             }
         }
         function setDitches(home, direction, homePoint, $b) {
@@ -768,29 +771,36 @@ hannes rolls 4 and 3.
             jQuery(div).appendTo($b);
         }
         function setDice(dice, turn, nrMoves, $b) {
-            var pic, pic0 = '<img class="dice" src="' + gifRoot;
+            var ctr, pic, pic0 = '<img class="dice" src="' + gifRoot;
             function rollDice() {
                 tgc.cc.sendCmd("roll");
             }
             if (dice[0] != 0) {
-                var sortedDice = dice.slice(0,2);
+                var sortedDice = dice.slice(0,2), sma;
+                if (tgc.board.watching) {
+                    sma = "";
+                } else {
+                    sma = '" title=' + sendMoveApologies(nrMoves, false);
+                }
                 sortedDice.sort();
                 sortedDice.reverse();
                 pic = pic0 + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
                 jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
                 pic = pic0 + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
                 jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
-                jQuery('<div id="sendMove" title="' +
-                        sendMoveApologies(nrMoves, false) + '"></div>').appendTo($b);
+                jQuery('<div id="sendMove' + sma + '"></div>').appendTo($b);
             } else if (dice[2] != 0) {
                 pic = pic0 + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
                 jQuery('<div id="oDice1">'+pic+'</div>').appendTo($b);
                 pic = pic0 + 'opponentdie'+dice[3]+'.gif" alt="opponentdie2">';
                 jQuery('<div id="oDice2">'+pic+'</div>').appendTo($b);
             } else if (turn) {
-                pic = pic0 + 'rolldice.gif" alt="roll dice" title="click to roll">';
+                ctr = tgc.board.watching ? '' : ' title="click to roll"';
+                pic = pic0 + 'rolldice.gif" alt="roll dice"' + ctr + '>';
                 jQuery('<div id="rollDice">' + pic + '</div>').appendTo($b);
-                jQuery('#rollDice')[0].onclick = rollDice;
+                if (! tgc.board.watching) {
+                    jQuery('#rollDice')[0].onclick = rollDice;
+                }
             }
             return dice[0] != 0;
         }
@@ -894,24 +904,26 @@ hannes rolls 4 and 3.
                                     setUndo($board);
                                 }
                                 /* Manage actions regarding checkers */
-                                $board.find('.starthere').each(clearAction);
-                                if (resulting['moves'] > 0) {
-                                    /* There are moves left; set hotspots accordingly */
-                                    checkConstraints(resulting);
-                                    $board.find('.starthere').each(setAction);
-                                    $board.find('#sendMove').attr('title',
-                                        sendMoveApologies(resulting['moves'], true));
-                                    /* TODO:0j: when clicking the dice to send the move, there
-                                     * is a message, that not all moves were yet made.
-                                     * This might be especially interesting when there is a
-                                     * move, difficult for beginners (like 1-6, where 6 is
-                                     * possible only after a very special 1).
-                                     * TODO: should there be a special alarm?????? */
-                                } else {
-                                    /* All moves done; set affirmative hotspot ready */
-                                    $dx = $board.find('#sendMove')
-                                    $dx.attr('title', 'click to affirm move');
-                                    $dx[0].onclick = sendMove;    /* TODO:0j: also jQuery */
+                                if (! tgc.board.watching) {
+                                    $board.find('.starthere').each(clearAction);
+                                    if (resulting['moves'] > 0) {
+                                        /* There are moves left; set hotspots accordingly */
+                                        checkConstraints(resulting);
+                                        $board.find('.starthere').each(setAction);
+                                        $board.find('#sendMove').attr('title',
+                                            sendMoveApologies(resulting['moves'], true));
+                                        /* TODO:0j: when clicking the dice to send the move, there
+                                         * is a message, that not all moves were yet made.
+                                         * This might be especially interesting when there is a
+                                         * move, difficult for beginners (like 1-6, where 6 is
+                                         * possible only after a very special 1).
+                                         * TODO: should there be a special alarm?????? */
+                                    } else {
+                                        /* All moves done; set affirmative hotspot ready */
+                                        $dx = $board.find('#sendMove')
+                                        $dx.attr('title', 'click to affirm move');
+                                        $dx[0].onclick = sendMove;    /* TODO:0j: also jQuery */
+                                    }
                                 }
                             }
                         }
@@ -926,7 +938,9 @@ hannes rolls 4 and 3.
                 function clearAction(index, element) {
                     $(element).off();
                 }
-                $board.find('.starthere').each(setAction);
+                if (! tgc.board.watching) {
+                    $board.find('.starthere').each(setAction);
+                }
             }
         };
         $board = $(boardPane);

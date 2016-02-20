@@ -527,18 +527,26 @@ function loadTGC() {
                         tgc.board.setVariant(variantMapper[data['variant']]);
                         tgc.action.system(line);
                         break;
-                    case "e71":
                     case "h39":
+                        tgc.board.watching = true;
+                        tgc.cc.sendCmd("board");
+                    case "e71":
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
                         tgc.board.setVariant(variantMapper[data['variant']]);
                         tgc.action.system(line);
                         tgc.navigate.show("board");
                         break;
+                    case "h36":
                     case "h40":
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
                         tgc.action.system(line);
+                        if (act == "h36") {
+                            tgc.board.watching = false;
+                        } else {
+                            tgc.board.watching = true;
+                        }
                         break;
                     case "e25":
                     case "e26":
