@@ -19,6 +19,7 @@ function loadDialect() {
         e21: '%(name)s has joined you. Your running match was loaded.',
         e22: 'You are now playing with %(name)s. Your running match was loaded.',
         e23: 'turn: %(name)s.',
+        e71: 'turn: %(name)s.',
         e24: 'Starting a new game with %(name)s.',
         e25: 'You rolled %(r1)s, %(opp) rolled %(r2)s',
         e26: '%(name)s rolled %(r1)s, %(opp) rolled %(r2)s',
@@ -38,6 +39,8 @@ function loadDialect() {
         e38: 'Bearing off: %(move)s',
         e39: '%(name)s wants to play a%(ML)s match%(variant)s with you.',
         e40: '%(name)s wants to resume a saved match with you.',
+        h39: "You're now watching %(name)s.",
+        h40: "You're now watching %(name)s. %(name)s is not doing anything interesting.",
     }
   }());
   var toggles = (function() {

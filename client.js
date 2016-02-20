@@ -527,6 +527,19 @@ function loadTGC() {
                         tgc.board.setVariant(variantMapper[data['variant']]);
                         tgc.action.system(line);
                         break;
+                    case "e71":
+                    case "h39":
+                        var data = JSON.parse(cmd),
+                            line = sprintf(tgc.dialect[act], data);
+                        tgc.board.setVariant(variantMapper[data['variant']]);
+                        tgc.action.system(line);
+                        tgc.navigate.show("board");
+                        break;
+                    case "h40":
+                        var data = JSON.parse(cmd),
+                            line = sprintf(tgc.dialect[act], data);
+                        tgc.action.system(line);
+                        break;
                     case "e25":
                     case "e26":
                         // TODO:10: here we should display the dice in the board and wait a second
