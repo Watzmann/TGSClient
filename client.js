@@ -408,7 +408,7 @@ function loadTGC() {
                     tgc.board.showAscii(boardpane, result);
                 } else if (result.indexOf("board:") != -1) {
                     /* Rendering of board-string "board:......" */
-                    bigBoard = result.split('$');   // TODO:00: watch out! .... don't split nicknames!!
+                    bigBoard = result.split('$');
                     this.gameProtocol(bigBoard[1])
                     boardpane.style.display = "none";
                     tgc.board.draw("#boardarea", bigBoard[0]);
@@ -425,10 +425,13 @@ function loadTGC() {
         parse: function(msg) {
             var action_parts = msg.split("#"),
                 gameLineHeader = '';
-            tgc.action.devLog(msg+'\n')
+            tgc.action.devLog(msg+'\n');
             if (action_parts.length > 1) {
                 var act = action_parts[0];
                 var cmd = action_parts[1];
+                if (action_parts.length > 2) {
+                    cmd = action_parts.slice(1, action_parts.length).join('#');
+                }
                 switch (act) {
                     /* This is the way to go: messages with message ids like
                      * cdd#...... (c=character, d=digit, #=separator, ....= msg)
