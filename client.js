@@ -544,11 +544,7 @@ function loadTGC() {
                         var data = JSON.parse(cmd),
                             line = sprintf(tgc.dialect[act], data);
                         tgc.action.system(line);
-                        if (act == "h36") {
-                            tgc.board.watching = false;
-                        } else {
-                            tgc.board.watching = true;
-                        }
+                        tgc.board.watching = act == "h40";
                         break;
                     case "e25":
                     case "e26":

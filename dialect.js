@@ -39,6 +39,7 @@ function loadDialect() {
         e38: 'Bearing off: %(move)s',
         e39: '%(name)s wants to play a%(ML)s match%(variant)s with you.',
         e40: '%(name)s wants to resume a saved match with you.',
+        h36: "You stop watching %(name)s.",
         h39: "You're now watching %(name)s.",
         h40: "You're now watching %(name)s. %(name)s is not doing anything interesting.",
     }
