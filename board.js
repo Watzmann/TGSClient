@@ -13,6 +13,7 @@ function loadBoard() {
   return {
     gifRoot: "resources/board/",
     watching: false,
+    flipped: false,
     infoParts: {
             pName: document.getElementById("pName"),
             pPips: document.getElementById("pPips"),
@@ -770,25 +771,36 @@ hannes rolls 4 and 3.
             div += composeOpponentsBar(bar[1]);
             jQuery(div).appendTo($b);
         }
+        function flipDice() {
+            tgc.board.flipped = ! tgc.board.flipped;
+            drawPosition($board, elements);
+        }
         function setDice(dice, turn, nrMoves, $b) {
             var ctr, pic, pic0 = '<img class="dice" src="' + gifRoot;
             function rollDice() {
                 tgc.cc.sendCmd("roll");
             }
             if (dice[0] != 0) {
-                var sortedDice = dice.slice(0,2), sma;
+                var sortedDice = dice.slice(0,2), sma, $dx;
                 if (tgc.board.watching) {
                     sma = "";
                 } else {
                     sma = '" title=' + sendMoveApologies(nrMoves, false);
                 }
                 sortedDice.sort();
-                sortedDice.reverse();
+                if (! tgc.board.flipped) {
+                    sortedDice.reverse();
+                }
                 pic = pic0 + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
                 jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
                 pic = pic0 + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
                 jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
                 jQuery('<div id="sendMove' + sma + '"></div>').appendTo($b);
+                if (dice[0] != dice[1]) {
+                    $dx = $b.find('#sendMove');
+                    $dx.attr('title', 'click to flip dice');
+                    $dx[0].onclick = flipDice;    /* TODO:0j: also jQuery */
+                }
             } else if (dice[2] != 0) {
                 pic = pic0 + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
                 jQuery('<div id="oDice1">'+pic+'</div>').appendTo($b);
@@ -859,6 +871,7 @@ hannes rolls 4 and 3.
                 $board.find('#pDice1,#pDice2').remove();
                 var $r = $board.find('#sendMove');
                 $r[0].onclick = null;
+                tgc.board.flipped = false;
                 $r.attr('title', 'the game is finished');       // TODO:00: what is this funny line??
             }
             setInfo(elements);
@@ -883,7 +896,9 @@ hannes rolls 4 and 3.
                     double = true;
                 } else {
                     initialDice.sort();
-                    initialDice.reverse();
+                    if (! tgc.board.flipped) {
+                        initialDice.reverse();
+                    }
                     double = false;
                 }
                 setAvailableDice(initialDice, elements['nrMoves']);
@@ -910,8 +925,9 @@ hannes rolls 4 and 3.
                                         /* There are moves left; set hotspots accordingly */
                                         checkConstraints(resulting);
                                         $board.find('.starthere').each(setAction);
-                                        $board.find('#sendMove').attr('title',
-                                            sendMoveApologies(resulting['moves'], true));
+                                        $dx = $board.find('#sendMove');
+                                        $dx.attr('title', sendMoveApologies(resulting['moves'], true));
+                                        $dx[0].onclick = null;    /* TODO:0j: also jQuery */
                                         /* TODO:0j: when clicking the dice to send the move, there
                                          * is a message, that not all moves were yet made.
                                          * This might be especially interesting when there is a
@@ -920,7 +936,7 @@ hannes rolls 4 and 3.
                                          * TODO: should there be a special alarm?????? */
                                     } else {
                                         /* All moves done; set affirmative hotspot ready */
-                                        $dx = $board.find('#sendMove')
+                                        $dx = $board.find('#sendMove');
                                         $dx.attr('title', 'click to affirm move');
                                         $dx[0].onclick = sendMove;    /* TODO:0j: also jQuery */
                                     }
