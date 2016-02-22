@@ -70,12 +70,10 @@
     'you_accept_resign': 'e05#%(value)s',          # You accept and win %(value)s.
     'reject_resign': 'e06#%(name)s',               # %(name)s rejects. The game continues.
     'you_reject_resign': 'e07#{}',                 # You reject. The game continues.
-
     'opp_wins_game': 'e08#{"name":"%(name)s",'     # %(name)s wins the game and gets %(value)s.%(addon)s
-    		          '"addon":"%(addon)s",'
+                          '"addon":"%(addon)s",'
                           '"value":"%(value)s"}',
     'you_win_game': 'e09#{"value":"%(value)s"}',   # win the game and get %(value)s. Congratulations!
-
     'opp_gives_up': 'e10#{"value":"%(value)s",'    # %(opponent)s gives up. You win %(value)s.
                          '"opponent":"%(opponent)s"}',
     'you_give_up': 'e11#{"name":"%(name)s",'       # You give up. %(name)s wins %(value)s.
@@ -92,9 +90,11 @@
 
     'wins_match': 'e17#{"ML":"%(ML)d",'            # %(name)s wins the %(ML)d point match %(score)s
                        '"name":"%(name)s",'
-                       '"score":"%(score)s"}',
+                       '"score":"%(score)s",'
+                       '"matchfile":"%(matchfile)s"}',
     'you_win_match': 'e18#{"ML":"%(ML)d",'         # You win the %(ML)d point match %(score)s
-                       '"score":"%(score)s"}',
+                          '"score":"%(score)s",'
+                          '"matchfile":"%(matchfile)s"}',
 
     'inv_match': 'e19#{"ML":"%(ML)s",'             # ** Player %(name)s has joined you for %(ML)s match.
                       '"name":"%(name)s"}',
@@ -104,6 +104,8 @@
     'join_resume': 'e22#{"name":"%(name)s"}',      # You are now playing with %(name)s. Your running match was loaded.
     'resume_data': 'e23#{"name":"%(name)s",'       # turn: %(name)s.\n%(ML)s\npoints for %(player)s: %(score1)d\npoints for %(opponent)s: %(score2)d
                         '"variant":"%(variant)s"}',
+    'w_resume_data': 'e71#{"name":"%(name)s",'     # message only for HTML-clients
+                          '"variant":"%(variant)s"}',
 
 # START a GAME
     'new_game': 'e24#{"name":"%(name)s",'          # Starting a new game with %(name)s.
@@ -140,6 +142,7 @@
     'resume_sg': 'e40#{"name":"%(name)s"}',        # %(name)s wants to resume a saved match with you.\nType 'join %(name)s' to accept.
     'have_sg': 'e41#{"name":"%(name)s",'           # WARNING: You have a saved %(ML)s match with %(name)s you might want to finish first!
                     '"ML":"%(ML)s"}',
+    # e71# used
 
 #   f) messages
 
@@ -166,7 +169,7 @@
     # h01 unknown command
     # h02 Please type 'toggle silent'
     # h03 Clip kibitz 19
-    # h04 your not watching
+    # h04 You're not watching or playing
     'noo_called': 'h05#{"name":"%(name)s"}',       # There is no one called %(name)s.
 
     # h06 name won't listen to you
@@ -206,12 +209,12 @@
     # h33 You are now playing with user. Your running match was loaded
     # h34 ERROR: Saved match is corrupt. Please start another one.
     # h35 You can't play two games at once
-
-    # h36 You stop watching user.
+    'stop_watching': 'h36#{"name":"%(name)s"}',    # You stop watching %(name)s.
     # h37 Watch who?
     # h38 user doesn't want you to watch.
-    # h39 You're now watching user.
-    # h40 user is not doing anything interesting.
+    'start_watching': 'h39#{"name":"%(name)s",'    # You're now watching %(name)s.
+                           '"variant":"%(variant)s"}',
+    'start_watching_int': 'h40#{"name":"%(name)s"}', # You're now watching %(name)s.\n%(name)s is not doing anything interesting.
     # h41 Use a mirror to do that.
     # h42 user1 and user2 start a n point match.
     # h43 user1 and user2 are resuming their n-point match.
@@ -283,8 +286,8 @@
     # q10 Value of 'redoubles' set to 'str_value'
     # q11 Valid arguments are 'none', 'unlimited' and the numbers 1 to 99.
     'smi_number': 'q12#{}',                        # Give a saved match id as a number with prefix '#'.
-    'xxxxxxxxxx': 'q13#{}',                        # q13 list of saved games. No text to be translated; this is a placeholder.
-    'xxxxxxxxxy': 'q14#{}',                        # q14 empty list. No text to be translated; this is a placeholder.
+    'xxxxxxxq13': 'q13#{}',                        # q13 list of saved games. No text to be translated; this is a placeholder.
+    'xxxxxxxq14': 'q14#{}',                        # q14 empty list. No text to be translated; this is a placeholder.
 
 #   i) information messages
     # i01 ** Gagged users: <list>
@@ -306,8 +309,8 @@
     # i17
     # i18
     # i19
-    # i20 Clock: timer start "i20 60 178" (grace) or "i20 0 178" (reserve)
-    # i21
+    'xxxxxxxi20': 'i20#{}',                        # i20 empty list. No text to be translated; this is a placeholder.
+    'xxxxxxxi21': 'i21#{}',                        # i21 empty list. No text to be translated; this is a placeholder.
     # i22
 
 
