@@ -424,7 +424,20 @@ function loadTGC() {
         },
         parse: function(msg) {
             var action_parts = msg.split("#"),
-                gameLineHeader = '';
+                gameLineHeader = '',
+                parseSpecialJson = function (cmdString, part) {
+                    var c = cmdString.split(':');
+                    var b, a = c[part].split('"');
+                    if (a.length > 3) {
+                        b = [a[0],a.slice(1,a.length-1).join('\u01E2'),a[a.length-1]].join('"');
+                        c[part] = b;
+                        a = JSON.parse(c.join(':'));
+                        a['message'] = a['message'].replace(/\u01e2/g,'"')
+                        return a;
+                    } else {
+                        return JSON.parse(cmdString);
+                    }
+                };
             tgc.action.devLog(msg+'\n');
             if (action_parts.length > 1) {
                 var act = action_parts[0];
@@ -446,24 +459,24 @@ function loadTGC() {
                         tgc.cc.sendCmd("toggle");
                         break;
                     case "c01":
-                        var data = JSON.parse(cmd),
+                        var data = parseSpecialJson(cmd, 1),
                             line = sprintf("You            : %(message)s\n", data);
                         tgc.action.shouts(line);
                         break;
                     case "c02":
-                        var data = JSON.parse(cmd),
+                        var data = parseSpecialJson(cmd, 2),
                             line = sprintf("%(name)-15s: %(message)s\n", data);
                         tgc.action.shouts(line);    // TODO:00: tells and shouts can contain " and #!!!!!!!!
                         break;
                     case "d01":
-                        var data = JSON.parse(cmd),
+                        var data = parseSpecialJson(cmd, 2),
                             line = sprintf("-> %(name)-12s: %(message)s\n", data);
                         tgc.action.tells(line, false);
                         break;
                     case "d02":
                     case "d04":
                     case "d06":
-                        var data = JSON.parse(cmd),
+                        var data = parseSpecialJson(cmd, 2),
                             line = sprintf("%(name)-15s: %(message)s\n", data);
                         tgc.action.tells(line, true);
                         break;
