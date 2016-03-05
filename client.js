@@ -473,6 +473,14 @@ function loadTGC() {
                             line = sprintf("-> %(name)-12s: %(message)s\n", data);
                         tgc.action.tells(line, false);
                         break;
+                    case "d03":
+                    case "d05":
+                        var data = parseSpecialJson(cmd, 2),
+                            line;
+                        data.adr = "others";
+                        line = sprintf("-> %(adr)-12s: %(message)s\n", data);
+                        tgc.action.tells(line, false);
+                        break;
                     case "d02":
                     case "d04":
                     case "d06":
@@ -724,7 +732,7 @@ function loadTGC() {
                 $tellField.val("");
             };
             tgc.cc.sendSay = function() {
-                ws.send('say '+$sayField.val());
+                ws.send('kibitz '+$sayField.val());
                 $sayField.val("");
             };
             tgc.cc.sendShout = function() {
