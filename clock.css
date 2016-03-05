@@ -40,7 +40,7 @@
 }
 
 .light .digits div.dots:before,
-.clock .light .digits div.dots:after{
+.light .digits div.dots:after{
 	background-color:#272e38;
 }
 
