@@ -9,7 +9,7 @@
  *
 */
 
-var CLIENT_LABEL = 'TiGa-0.8';
+var CLIENT_LABEL = 'TiGa-0.8-1';
 var CLIENT_PROTOCOL = '2010';
 var HOST_PORT = {//'themisto': "192.168.1.201:8001",
                  //'uranus': "192.168.1.214:8001",
