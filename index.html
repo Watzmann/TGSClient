@@ -10,51 +10,8 @@
 
   <body>
 
-    <!--                                             Login                   -->
-    <div id=login style="display:block;">
-      <h1>TigerGammon login</h1>
-      <div id="denied" style="display:none; color:red;">
-          wrong username <i id="user-name">...</i> or password!
-      </div>
-      <div id="registration" style="display:none; color:red;">
-      </div>
-      <div id="greeting"  style="display:block;">
-        <p>
-          This is your alpha version of the new HTML5 client for TigerGammon online Backgammon play.
-        </p>
-        <p>
-          Login to tigergammon.com or register if you are new!</br>
-        </p>
-      </div>
-      <div id="goodbye"  style="display:none;">
-        <p>
-          Thanks for playing on TigerGammon.
-        </p>
-      </div>
-      <div>
-        <label for="login_name">name:</label><br/>
-        <input type="text" name="name" id="login_name"/><br/>
-        <label for="login_password">password:</label><br/>
-        <input type="password" name="password" id="login_password"/><br/>
-        <div style="margin-top: 1em;">
-        <input type="button" id="login_submit" value="Login"
-               onclick="tgc.openSession('login');"/>
-        <span style="padding-left: 35px;">
-        <input type="button" id="register_submit" value="Register"
-               onclick="tgc.openSession('register');"/>
-        </span></div>
-      </div>
-      <div id="switchservers" style="padding-top:20px; display:none;">available servers:
-        <table id="sockets">
-          <tr>
-            <td id="discard">None</td><td></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
     <!--                                             Active                  -->
-    <div id=client style="display:none; width:1200px;">
+    <div id=client style="width:1200px;">
         <!--                                           Head                  -->
         <div>
           <div id="identity">

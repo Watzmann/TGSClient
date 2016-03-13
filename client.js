@@ -9,9 +9,6 @@
  *
 */
 
-var CLIENT_LABEL = 'TiGa-' + window.tgcConfig.VERSION;
-var CLIENT_PROTOCOL = '2010';
-
 function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
@@ -25,12 +22,6 @@ function loadTGC() {
         selflogin = document.getElementById("selfLogin"),
         selfclient = document.getElementById("selfClient"),
         selfstatus = document.getElementById("selfStatus"),
-        login = document.getElementById("login"),
-        denied = document.getElementById("denied"),
-        regismsg = document.getElementById("registration"),
-        client = document.getElementById("client"),
-        greeting = document.getElementById("greeting"),
-        goodbye = document.getElementById("goodbye"),
         communicationpane = document.getElementById("communication"),
         developpane = document.getElementById("develop"),
         board = document.getElementById("board"),
@@ -105,12 +96,6 @@ function loadTGC() {
                 var target = document.getElementById("user-name");
                 target.innerHTML = nick;
             },
-            registration: function (msg) {
-                if (msg.indexOf('** ') > -1) {
-                    regismsg.innerHTML = msg;
-                    regismsg.style.display = "block";
-                }
-            },
             hideElement: function (e) {
                 $(e).hide();
             },
@@ -119,20 +104,10 @@ function loadTGC() {
                 jQuery("#generalAlert .gaContent").html("Content");
             },
             showBye: function () {
-                greeting.style.display = "none";
-                goodbye.style.display = "block";
-            },
-            showClient: function (enter) {
-                if (enter) {
-                    login.style.display = "none";
-                    client.style.display = "block";
-                } else {
-                    client.style.display = "none";
-                    login.style.display = "block";
-                }
+                //greeting.style.display = "none";    // TODO:0l: this must change to one second bye + close
+                window.close();
             },
             set_nick: function (nick) {
-                this.showClient(true);
                 var target = document.getElementById("selfNick");
                 target.innerHTML = nick;
                 tgc.selfNick = nick;
@@ -449,7 +424,7 @@ function loadTGC() {
                     /* This is the way to go: messages with message ids like
                      * cdd#...... (c=character, d=digit, #=separator, ....= msg)
                      * */
-                    case "000":
+/*                    case "000":
                         tgc.action.access_denied(cmd);
                         break;
                     case "001":
@@ -457,7 +432,7 @@ function loadTGC() {
                         tgc.action.set_nick(cmd);
                         tgc.navigate.show("players");
                         tgc.cc.sendCmd("toggle");
-                        break;
+                        break;*/
                     case "c01":
                         var data = parseSpecialJson(cmd, 1),
                             line = sprintf("You            : %(message)s\n", data);
@@ -642,124 +617,54 @@ function loadTGC() {
         connectionData: { /* This is a container for connection calls;
                  they are constructed during the checkConnection() call. */
         },
-        checkConnections: function() {
-            if (window.WebSocket === undefined) {
--                /* Das hier sollte einen alternativen Zweig starten
--                 * mit Darstellung von Erklärung und kein login erlauben.*/
-                alert("Websockets undefined");
-            } else {
-                tgc.connectionData['setHost'] = function (host) {
-                        $('#sockets').attr('data-host',host);
-                    };
-                function ping(host, host_port, multiple) {
-                    function displayConnection(host, host_port, state, multiple) {
-                        var $s = $("#sockets tr");
-                        var h = host_port.split(':');
-                        var choser = '';
-                        if (multiple) {
-                            choser = "<input type=\"radio\" name=\"socket\" value=\""+
-                                     host+"\" checked=\"checked\" onclick=\""+
-                                     "tgc.connectionData.setHost('"+host_port+"');\"/>";
-                        }
-                        var row = "<tr><td>"+choser+"</td><td>"+host+":</td><td>"+h[0]+
-                                  "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
-                        $s.last().after($(row));
-                        var $d = $s.find("td").filter("#discard");
-                        if ($d.length > 0) {
-                            $d.parent().remove();
-                        }
-                        $("#sockets").attr('data-host', host_port);
-                        $("#sockets #"+host+"Status").attr('class', signal_colors[state]);
-                    }
-                    var registerConnection = function() {
-                        return function(state) {
-                            tgc.connectionData[host] = host_port;
-                            displayConnection(host, host_port, state, multiple);
-                            };
-                        }();
-                    var ws = new WebSocket("ws://"+host_port+"/ws");
-                    ws.onopen = function() {
-                        ws.send("ping");
-                    };
-                    ws.onmessage = function(event) {
-                        var data = event.data.split(',');
-                        var state = ws.readyState;
-                        ws.close();
-                        if ($.inArray(CLIENT_PROTOCOL, data) != -1) {
-                            registerConnection(state);
-                        }
-                    };
-                };
-                var HP = window.tgcConfig.HOST_PORT;
-                var multiple = Object.keys(HP).length > 1;
-                for (var h in HP) {
-                    ping(h, HP[h], multiple);
-                }
-            }
-        },
         cc: { /* This is a container for connection calls;
                  they are constructed during the openConnection() call. */
             /* TODO:0j: das muss doch hier drin gemacht werden;
              *          aber 'ws' muss bekannt sein */
         },
-        openSession: function(mode) {
-            var hp = $("#sockets").attr('data-host');
-            var ws = new WebSocket("ws://"+hp+"/ws");
-            ws.onopen = function() {
-                var name = document.getElementById("login_name"),
-                    passwd = document.getElementById("login_password");
-                if (name.value == '' || passwd.value == '') {
-                    tgc.action.registration('** please give a name and a password');
-                } else {
-                    tgc.action.focus = tgc.action.registration;
-                    tgc.cc.login(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
-                    tgc.board = loadBoard();
-                }
-            };
-            ws.onclose = function(event) {
+        startClient: function() {
+            tgc.ws.onclose = function(event) {
                 tgc.action.showBye();
-                tgc.action.showClient(false);
             };
-            ws.onmessage = function(evt) {
+            tgc.ws.onmessage = function(evt) {
                     tgc.parse(evt.data);
                 };
             tgc.cc.send_data = function() {
-                ws.send($inputField.val());
+                tgc.ws.send($inputField.val());
                 $inputField.val("");
             };
             tgc.cc.sendTell = function() {
-                ws.send('tell '+$adrTellField.val()+' '+$tellField.val());
+                tgc.ws.send('tell '+$adrTellField.val()+' '+$tellField.val());
                 $tellField.val("");
             };
             tgc.cc.sendSay = function() {
-                ws.send('kibitz '+$sayField.val());
+                tgc.ws.send('kibitz '+$sayField.val());
                 $sayField.val("");
             };
             tgc.cc.sendShout = function() {
-                ws.send('shout '+$shoutField.val());
+                tgc.ws.send('shout '+$shoutField.val());
                 $shoutField.val("");
             };
             tgc.cc.shutdown = function() {
-                ws.send("ciao");
-                ws.close();
+                tgc.ws.send("ciao");
+                tgc.ws.close();
                 window.onbeforeunload = function(){
                     return null;
                 };
             };
             tgc.cc.sendWho = function() {
-                ws.send("who");
+                tgc.ws.send("who");
             };
             tgc.cc.sendCmd = function(msg) {
-                ws.send(msg);
+                tgc.ws.send(msg);
             };
             tgc.cc.toggle = function(toggle) {
-                ws.send('toggle ' + toggle);
+                tgc.ws.send('toggle ' + toggle);
             };
-            tgc.cc.login = function(name, passwd, label, protVersion) {
-                denied.style.display = "none";
-                ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
-                return true;
-            };
+            tgc.board = loadBoard();
+            tgc.action.set_nick(tgc.nickname);
+            tgc.navigate.show("players");
+            tgc.cc.sendCmd("toggle");
         },
         navigate: {                     /* TODO:0j: this can be compressed using arrays */
             show: function(element) {
@@ -806,15 +711,12 @@ function loadTGC() {
         }
     };
   }());
-  tgc.checkConnections();
   tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
   var messages = loadDialect();
   tgc.dialect = messages[0];
   tgc.toggles = messages[1];
-  if (window.tgcConfig.DEVELOP_MODE) {
-    switchservers.style.display = "block";
-    jQuery("#developButton").show()
-  }
   window.tgc = tgc;
+  opener.tgcCnct.handOver(tgc);
+  tgc.startClient();
 };
