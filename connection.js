@@ -9,6 +9,7 @@
  *
 */
 
+var DEVELOP_MODE = true;
 var CLIENT_LABEL = 'TiGa-0.8-1';
 var CLIENT_PROTOCOL = '2010';
 var HOST_PORT = {//'themisto': "192.168.1.201:8001",
@@ -27,16 +28,14 @@ function loadTGCConnection() {
         goodbye = document.getElementById("goodbye");
 
     return {
-        connectionData: { /* This is a container for connection calls;
-                 they are constructed during the checkConnection() call. */
-        },
         checkConnections: function() {
             if (window.WebSocket === undefined) {
 -                /* Das hier sollte einen alternativen Zweig starten
 -                 * mit Darstellung von Erklärung und kein login erlauben.*/
                 alert("Websockets undefined");
             } else {
-                tgc.connectionData['setHost'] = function (host) {
+                var connectionData = {};
+                connectionData['setHost'] = function (host) {
                         $('#sockets').attr('data-host',host);
                     };
                 function ping(host, host_port, multiple) {
@@ -47,7 +46,7 @@ function loadTGCConnection() {
                         if (multiple) {
                             choser = "<input type=\"radio\" name=\"socket\" value=\""+
                                      host+"\" checked=\"checked\" onclick=\""+
-                                     "tgc.connectionData.setHost('"+host_port+"');\"/>";
+                                     "connectionData.setHost('"+host_port+"');\"/>";
                         }
                         var row = "<tr><td>"+choser+"</td><td>"+host+":</td><td>"+h[0]+
                                   "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
@@ -61,7 +60,7 @@ function loadTGCConnection() {
                     }
                     var registerConnection = function() {
                         return function(state) {
-                            tgc.connectionData[host] = host_port;
+                            connectionData[host] = host_port;
                             displayConnection(host, host_port, state, multiple);
                             };
                         }();
@@ -142,4 +141,9 @@ function loadTGCConnection() {
   }());
   tgc.checkConnections();
   window.tgcCnct = tgc;
+//  if (window.tgcConfig.DEVELOP_MODE) {
+  if (DEVELOP_MODE) {
+    switchservers.style.display = "block";
+    jQuery("#developButton").show()
+  }
 };

@@ -112,9 +112,6 @@ function loadTGC() {
                 target.innerHTML = nick;
                 tgc.selfNick = nick;
                 selfclient.innerHTML = 'v'+window.tgcConfig.VERSION;
-                window.onbeforeunload = function(){
-                    return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
-                };
             },
             togglesList: function (msg) {
                 function flipToggle() {
@@ -614,9 +611,6 @@ function loadTGC() {
         blackBoard: { /* This is a container for communication between calls;
                  sort of tmp, for some of them. Do not litter! */
         },
-        connectionData: { /* This is a container for connection calls;
-                 they are constructed during the checkConnection() call. */
-        },
         cc: { /* This is a container for connection calls;
                  they are constructed during the openConnection() call. */
             /* TODO:0j: das muss doch hier drin gemacht werden;
@@ -662,6 +656,14 @@ function loadTGC() {
                 tgc.ws.send('toggle ' + toggle);
             };
             tgc.board = loadBoard();
+            window.onbeforeunload = function(){
+                return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
+            };
+            window.onunload = function(){
+                if (tgc.ws.readyState == 1) {
+                    tgc.cc.shutdown();
+                }
+            };
             tgc.action.set_nick(tgc.nickname);
             tgc.navigate.show("players");
             tgc.cc.sendCmd("toggle");
