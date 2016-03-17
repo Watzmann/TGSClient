@@ -36,7 +36,6 @@ function loadTGC() {
         gameLog = document.getElementById("board_received"),
         gameInfo = document.getElementById("gameInfo"),
         devMessages = document.getElementById("devMessages"),
-        serverChoser = document.getElementById("switchservers"),
         alarmSound = document.getElementById("soundSuccess");
 
     var variantMapper = {
@@ -718,6 +717,9 @@ function loadTGC() {
   var messages = loadDialect();
   tgc.dialect = messages[0];
   tgc.toggles = messages[1];
+  if (window.tgcConfig.DEVELOP_MODE) {
+    jQuery("#developButton").show();
+  }
   window.tgc = tgc;
   opener.tgcCnct.handOver(tgc);
   tgc.startClient();

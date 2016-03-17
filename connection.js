@@ -17,6 +17,7 @@ var HOST_PORT = {//'themisto': "192.168.1.201:8001",
                  'localhost': "127.0.0.1:8001",
                  //'TGS': "tigergammon.com:8080"
     };
+var serverChoser = document.getElementById("switchservers");
 
 function loadTGCConnection() {
   var tgc = (function() {
@@ -28,15 +29,15 @@ function loadTGCConnection() {
         goodbye = document.getElementById("goodbye");
 
     return {
+        connectionData: {},
         checkConnections: function() {
             if (window.WebSocket === undefined) {
 -                /* Das hier sollte einen alternativen Zweig starten
 -                 * mit Darstellung von Erklärung und kein login erlauben.*/
                 alert("Websockets undefined");
             } else {
-                var connectionData = {};
-                connectionData['setHost'] = function (host) {
-                        $('#sockets').attr('data-host',host);
+                this.connectionData['setHost'] = function (host) {
+                        this['data-host'] = host;
                     };
                 function ping(host, host_port, multiple) {
                     function displayConnection(host, host_port, state, multiple) {
@@ -59,8 +60,9 @@ function loadTGCConnection() {
                         $("#sockets #"+host+"Status").attr('class', signal_colors[state]);
                     }
                     var registerConnection = function() {
-                        return function(state) {
-                            connectionData[host] = host_port;
+                        return function(state, obj) {
+                            obj.connectionData[host] = host_port;
+                            obj.connectionData.setHost(host_port);
                             displayConnection(host, host_port, state, multiple);
                             };
                         }();
@@ -73,7 +75,7 @@ function loadTGCConnection() {
                         var state = ws.readyState;
                         ws.close();
                         if ($.inArray(CLIENT_PROTOCOL, data) != -1) {
-                            registerConnection(state);
+                            registerConnection(state, window.tgcCnct);
                         }
                     };
                 };
@@ -88,17 +90,19 @@ function loadTGCConnection() {
             client.ws = tgc.ws;
             client.nickname = tgc.nickname;
         },
-        openSession: function(mode) {
-            var hp = $("#sockets").attr('data-host');
+        openSession: function(mode, fullLogin) {
+            var hp = window.tgcCnct.connectionData['data-host'];
             var registration = function (msg) {
                     if (msg.indexOf('** ') > -1) {
                         regismsg.innerHTML = msg;
                         regismsg.style.display = "block";
                     }
                 };
-            var tgcLogin = function(name, passwd, label, protVersion) {
-                denied.style.display = "none";
-                ws.send(mode+" "+name+" "+passwd+" "+label+" "+protVersion);
+            var tgcLogin = function(loginCmd) {
+                if (typeof denied !== 'undefined' && denied != null) {
+                    denied.style.display = "none";
+                }
+                ws.send(loginCmd);
                 return true;
             };
             var littleParse = function(msg) {
@@ -122,28 +126,34 @@ function loadTGCConnection() {
             var ws = new WebSocket("ws://"+hp+"/ws");
             tgc.ws = ws;
             ws.onopen = function() {
-                var name = document.getElementById("login_name"),
-                    passwd = document.getElementById("login_password");
-                if (name.value == '' || passwd.value == '') {
-                    registration('** please give a name and a password');
-                } else {
-                    tgcLogin(name.value, passwd.value, CLIENT_LABEL, CLIENT_PROTOCOL);
+                if (mode != 'fullLogin') {
+                    var name = document.getElementById("login_name").value,
+                        passwd = document.getElementById("login_password").value,
+                        login = mode+" "+name+" "+passwd+" "+
+                                CLIENT_LABEL+" "+CLIENT_PROTOCOL;
+                    fullLogin = login;
+                    if (name == '' || passwd == '') {
+                        registration('** please give a name and a password');
+                        return;
+                    }
                 }
+                tgcLogin(fullLogin);
             };
             ws.onclose = function(event) {
                 return; //tgc.action.showBye();       TODO:0l: brauch ich das?
             };
             ws.onmessage = function(evt) {
-                    littleParse(evt.data);
-                };
+                littleParse(evt.data);
+            };
         },
     };
   }());
-  tgc.checkConnections();
   window.tgcCnct = tgc;
+  tgc.checkConnections();
 //  if (window.tgcConfig.DEVELOP_MODE) {
   if (DEVELOP_MODE) {
-    switchservers.style.display = "block";
-    jQuery("#developButton").show()
+    if (typeof serverChoser !== 'undefined' && serverChoser != null) {
+        serverChoser.style.display = "block";
+    }
   }
 };
