@@ -9,7 +9,7 @@
  *
 */
 
-var DEVELOP_MODE = true;
+var DEVELOP_MODE = false;
 var CLIENT_LABEL = 'TiGa-0.8-1';
 var CLIENT_PROTOCOL = '2010';
 var HOST_PORT = {//'themisto': "192.168.1.201:8001",
@@ -115,7 +115,7 @@ function loadTGCConnection() {
                             //tgc.action.access_denied(cmd);    TODO:0l: muss dargestellt werden
                             break;
                         case "001":
-                            var tgcClient = window.open("index.html");
+                            var tgcClient = window.open("client.html");
                             tgc.nickname = cmd;
 /*                            regismsg.style.display = "none";
   */                          break;

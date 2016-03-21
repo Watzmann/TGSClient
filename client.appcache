@@ -12,7 +12,7 @@ CACHE MANIFEST
 /client/clock.css
 /client/formats.css
 /client/playersList.css
-/client/index.html
+/client/client.html
 /client/inviteSavedGames.html
 /client/resign.html
 /client/savedGames.html
