@@ -16,10 +16,12 @@ function loadBoard() {
     flipped: false,
     infoParts: {
             pName: document.getElementById("pName"),
+            pClock: document.getElementById("playerClock"),
             pPips: document.getElementById("pPips"),
             pDiff: document.getElementById("pDiff"),
             pScore: document.getElementById("pScore"),
             oName: document.getElementById("oName"),
+            oClock: document.getElementById("opponentClock"),
             oPips: document.getElementById("oPips"),
             oDiff: document.getElementById("oDiff"),
             oScore: document.getElementById("oScore"),
@@ -68,6 +70,8 @@ hannes rolls 4 and 3.
         parts["pPips"] = parseInt(boardParts[53]);
         parts["oPips"] = parseInt(boardParts[54]);
         parts["gameCount"] = parseInt(boardParts[55]);
+        parts["clock"] = (boardParts.length > 56) ? parseInt(boardParts[56])==1 : false;
+                        // TODO:00: remove this once the server sets flag correctly
 
         return parts;
     },
@@ -830,12 +834,18 @@ hannes rolls 4 and 3.
         function setInfo(elements) {
             var color, p = tgc.board.infoParts;
             var pdiff = elements['oPips'] - elements['pPips'];
+            function showClock(clock) {
+                clock.style.display = elements.clock ? "block" : "none";
+                        // TODO:00: remember to show a clock-symbol to start the clock
+            }
+            showClock(p['pClock']);
             p['pName'].innerHTML = elements['player'];
             p['pPips'].innerHTML = elements['pPips'];
             p['pDiff'].innerHTML = pdiff;
             color = pdiff < 0 ? 'Red' : 'Green'
             p['pDiff'].setAttribute('class', 'iPips pip' + color)
             p['pScore'].innerHTML = elements['pScore'];
+            showClock(p['oClock']);
             p['oName'].innerHTML = elements['opponent'];
             p['oPips'].innerHTML = elements['oPips'];
             p['oDiff'].innerHTML = - pdiff;
