@@ -9,24 +9,15 @@
  *
 */
 
-var DEVELOP_MODE = false;
-var CLIENT_LABEL = 'TiGa-0.8.2';
+var CLIENT_LABEL = 'TiGa-' + window.tgcConfig.VERSION;
 var CLIENT_PROTOCOL = '2010';
-var HOST_PORT = {//'themisto': "192.168.1.201:8001",
-                 //'uranus': "192.168.1.214:8001",
-                 'localhost': "127.0.0.1:8001",
-                 //'TGS': "tigergammon.com:8080"
-    };
-var serverChoser = document.getElementById("switchservers");
+var $login = jQuery("#login");
 
 function loadTGCConnection() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
-    var login = document.getElementById("login"),
-        denied = document.getElementById("denied"),
-        regismsg = document.getElementById("registration"),
-        greeting = document.getElementById("greeting"),
-        goodbye = document.getElementById("goodbye");
+    var denied = document.getElementById("denied"),
+        regismsg = document.getElementById("registration");
 
     return {
         connectionData: {},
@@ -79,16 +70,12 @@ function loadTGCConnection() {
                         }
                     };
                 };
-                var HP = HOST_PORT;
+                var HP = window.tgcConfig.HOST_PORT;
                 var multiple = Object.keys(HP).length > 1;
                 for (var h in HP) {
                     ping(h, HP[h], multiple);
                 }
             }
-        },
-        handOver: function(client) {
-            client.ws = tgc.ws;
-            client.nickname = tgc.nickname;
         },
         openSession: function(mode, fullLogin) {
             var hp = window.tgcCnct.connectionData['data-host'];
@@ -115,8 +102,12 @@ function loadTGCConnection() {
                             //tgc.action.access_denied(cmd);    TODO:0l: muss dargestellt werden
                             break;
                         case "001":
-                            var tgcClient = window.open("client.html");
-                            tgc.nickname = cmd;
+                            loadTGC();
+                            window.tgc.clocks = loadTGCClock();
+                            window.tgc.nickname = cmd;
+                            window.tgc.ws = ws;
+                            $login.hide();
+                            window.tgc.startClient();
 /*                            regismsg.style.display = "none";
   */                          break;
                     }
@@ -146,14 +137,24 @@ function loadTGCConnection() {
                 littleParse(evt.data);
             };
         },
+        closeSession: function () {
+                jQuery("#greeting").hide();
+                jQuery("#goodbye").show();
+                $login.show();
+        },
     };
   }());
   window.tgcCnct = tgc;
   tgc.checkConnections();
-//  if (window.tgcConfig.DEVELOP_MODE) {
-  if (DEVELOP_MODE) {
-    if (typeof serverChoser !== 'undefined' && serverChoser != null) {
-        serverChoser.style.display = "block";
-    }
-  }
+  $login.load("login.html",
+              function () {
+                  $login.show();
+                  if (window.tgcConfig.DEVELOP_MODE) {
+                    var serverChoser = document.getElementById("switchservers");
+                    if (typeof serverChoser !== 'undefined' && serverChoser != null) {
+                        serverChoser.style.display = "block";
+                    }
+                  }
+              }
+  );
 };

@@ -1,4 +1,15 @@
-var clocks = (function() {
+/*
+ * Client code for TigerGammonServer HTML5 Client
+ *
+ * This file is licensed under the Affero General Public License
+ * version 3 or later; see LICENSE
+ *
+ * @author Andreas Hausmann <andreas@tigergammon.com>
+ * @copyright Andreas Hausmann 2016
+ *
+*/
+
+function loadTGCClock () {
 	return {
 		graceBar: {player: $("#pClockGraceBar"),
 		           opponent: $("#oClockGraceBar")},
@@ -108,7 +119,4 @@ var clocks = (function() {
 		minutes: 4,
 		seconds: 23,
 	    }
-    }());
-
-tgc.clocks = clocks;
-//clocks.startClock('player', 28, 3);
+    }

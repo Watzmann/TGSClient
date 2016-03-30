@@ -12,7 +12,8 @@
 function loadTGC() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
-    var $inputField = jQuery("#send_input"),
+    var $client = jQuery("#client"),
+        $inputField = jQuery("#send_input"),
         $shoutField = jQuery("#send_shout"),
         $tellField = jQuery("#send_tell"),
         $adrTellField = jQuery("#adr_tell"),
@@ -104,7 +105,8 @@ function loadTGC() {
             },
             showBye: function () {
                 //greeting.style.display = "none";    // TODO:0l: this must change to one second bye + close
-                window.close();
+                $client.hide();
+                window.tgcCnct.closeSession();
             },
             set_nick: function (nick) {
                 var target = document.getElementById("selfNick");
@@ -665,6 +667,7 @@ function loadTGC() {
             };
             tgc.action.set_nick(tgc.nickname);
             tgc.navigate.show("players");
+            $client.show();
             tgc.cc.sendCmd("toggle");
         },
         navigate: {                     /* TODO:0j: this can be compressed using arrays */
@@ -721,6 +724,4 @@ function loadTGC() {
     jQuery("#developButton").show();
   }
   window.tgc = tgc;
-  opener.tgcCnct.handOver(tgc);
-  tgc.startClient();
 };
