@@ -9,7 +9,8 @@
  *
 */
 
-var CLIENT_LABEL = 'TiGa-' + window.tgcConfig.VERSION;
+var CLIENT_VERSION = window.tgcConfig.VERSION;
+var CLIENT_LABEL = 'TiGa-' + CLIENT_VERSION;
 var CLIENT_PROTOCOL = '2010';
 var $login = jQuery("#login");
 
@@ -77,7 +78,7 @@ function loadTGCConnection() {
                 }
             }
         },
-        openSession: function(mode, fullLogin) {
+        openSession: function(mode, label, fullLogin) {
             var hp = window.tgcCnct.connectionData['data-host'];
             var registration = function (msg) {
                     if (msg.indexOf('** ') > -1) {
@@ -105,6 +106,7 @@ function loadTGCConnection() {
                             loadTGC();
                             window.tgc.clocks = loadTGCClock();
                             window.tgc.nickname = cmd;
+                            window.tgc.version = label;
                             window.tgc.ws = ws;
                             $login.hide();
                             window.tgc.startClient();
@@ -146,7 +148,16 @@ function loadTGCConnection() {
   }());
   window.tgcCnct = tgc;
   tgc.checkConnections();
-  $login.load("login.html",
+  if(typeof(Storage) !== "undefined") {
+    if (typeof(sessionStorage.name) !== "undefined") {
+        $login.load("flogin.html",
+              function () {
+                  $login.show();
+                  ebifConnect();
+              }
+        );
+    } else {
+        $login.load("login.html",
               function () {
                   $login.show();
                   if (window.tgcConfig.DEVELOP_MODE) {
@@ -156,5 +167,10 @@ function loadTGCConnection() {
                     }
                   }
               }
-  );
+        );
+    }
+  } else {
+    // Sorry! No Web Storage support..
+    // TODO:0l: get a intelligent message here
+  }
 };

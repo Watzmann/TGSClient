@@ -108,11 +108,11 @@ function loadTGC() {
                 $client.hide();
                 window.tgcCnct.closeSession();
             },
-            set_nick: function (nick) {
+            set_nick: function (nick, version) {
                 var target = document.getElementById("selfNick");
                 target.innerHTML = nick;
                 tgc.selfNick = nick;
-                selfclient.innerHTML = 'v'+window.tgcConfig.VERSION;
+                selfclient.innerHTML = version;
             },
             togglesList: function (msg) {
                 function flipToggle() {
@@ -427,7 +427,6 @@ function loadTGC() {
                         break;
                     case "001":
                         regismsg.style.display = "none";
-                        tgc.action.set_nick(cmd);
                         tgc.navigate.show("players");
                         tgc.cc.sendCmd("toggle");
                         break;*/
@@ -665,7 +664,7 @@ function loadTGC() {
                     tgc.cc.shutdown();
                 }
             };
-            tgc.action.set_nick(tgc.nickname);
+            tgc.action.set_nick(tgc.nickname, tgc.version);
             tgc.navigate.show("players");
             $client.show();
             tgc.cc.sendCmd("toggle");

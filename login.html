@@ -24,10 +24,10 @@
     <input type="password" name="password" id="login_password"/><br/>
     <div style="margin-top: 1em;">
     <input type="button" id="login_submit" value="Login"
-           onclick="tgcCnct.openSession('login');"/>
+           onclick="tgcCnct.openSession('login', 'v'+CLIENT_VERSION);"/>
     <span style="padding-left: 35px;">
     <input type="button" id="register_submit" value="Register"
-           onclick="tgcCnct.openSession('register');"/>
+           onclick="tgcCnct.openSession('register', 'v'+CLIENT_VERSION);"/>
     </span></div>
   </div>
   <div id="switchservers" style="padding-top:20px; display:none;">available servers:
