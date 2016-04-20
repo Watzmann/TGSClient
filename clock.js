@@ -15,14 +15,16 @@ function loadTGCClock () {
 		           opponent: $("#oClockGraceBar")},
 		display: {player: $("#playerClock .display"),
 		           opponent: $("#opponentClock .display")},
-		displayClock: (function () {
+		digits: (function () {
             var clock = {player: $('#playerClock'),
                          opponent: $('#opponentClock')},
                 digit2name = 'zero one two three four five six seven eight nine'.split(' '),
-                digits = {player: {}, opponent: {}},
+                digits = {player: {}, opponent: {}, digit2name: digit2name},
                 positions = ['m1', 'm2', ':', 's1', 's2'],
                 digitHolder = {player: clock.player.find('.digits'),
                                opponent: clock.opponent.find('.digits')};
+            digitHolder.player.children().remove();
+            digitHolder.opponent.children().remove();
             $.each(positions, function () {
                 if (this == ':') {
                     digitHolder.player.append('<div class="dots">');
@@ -42,13 +44,16 @@ function loadTGCClock () {
                     digitHolder.opponent.append(pos2);
                 }
             });
-            return function (user, now) {
-                digits[user].m1.attr('class', digit2name[now[0]]);
-                digits[user].m2.attr('class', digit2name[now[1]]);
-                digits[user].s1.attr('class', digit2name[now[2]]);
-                digits[user].s2.attr('class', digit2name[now[3]]);
-            };
+            return digits;
 		}()),
+		displayClock: function (user, now) {
+                var digits = tgc.clocks.digits,
+                    name = digits.digit2name;
+                digits[user].m1.attr('class', name[now[0]]);
+                digits[user].m2.attr('class', name[now[1]]);
+                digits[user].s1.attr('class', name[now[2]]);
+                digits[user].s2.attr('class', name[now[3]]);
+		},
 		runGrace: function () {
 		    gB = tgc.clocks.graceBar[tgc.clocks.user];
 		    if (tgc.clocks.grace > 0) {
