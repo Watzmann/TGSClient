@@ -422,10 +422,7 @@ function loadTGC() {
                     /* This is the way to go: messages with message ids like
                      * cdd#...... (c=character, d=digit, #=separator, ....= msg)
                      * */
-/*                    case "000":
-                        tgc.action.access_denied(cmd);
-                        break;
-                    case "001":
+/*                    case "001":
                         regismsg.style.display = "none";
                         tgc.navigate.show("players");
                         tgc.cc.sendCmd("toggle");

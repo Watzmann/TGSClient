@@ -17,8 +17,6 @@ var $login = jQuery("#login");
 function loadTGCConnection() {
   var tgc = (function() {
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
-    var denied = document.getElementById("denied"),
-        regismsg = document.getElementById("registration");
 
     return {
         connectionData: {},
@@ -78,15 +76,28 @@ function loadTGCConnection() {
                 }
             }
         },
+        access_denied: function (nick) {
+            var denied = document.getElementById("denied"),
+                target = document.getElementById("user-name");
+            denied.style.display = "block";
+            target.innerHTML = nick;
+        },
+        registration_error: function (msg) {
+            var regismsg = document.getElementById("registration");
+            regismsg.style.display = "block";
+            regismsg.innerHTML = msg;
+        },
         openSession: function(mode, label, fullLogin) {
             var hp = window.tgcCnct.connectionData['data-host'];
             var registration = function (msg) {
                     if (msg.indexOf('** ') > -1) {
+                        var regismsg = document.getElementById("registration");
                         regismsg.innerHTML = msg;
                         regismsg.style.display = "block";
                     }
                 };
             var tgcLogin = function(loginCmd) {
+                var denied = document.getElementById("denied");
                 if (typeof denied !== 'undefined' && denied != null) {
                     denied.style.display = "none";
                 }
@@ -100,7 +111,10 @@ function loadTGCConnection() {
                     var cmd = action_parts[1];
                     switch (act) {
                         case "000":
-                            //tgc.action.access_denied(cmd);    TODO:0l: muss dargestellt werden
+                            tgcCnct.access_denied(cmd);
+                            break;
+                        case "002":
+                            tgcCnct.registration_error(cmd);
                             break;
                         case "001":
                             loadTGC();
@@ -110,8 +124,9 @@ function loadTGCConnection() {
                             window.tgc.ws = ws;
                             $login.hide();
                             window.tgc.startClient();
-/*                            regismsg.style.display = "none";
-  */                          break;
+                            var regismsg = document.getElementById("registration");
+                            regismsg.style.display = "none";
+                            break;
                     }
                 }
             };
