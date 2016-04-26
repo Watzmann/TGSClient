@@ -67,11 +67,11 @@ hannes rolls 4 and 3.
         parts["onHome"] = boardParts.slice(45,47);
         parts["onBar"] = boardParts.slice(47,49);
         parts["nrMoves"] = parseInt(boardParts[49]);
+        parts["crawford"] = parseInt(boardParts[51]);
         parts["pPips"] = parseInt(boardParts[53]);
         parts["oPips"] = parseInt(boardParts[54]);
         parts["gameCount"] = parseInt(boardParts[55]);
-        parts["clock"] = (boardParts.length > 56) ? parseInt(boardParts[56])==1 : false;
-                        // TODO:00: remove this once the server sets flag correctly
+        parts["clock"] = parseInt(boardParts[56]) == 1;
 
         return parts;
     },
@@ -726,7 +726,7 @@ hannes rolls 4 and 3.
             }
             jQuery(div).appendTo($b);
         }
-        function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, $b) {
+        function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, crawford, $b) {
             var pic, div, t;
             function double(picture) {
                 var turnCube = function() {
@@ -749,6 +749,9 @@ hannes rolls 4 and 3.
                 type = "pCube";
             } else {
                 type = "oCube";
+            }
+            if (crawford) {
+                cubeValue = 'c';
             }
             pic = '<img src="'+gifRoot+'cube'+cubeValue+'.gif" alt="cube'+cubeValue+'">';
             jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
@@ -892,7 +895,8 @@ hannes rolls 4 and 3.
                 setCheckers['O'](elements['position'], $board);
             }
             setCube(elements['cubeValue'], elements['meMayDouble'],
-                    elements["meMayTurn"], elements['cubeWasTurned'], $board);
+                    elements['meMayTurn'], elements['cubeWasTurned'],
+                    elements['crawford'] == 1,  $board);
             setDitches(elements['onHome'], elements['direction'],
                        elements['homePoint'], $board);
             setBars(elements['onBar'], elements['direction'], $board);
