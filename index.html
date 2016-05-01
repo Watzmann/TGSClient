@@ -144,24 +144,19 @@
           <!--                                         PlayersList / System  -->
           <div id="leftPanel" style="float: left; padding: 20px; height: 638px; width: 705;">
             <div id="players" style="display:none;">
-              <table name="players_list" class="playersList" id="playersList">
-                <colgroup>
-                  <col style="width: 12em;">
-                  <col style="width: 3em;">
-                  <col style="width: 6em;">
-                  <col style="width: 6em;">
-                  <col style="width: 5em;">
-                  <col style="width: 18em;">
-                  <col style="width: 16em;">
-                </colgroup>
-                <tr class="playersHeading">
-                  <th class="la">Name</th><th class="la">S</th><th>Rating</th><th>Exp</th><th>Idle</th>
-                  <th class="lap">E-Mail</th><th class="la">Client</th>
-                </tr>
-                <tr class="playersEntry">
-                  <td>----</td><td>-</td><td>1500.00</td><td>0</td><td>0.0</td>
-                </tr>
-              </table>
+              <div name="players_list" class="playersList" id="playersList">
+                <div class="playersHeading">
+                  <div class="plc1">Name</div><div class="plc2">S</div>
+                  <div class="plc3">Rating</div>
+                  <div class="plc4">Exp</div><div class="plc5">Idle</div>
+                  <div class="plc6">E-Mail</div><div class="plc7">Client</div>
+                </div>
+                <div class="playersBody">
+                  <div class="playersEntry">
+                    <div>----</div><div>-</div><div>1500.00</div><div>0</div><div>0.0</div>
+                  </div>
+                </div>
+              </div>
               <div class="generalDialog" id="inviteDialog" style="display:none;">
                 <form id="invitation">   <!-- muss des ne form sein???? -->
                   <p>

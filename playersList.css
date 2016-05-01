@@ -1,34 +1,80 @@
 /* This css file is created automatically by board_css.py. */
 /* Do not edit as changes will be overridden.              */
 
+.playersBody {
+    height: 394px;
+    overflow-y: auto;
+}
+
 .playersList {
-    //height: 594px;
     font-family: monospace;
     text-align: right;
     font-size: small;
 }
 
-table.playersList td.self {
+.playersHeading {
+    font-weight: bold;
+}
+
+div.playersList .sl {
+    float: left;
+}
+
+div.playersList .self {
     color: red;
 }
 
-table.playersList td.invitable {
+div.playersList .invitable {
     color: green;
 }
 
-table.playersList .la {
+div.playersList .plc1 {
+    float: left;
+    width: 12em;
     text-align: left;
 }
 
-table.playersList .lap {
+div.playersList .plc2 {
+    float: left;
+    width: 3em;
+    text-align: left;
+}
+
+div.playersList .plc3 {
+    float: left;
+    width: 6em;
+    text-align: right;
+}
+
+div.playersList .plc4 {
+    float: left;
+    width: 6em;
+    text-align: right;
+}
+
+div.playersList .plc5 {
+    float: left;
+    width: 5em;
+    text-align: right;
+}
+
+div.playersList .plc6 {
+    float: left;
+    width: 18em;
     text-align: left;
     padding-left: 1.5em;
 }
 
-tr.playersHeading {
+div.playersList .plc7 {
+    float: left;
+    width: 16em;
+    text-align: left;
+}
+
+div.playersList .playersHeading {
     height: 15px;
 }
 
-tr.playersEntry {
+div.playersList .playersEntry {
     height: 15px;
 }
