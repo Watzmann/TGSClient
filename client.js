@@ -234,8 +234,8 @@ function loadTGC() {
                 $h = $("#uglyHack");
                 for (var pl in playerList) {
                     var p = playerList[pl],
-                        st = "-R"[p['ready']] + " ",
-                        sx = p.user == tgc.selfNick ? s : (p.ready && !p.away) ? si : so;
+                        st = p['status'],
+                        sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : so;
                     line = sx+p.user+r2+st+r3+p.rating+r4+p.experience+r5+
                               p.idle+r6+p.email+r7+p.client+e;
                     $h.after($(line));
