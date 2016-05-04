@@ -67,9 +67,8 @@ function loadTGC() {
         }
     }
 
-    return {
+    var temp = {
         action: {
-            playersList: {},
             plRowElement: {'start': '<div class="playersEntry"><div class="plc1 self">',
                            'starto': '<div class="playersEntry"><div class="plc1">',
                            'starti': '<div class="playersEntry"><div class="plc1 invitable">',
@@ -200,7 +199,6 @@ function loadTGC() {
                 return "<span style=\"font-weight:bold\">" + line + "</span>";
             },
             whoFormat1: function (player) {
-                player['status'] = "-R"[player['ready']] + " ";
                 return sprintf("%(user)-24s %(status)4s %(rating)7.2f %(experience)5d %(idle)5s", player);
     // %(user)s %(opponent)s %(watching)s %(ready)s ' \
     //            '%(away)s %(login)s ' \
@@ -208,7 +206,7 @@ function loadTGC() {
     //        w = '%(status)s %(user)-14s %(login)5s ' \
     //            '%(hostname)s' % args
             },
-            displayPlayersList: function (playerList) {
+            displayPlayersList: function (playersList) {
                 function setInvite(index, element) {
                     var $e = $(element),
                         name = $e.html();
@@ -232,8 +230,8 @@ function loadTGC() {
                     line = '<div id="uglyHack" style="display:none"></div>';
                 $h.html($(line));   /* TODO:0j: I dislike this hack! put this straight! */
                 $h = $("#uglyHack");
-                for (var pl in playerList) {
-                    var p = playerList[pl],
+                for (var pl in playersList.sortedKeys) {
+                    var p = playersList.players[playersList.sortedKeys[pl]],
                         st = p['status'],
                         sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : so;
                     line = sx+p.user+r2+st+r3+p.rating+r4+p.experience+r5+
@@ -244,7 +242,7 @@ function loadTGC() {
                 $("#playersList div.invitable").each(setInvite);
             },
             who: function (list_of_players) {
-                this.playersList = {};
+                this.playersList.players = {};
                 this.whoUpdate(list_of_players);
             },
             whoUpdate: function (list_of_players) {
@@ -256,12 +254,13 @@ function loadTGC() {
                     if (po.user == tgc.selfNick) {
                         this.updateSelf(po);
                     }
-                    this.playersList[po['user']] = po;
+                    this.playersList.add(po);
                 }
+                this.playersList.fullSort();
                 this.displayPlayersList(this.playersList);
             },
             delFromPL: function (player) {
-                delete this.playersList[player];
+                this.playersList.delete(player);
                 this.displayPlayersList(this.playersList);
             },
             savedGames: function (listOfGames) {
@@ -721,6 +720,44 @@ function loadTGC() {
             }
         }
     };
+  temp.action.playersList = (function () {
+        var playersList = {
+            players: {},
+            add: function (po) {
+                this.players[po['user']] = po;
+                this.sortedKeys.push(po['user']);
+                this.sortedKeys.sort(this.sort);
+            },
+            delete: function (player) {
+                delete this.players[player];
+                this.sortedKeys.splice(this.sortedKeys.indexOf(player), 1);
+            },
+            sortByName: function (a, b) {
+                if (a > b) return 1;
+                if (a < b) return -1;
+                return 0;
+            },
+            sort: null,
+            sortedKeys: [],
+            fullSort: function () {
+                this.sortedKeys = Object.keys(this.players);
+                this.sortedKeys.sort(this.sort);
+            },
+        };
+        playersList.sortByRating = (function () {
+            var pl = playersList;
+            return function(a, b) {
+                    var af = parseFloat(pl.players[a]['rating']);
+                    var bf = parseFloat(pl.players[b]['rating']);
+                    if (af > bf) return 1;
+                    if (af < bf) return -1;
+                    return 0;
+                };
+            })();
+        playersList.sort = playersList.sortByName;
+        return playersList;
+    })();
+    return temp;
   }());
   tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
