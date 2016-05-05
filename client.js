@@ -69,18 +69,6 @@ function loadTGC() {
 
     var temp = {
         action: {
-            plRowElement: {'start': '<div class="playersEntry"><div class="plc1 self">',
-                           'starto': '<div class="playersEntry"><div class="plc1">',
-                           'starti': '<div class="playersEntry"><div class="plc1 invitable">',
-                           'end':  '</div></div>',
-                           'running':  '</div><div>',
-                           'running2':  '</div><div class="plc2">',
-                           'running3':  '</div><div class="plc3">',
-                           'running4':  '</div><div class="plc4">',
-                           'running5':  '</div><div class="plc5">',
-                           'running6':  '</div><div class="plc6">',
-                           'running7':  '</div><div class="plc7">',
-                            },
             tlRowElement: {'start': '<tr class="toggleEntry"><td>',
                            'end':  '</td></tr>',
                            'running':  '</td><td><input type="checkbox" id="',
@@ -206,41 +194,6 @@ function loadTGC() {
     //        w = '%(status)s %(user)-14s %(login)5s ' \
     //            '%(hostname)s' % args
             },
-            displayPlayersList: function (playersList) {
-                function setInvite(index, element) {
-                    var $e = $(element),
-                        name = $e.html();
-                    $e.on("mousedown", function(event) {
-                                tgc.dialogs.invite(name)(event);
-                                });
-                }
-                $("div.playersBody").children().remove();
-                var $h = $("div.playersBody"),
-                    s = this.plRowElement.start,
-                    so = this.plRowElement.starto,
-                    si = this.plRowElement.starti,
-                    e = this.plRowElement.end,
-                    r = this.plRowElement.running,
-                    r2 = this.plRowElement.running2,
-                    r3 = this.plRowElement.running3,
-                    r4 = this.plRowElement.running4,
-                    r5 = this.plRowElement.running5,
-                    r6 = this.plRowElement.running6,
-                    r7 = this.plRowElement.running7,
-                    line = '<div id="uglyHack" style="display:none"></div>';
-                $h.html($(line));   /* TODO:0j: I dislike this hack! put this straight! */
-                $h = $("#uglyHack");
-                for (var pl in playersList.sortedKeys) {
-                    var p = playersList.players[playersList.sortedKeys[pl]],
-                        st = p['status'],
-                        sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : so;
-                    line = sx+p.user+r2+st+r3+p.rating+r4+p.experience+r5+
-                              p.idle+r6+p.email+r7+p.client+e;
-                    $h.after($(line));
-                    $h = $(".playersEntry").last();
-                }
-                $("#playersList div.invitable").each(setInvite);
-            },
             who: function (list_of_players) {
                 this.playersList.players = {};
                 this.whoUpdate(list_of_players);
@@ -256,12 +209,10 @@ function loadTGC() {
                     }
                     this.playersList.add(po);
                 }
-                this.playersList.fullSort();
-                this.displayPlayersList(this.playersList);
+                this.playersList.fullSort("byName");
             },
             delFromPL: function (player) {
                 this.playersList.delete(player);
-                this.displayPlayersList(this.playersList);
             },
             savedGames: function (listOfGames) {
                 var s = this.sgRowElement.start,
@@ -722,6 +673,18 @@ function loadTGC() {
     };
   temp.action.playersList = (function () {
         var playersList = {
+            plRowElement: {'start': '<div class="playersEntry"><div class="plc1 self">',
+                           'starto': '<div class="playersEntry"><div class="plc1">',
+                           'starti': '<div class="playersEntry"><div class="plc1 invitable">',
+                           'end':  '</div></div>',
+                           'running':  '</div><div>',
+                           'running2':  '</div><div class="plc2">',
+                           'running3':  '</div><div class="plc3">',
+                           'running4':  '</div><div class="plc4">',
+                           'running5':  '</div><div class="plc5">',
+                           'running6':  '</div><div class="plc6">',
+                           'running7':  '</div><div class="plc7">',
+                            },
             players: {},
             add: function (po) {
                 this.players[po['user']] = po;
@@ -731,6 +694,7 @@ function loadTGC() {
             delete: function (player) {
                 delete this.players[player];
                 this.sortedKeys.splice(this.sortedKeys.indexOf(player), 1);
+                this.show();
             },
             sortByName: function (a, b) {
                 if (a > b) return 1;
@@ -739,9 +703,46 @@ function loadTGC() {
             },
             sort: null,
             sortedKeys: [],
-            fullSort: function () {
+            fullSort: function (key) {
+                this.sort = this.sortBy(key);
                 this.sortedKeys = Object.keys(this.players);
                 this.sortedKeys.sort(this.sort);
+                this.show();
+            },
+            show: function () {
+                function setInvite(index, element) {
+                    var $e = $(element),
+                        name = $e.html();
+                    $e.on("mousedown", function(event) {
+                                tgc.dialogs.invite(name)(event);
+                                });
+                }
+                $("div.playersBody").children().remove();
+                var $h = $("div.playersBody"),
+                    s = this.plRowElement.start,
+                    so = this.plRowElement.starto,
+                    si = this.plRowElement.starti,
+                    e = this.plRowElement.end,
+                    r = this.plRowElement.running,
+                    r2 = this.plRowElement.running2,
+                    r3 = this.plRowElement.running3,
+                    r4 = this.plRowElement.running4,
+                    r5 = this.plRowElement.running5,
+                    r6 = this.plRowElement.running6,
+                    r7 = this.plRowElement.running7,
+                    line = '<div id="uglyHack" style="display:none"></div>';
+                $h.html($(line));   /* TODO:0j: I dislike this hack! put this straight! */
+                $h = $("#uglyHack");
+                this.sortedKeys.forEach(function (item, index, array) {
+                    var p = playersList.players[item],
+                        st = p['status'],
+                        sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : so;
+                    line = sx+p.user+r2+st+r3+p.rating+r4+p.experience+r5+
+                              p.idle+r6+p.email+r7+p.client+e;
+                    $h.after($(line));
+                    $h = $(".playersEntry").last();
+                });
+                $("#playersList div.invitable").each(setInvite);
             },
         };
         playersList.sortByRating = (function () {
@@ -753,6 +754,16 @@ function loadTGC() {
                     if (af < bf) return -1;
                     return 0;
                 };
+            })();
+        playersList.sortBy = (function () {
+            var pl = playersList;
+            return function (key) {
+                var sortFunctions = {
+                    byName: pl.sortByName,
+                    byRating: pl.sortByRating,
+                };
+                return sortFunctions[key];
+            };
             })();
         playersList.sort = playersList.sortByName;
         return playersList;
