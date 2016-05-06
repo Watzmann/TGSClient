@@ -195,7 +195,7 @@ function loadTGC() {
     //            '%(hostname)s' % args
             },
             who: function (list_of_players) {
-                this.playersList.players = {};
+                this.playersList.clear();
                 this.whoUpdate(list_of_players);
             },
             whoUpdate: function (list_of_players) {
@@ -209,7 +209,7 @@ function loadTGC() {
                     }
                     this.playersList.add(po);
                 }
-                this.playersList.fullSort("byName");
+                this.playersList.fullSort("default");
             },
             delFromPL: function (player) {
                 this.playersList.delete(player);
@@ -686,9 +686,13 @@ function loadTGC() {
                            'running7':  '</div><div class="plc7">',
                             },
             players: {},
+            clear: function () {
+                this.players = {};
+                this.sortedKeys = [];
+            },
             add: function (po) {
                 this.players[po['user']] = po;
-                this.sortedKeys.push(po['user']);
+                this.sortedKeys.unshift(po['user']);
                 this.sortedKeys.sort(this.sort);
             },
             delete: function (player) {
@@ -703,10 +707,19 @@ function loadTGC() {
             },
             sort: null,
             sortedKeys: [],
+            lastKey: null,
             fullSort: function (key) {
                 this.sort = this.sortBy(key);
+                if (this.lastKey == key) {
+                    this.lastKey = 'equal';
+                } else {
+                    this.lastKey = key;
+                }
                 this.sortedKeys = Object.keys(this.players);
                 this.sortedKeys.sort(this.sort);
+                if (this.lastKey == 'equal') {
+                    this.sortedKeys.reverse(this.sort);
+                }
                 this.show();
             },
             show: function () {
@@ -750,8 +763,18 @@ function loadTGC() {
             return function(a, b) {
                     var af = parseFloat(pl.players[a]['rating']);
                     var bf = parseFloat(pl.players[b]['rating']);
-                    if (af > bf) return 1;
-                    if (af < bf) return -1;
+                    if (af > bf) return -1;  /* prefer reverse first */
+                    if (af < bf) return 1;
+                    return 0;
+                };
+            })();
+        playersList.sortByExperience = (function () {
+            var pl = playersList;
+            return function(a, b) {
+                    var ai = parseInt(pl.players[a]['experience']);
+                    var bi = parseInt(pl.players[b]['experience']);
+                    if (ai > bi) return -1;  /* prefer reverse first */
+                    if (ai < bi) return 1;
                     return 0;
                 };
             })();
@@ -761,8 +784,9 @@ function loadTGC() {
                 var sortFunctions = {
                     byName: pl.sortByName,
                     byRating: pl.sortByRating,
+                    byExperience: pl.sortByExperience,
                 };
-                return sortFunctions[key];
+                return key == 'default' ? pl.sort : sortFunctions[key];
             };
             })();
         playersList.sort = playersList.sortByName;
