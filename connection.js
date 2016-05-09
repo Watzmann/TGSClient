@@ -37,7 +37,7 @@ function loadTGCConnection() {
                         if (multiple) {
                             choser = "<input type=\"radio\" name=\"socket\" value=\""+
                                      host+"\" checked=\"checked\" onclick=\""+
-                                     "connectionData.setHost('"+host_port+"');\"/>";
+                                     "tgcCnct.connectionData.setHost('"+host_port+"');\"/>";
                         }
                         var row = "<tr><td>"+choser+"</td><td>"+host+":</td><td>"+h[0]+
                                   "</td><td>"+h[1]+"</td><td id=\""+host+"Status\"> r </td></tr>";
