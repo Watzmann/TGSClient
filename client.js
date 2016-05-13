@@ -209,7 +209,7 @@ function loadTGC() {
                     }
                     this.playersList.add(po);
                 }
-                this.playersList.fullSort("default");
+                this.playersList.reSort();
             },
             delFromPL: function (player) {
                 this.playersList.delete(player);
@@ -708,6 +708,11 @@ function loadTGC() {
             sort: null,
             sortedKeys: [],
             lastKey: null,
+            reSort: function () {
+                this.sortedKeys = Object.keys(this.players);
+                this.sortedKeys.sort(this.sort);
+                this.show();
+            },
             fullSort: function (key) {
                 this.sort = this.sortBy(key);
                 if (this.lastKey == key) {
@@ -779,14 +784,13 @@ function loadTGC() {
                 };
             })();
         playersList.sortBy = (function () {
-            var pl = playersList;
+            var sortFunctions = {
+                byName: playersList.sortByName,
+                byRating: playersList.sortByRating,
+                byExperience: playersList.sortByExperience,
+            };
             return function (key) {
-                var sortFunctions = {
-                    byName: pl.sortByName,
-                    byRating: pl.sortByRating,
-                    byExperience: pl.sortByExperience,
-                };
-                return key == 'default' ? pl.sort : sortFunctions[key];
+                return sortFunctions[key];
             };
             })();
         playersList.sort = playersList.sortByName;
