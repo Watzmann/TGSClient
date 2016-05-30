@@ -28,12 +28,24 @@ function loadDialogs() {
         cancelResign: function () {
             $("#resignDialog").hide();
         },
+        dialogWatch: function (player) {
+            $("#invitation #wPlayerName").html(player);
+            $("#invitionSection").hide();
+            $("#inviteDialog").show();
+        },
         dialogInvite: function (player) {
             tgc.blackBoard['savedGamesFocusOld'] = tgc.blackBoard['savedGamesFocus']
             tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
             tgc.cc.sendCmd("savedgame " + player);
-            $("#invitation #playerName").html(player);
+            $("#invitation #iPlayerName").html(player);
+            $("#invitation #wPlayerName").html(player);
             $("#inviteDialog").show();
+        },
+        watch: function (player) {
+            return function(event) {
+                dlg.dialogWatch(player);
+                return false;
+            };
         },
         invite: function (player) {
             return function(event) {
@@ -43,13 +55,19 @@ function loadDialogs() {
         },
         hideInvite: function () {
             $("#inviteDialog").hide();
+            $("#invitionSection").show();
             $('#inviteSavedGames .gaContent table').remove()
             tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld'];
+        },
+        sendWatch: function () {
+            var watch = "watch "+$("#invitation #wPlayerName").html();
+            tgc.cc.sendCmd(watch);
+            this.hideInvite();
         },
         sendInvite: function () {
             var variation = $("#invitation input:checked").attr('value'),
                 matchLength = document.getElementById("iMatchLength"),
-                invitation = "invite "+$("#invitation #playerName").html()+" "+matchLength.value;
+                invitation = "invite "+$("#invitation #iPlayerName").html()+" "+matchLength.value;
             if (variation != 'standard') {
                 invitation += ' ' + variation;
             }

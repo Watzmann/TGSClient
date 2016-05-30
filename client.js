@@ -158,7 +158,7 @@ function loadTGC() {
                 }
                 if (data.watching != "-") {
                     color += w;
-                    status = 'watching';
+                    status = 'watching ' + data.watching;
                 }
                 if (data.away) {
                     color += 0x303030;
@@ -676,6 +676,7 @@ function loadTGC() {
             plRowElement: {'start': '<div class="playersEntry"><div class="plc1 self">',
                            'starto': '<div class="playersEntry"><div class="plc1">',
                            'starti': '<div class="playersEntry"><div class="plc1 invitable">',
+                           'startw': '<div class="playersEntry"><div class="plc1 watchable">',
                            'end':  '</div></div>',
                            'running':  '</div><div>',
                            'running2':  '</div><div class="plc2">',
@@ -735,11 +736,19 @@ function loadTGC() {
                                 tgc.dialogs.invite(name)(event);
                                 });
                 }
+                function setWatch(index, element) {
+                    var $e = $(element),
+                        name = $e.html();
+                    $e.on("mousedown", function(event) {
+                                tgc.dialogs.watch(name)(event);
+                                });
+                }
                 $("div.playersBody").children().remove();
                 var $h = $("div.playersBody"),
                     s = this.plRowElement.start,
                     so = this.plRowElement.starto,
                     si = this.plRowElement.starti,
+                    sw = this.plRowElement.startw,
                     e = this.plRowElement.end,
                     r = this.plRowElement.running,
                     r2 = this.plRowElement.running2,
@@ -754,13 +763,14 @@ function loadTGC() {
                 this.sortedKeys.forEach(function (item, index, array) {
                     var p = playersList.players[item],
                         st = p['status'],
-                        sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : so;
+                        sx = p.user == tgc.selfNick ? s : (st[0] == 'R' && !p.away) ? si : (st[0] == 'P') ? sw : so;
                     line = sx+p.user+r2+st+r3+p.rating+r4+p.experience+r5+
                               p.idle+r6+p.email+r7+p.client+e;
                     $h.after($(line));
                     $h = $(".playersEntry").last();
                 });
                 $("#playersList div.invitable").each(setInvite);
+                $("#playersList div.watchable").each(setWatch);
             },
         };
         playersList.sortByRating = (function () {

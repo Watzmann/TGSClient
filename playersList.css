@@ -28,6 +28,10 @@ div.playersList .invitable {
     color: green;
 }
 
+div.playersList .watchable {
+    color: blue;
+}
+
 div.playersList .plc1 {
     float: left;
     width: 12em;

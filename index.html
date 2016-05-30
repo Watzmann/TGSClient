@@ -163,41 +163,49 @@
               <div class="generalDialog" id="inviteDialog" style="display:none;">
                 <form id="invitation">   <!-- muss des ne form sein???? -->
                   <p>
-                    Invite <span id="playerName"></span>
+                    <input type="submit" name="watch_player" id="watch_player" value="Watch"
+                         onclick="tgc.dialogs.sendWatch(); return false"/>
+                    <span id="wPlayerName"></span>
                   </p>
-                  <div id="inviteSavedGames" style="display:none;">
-                    Saved games:
-                    <div class="gaContent">
-                      saved games list goes here
+                  <div id="invitationSection">
+                    <hr />
+                    <p>
+                      Invite <span id="iPlayerName"></span>
+                    </p>
+                    <div id="inviteSavedGames" style="display:none;">
+                      Saved games:
+                      <div class="gaContent">
+                        saved games list goes here
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    A new match of matchlength
-                    <input type="text" name="matchLength" id="iMatchLength" size="2"
-                           title="insert a number as matchlength or the word 'unlimited' for Money Game"/>
-                  </div>
-                  <div>
-                    Backgammon variation:
-                    <table>
-                      <tr>
-                        <td><input type="radio" name="variation" value="standard" checked="checked" />Standard</td>
-                        <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
-                      </tr>
-                      <tr>
-                        <td><input type="radio" name="variation" value="nack"/>Nack</td>
-                        <td><input type="radio" name="variation" value="plakoto"/>Plakoto</td>
-                      </tr>
-                      <tr>
-                        <td><input type="radio" name="variation" value="hyper"/>Hyper</td>
-                        <td><input type="radio" name="variation" value="fevga"/>Fevga</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div style="text-align:right;">
-                    <input type="submit" name="send_invite" id="send_invite" value="Invite"
-                         onclick="tgc.dialogs.sendInvite(); return false"/>
-                    <input type="submit" name="cancelInvite" id="cancelInvite" value="Cancel"
-                         onclick="tgc.dialogs.hideInvite(); return false"/>
+                    <div>
+                      A new match of matchlength
+                      <input type="text" name="matchLength" id="iMatchLength" size="2"
+                             title="insert a number as matchlength or the word 'unlimited' for Money Game"/>
+                    </div>
+                    <div>
+                      Backgammon variation:
+                      <table>
+                        <tr>
+                          <td><input type="radio" name="variation" value="standard" checked="checked" />Standard</td>
+                          <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
+                        </tr>
+                        <tr>
+                          <td><input type="radio" name="variation" value="nack"/>Nack</td>
+                          <td><input type="radio" name="variation" value="plakoto"/>Plakoto</td>
+                        </tr>
+                        <tr>
+                          <td><input type="radio" name="variation" value="hyper"/>Hyper</td>
+                          <td><input type="radio" name="variation" value="fevga"/>Fevga</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div style="text-align:right;">
+                      <input type="submit" name="send_invite" id="send_invite" value="Invite"
+                           onclick="tgc.dialogs.sendInvite(); return false"/>
+                      <input type="submit" name="cancelInvite" id="cancelInvite" value="Cancel"
+                           onclick="tgc.dialogs.hideInvite(); return false"/>
+                    </div>
                   </div>
                 </form>
               </div>
