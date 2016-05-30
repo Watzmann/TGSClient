@@ -181,6 +181,10 @@ table {
     text-align: right;
 }
 
+.playing {}
+
+.watching {}
+
 .segment {
     display: inline-block;
     float: left;

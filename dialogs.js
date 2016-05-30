@@ -59,10 +59,17 @@ function loadDialogs() {
             $('#inviteSavedGames .gaContent table').remove()
             tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld'];
         },
+        sendUnwatch: function () {
+            tgc.cc.sendCmd("unwatch");
+            $(".watching").hide();
+            $(".playing").show();
+        },
         sendWatch: function () {
             var watch = "watch "+$("#invitation #wPlayerName").html();
             tgc.cc.sendCmd(watch);
             this.hideInvite();
+            $(".playing").hide();
+            $(".watching").show();
         },
         sendInvite: function () {
             var variation = $("#invitation input:checked").attr('value'),

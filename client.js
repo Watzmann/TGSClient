@@ -624,6 +624,7 @@ function loadTGC() {
             };
             tgc.action.set_nick(tgc.nickname, tgc.version);
             tgc.navigate.show("players");
+            $(".watching").hide();
             $client.show();
             tgc.cc.sendCmd("toggle");
         },
