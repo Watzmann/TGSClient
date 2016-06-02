@@ -151,10 +151,14 @@ function loadTGC() {
                     color = 0x008000;
                     w = 0x000080;
                     status = 'ready';
+                    $("#readyToggle").prop("checked", true);
+                    $("#readyExplanation").html(tgc.toggles["ready"]["YES"]);
                 } else {
                     color = 0xB00000;
                     w = 0x008000;
                     status = 'not ready';
+                    $("#readyToggle").prop("checked", false);
+                    $("#readyExplanation").html(tgc.toggles["ready"]["NO"]);
                 }
                 if (data.watching != "-") {
                     color += w;
