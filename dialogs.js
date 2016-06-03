@@ -30,7 +30,8 @@ function loadDialogs() {
         },
         dialogWatch: function (player) {
             $("#invitation #wPlayerName").html(player);
-            $("#invitionSection").hide();
+            $("#invitationSection").hide();
+            $("#send_invite").hide();
             $("#inviteDialog").show();
         },
         dialogInvite: function (player) {
@@ -55,7 +56,8 @@ function loadDialogs() {
         },
         hideInvite: function () {
             $("#inviteDialog").hide();
-            $("#invitionSection").show();
+            $("#invitationSection").show();
+            $("#send_invite").show();
             $('#inviteSavedGames .gaContent table').remove()
             tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld'];
         },
