@@ -9,6 +9,8 @@
  *
 */
 
+var GIF = '.png';
+
 function loadBoard() {
   return {
     gifRoot: "resources/board/",
@@ -97,7 +99,7 @@ hannes rolls 4 and 3.
         function reject() {
             tgc.cc.sendCmd("reject");
         }
-        pic = '<img src="'+this.gifRoot+'reject.gif" alt="reject" title="doubleclick to reject">';
+        pic = '<img src="'+this.gifRoot+'reject'+GIF+'" alt="reject" title="doubleclick to reject">';
         jQuery('<div id="reject">'+pic+'</div>').appendTo($b);
         jQuery('#reject').dblclick(reject);
     },
@@ -108,20 +110,20 @@ hannes rolls 4 and 3.
         function accept() {
             tgc.cc.sendCmd("accept");
         }
-        pic = '<img src="'+this.gifRoot+'resign'+value[data['resigned']][0]+
-              '.gif" alt="resign '+value[data['resigned']]+'" title="doubleclick to accept">';
+        pic = '<img src="'+this.gifRoot+'resign'+value[data['resigned']][0]+GIF+
+              '" alt="resign '+value[data['resigned']]+'" title="doubleclick to accept">';
         jQuery('<div id="resign" class="resign">'+pic+'</div>').appendTo($b);
         jQuery('#resign').dblclick(accept);
         this.setReject($b);
     },
     draw: function(boardPane, board) {
         var gifRoot = this.gifRoot
-            piece = {'player': gifRoot + "playerpiece.gif",
-                     'opponent': gifRoot + "opponentpiece.gif",},
-            oppPiece = {'player': gifRoot + "opponentpiece.gif",
-                        'opponent': gifRoot + "playerpiece.gif",},
-            home = {'player': gifRoot + "playerpiecehome.gif",
-                    'opponent': gifRoot + "opponentpiecehome.gif",},
+            piece = {'player': gifRoot + "playerpiece"+GIF,
+                     'opponent': gifRoot + "opponentpiece"+GIF,},
+            oppPiece = {'player': gifRoot + "opponentpiece"+GIF,
+                        'opponent': gifRoot + "playerpiece"+GIF,},
+            home = {'player': gifRoot + "playerpiecehome"+GIF,
+                    'opponent': gifRoot + "opponentpiecehome"+GIF,},
             transPosStandard = [0,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
             transPosFevga = [0,13,14,15,16,17,18,19,20,21,22,23,24,1,2,3,4,5,6,7,8,9,10,11,12],
             starthereHooksFevga = {'blocked': false},
@@ -753,7 +755,7 @@ hannes rolls 4 and 3.
             if (crawford) {
                 cubeValue = 'c';
             }
-            pic = '<img src="'+gifRoot+'cube'+cubeValue+'.gif" alt="cube'+cubeValue+'">';
+            pic = '<img src="'+gifRoot+'cube'+cubeValue+GIF+'" alt="cube'+cubeValue+'">';
             jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
             if (! tgc.board.watching) {
                 if (cubeWasTurned) {
@@ -761,7 +763,7 @@ hannes rolls 4 and 3.
                     jQuery('#cube').dblclick(accept);
                 }
                 if (meMayTurn) {
-                    pic = gifRoot+'cube' + cubeValue*2 + '.gif';
+                    pic = gifRoot+'cube' + cubeValue*2 + GIF;
                     jQuery('#cube').dblclick(double(pic));
                 }
             }
@@ -798,9 +800,9 @@ hannes rolls 4 and 3.
                 if (! tgc.board.flipped) {
                     sortedDice.reverse();
                 }
-                pic = pic0 + 'playerdie'+sortedDice[0]+'.gif" alt="playerdie1">';
+                pic = pic0 + 'playerdie'+sortedDice[0]+GIF+'" alt="playerdie1">';
                 jQuery('<div id="pDice1">'+pic+'</div>').appendTo($b);
-                pic = pic0 + 'playerdie'+sortedDice[1]+'.gif" alt="playerdie2">';
+                pic = pic0 + 'playerdie'+sortedDice[1]+GIF+'" alt="playerdie2">';
                 jQuery('<div id="pDice2">'+pic+'</div>').appendTo($b);
                 jQuery('<div id="sendMove' + sma + '"></div>').appendTo($b);
                 if (dice[0] != dice[1]) {
@@ -809,9 +811,9 @@ hannes rolls 4 and 3.
                     $dx[0].onclick = flipDice;    /* TODO:0j: also jQuery */
                 }
             } else if (dice[2] != 0) {
-                pic = pic0 + 'opponentdie'+dice[2]+'.gif" alt="opponentdie1">';
+                pic = pic0 + 'opponentdie'+dice[2]+GIF+'" alt="opponentdie1">';
                 jQuery('<div id="oDice1">'+pic+'</div>').appendTo($b);
-                pic = pic0 + 'opponentdie'+dice[3]+'.gif" alt="opponentdie2">';
+                pic = pic0 + 'opponentdie'+dice[3]+GIF+'" alt="opponentdie2">';
                 jQuery('<div id="oDice2">'+pic+'</div>').appendTo($b);
             } else if (turn) {
                 ctr = tgc.board.watching ? '' : ' title="click to roll"';
@@ -829,7 +831,7 @@ hannes rolls 4 and 3.
              *          (last in first out). Preparations are there already, as
              *          there is an object 'undo' being returned by moveChecker().
              * */
-            var pic = '<img src="' + gifRoot + 'undo.gif" alt="undo"' +
+            var pic = '<img src="' + gifRoot + 'undo'+GIF+'" alt="undo"' +
                       ' title="click to undo your moves">';
             jQuery('<div id="undo">' + pic + '</div>').appendTo($b);
             jQuery('#undo')[0].onclick = restoreBoard;
