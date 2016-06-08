@@ -11,9 +11,9 @@
 
 var GIF = '.png';
 
-function loadBoard() {
+function loadBoard(board) {
   return {
-    gifRoot: "resources/board/",
+    gifRoot: "resources/" + board + "/",
     watching: false,
     flipped: false,
     infoParts: {

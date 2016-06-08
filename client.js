@@ -617,7 +617,13 @@ function loadTGC() {
             tgc.cc.toggle = function(toggle) {
                 tgc.ws.send('toggle ' + toggle);
             };
-            tgc.board = loadBoard();
+            if (sessionStorage.board == 'board1' ||
+                sessionStorage.board == 'board2') {
+                GIF = '.png';
+            } else {
+                GIF = '.gif';
+            }
+            tgc.board = loadBoard(sessionStorage.board);
             window.onbeforeunload = function(){
                 return "You are about to log out of TigerGammon.\nAny game or settings will be saved.";
             };

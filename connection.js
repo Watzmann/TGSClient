@@ -165,6 +165,13 @@ function loadTGCConnection() {
   tgc.checkConnections();
   if(typeof(Storage) !== "undefined") {
     if (typeof(sessionStorage.name) !== "undefined") {
+        if (sessionStorage.board == 'brownboard') {
+            $("head").append($('<link rel="stylesheet" type="text/css" href="board2.css">'));
+            sessionStorage.board = 'board2';
+        } else {
+            $("head").append($('<link rel="stylesheet" type="text/css" href="board1.css">'));
+            sessionStorage.board = 'board1';
+        }
         $login.load("flogin.html",
               function () {
                   $login.show();
@@ -172,6 +179,8 @@ function loadTGCConnection() {
               }
         );
     } else {
+        $("head").append($('<link rel="stylesheet" type="text/css" href="board.css">'));
+        sessionStorage.board = 'board';
         $login.load("login.html",
               function () {
                   $login.show();
