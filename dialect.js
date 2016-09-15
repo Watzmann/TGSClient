@@ -58,6 +58,9 @@ function loadDialect() {
 //       autodouble is not yet enabled
 //                       'YES': "You agree that doublets during opening double the cube",
 //                       'NO': "You don't agree that doublets during opening double the cube"},
+        'autogreedy': {'name': "autogreedy",
+                       'YES': "Will use greedy bearoffs after contact is gone",
+                       'NO': "Won't use greedy bearoffs after contact is gone"},
         'automove': {'name': "automove",
                        'YES': "Forced moves will be done automatically",
                        'NO': "Forced moves won't be done automatically"},
