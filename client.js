@@ -300,6 +300,7 @@ function loadTGC() {
                 jQuery("#gotInvitation #joinInvitation").click(join_);
                 jQuery("#gotInvitation #rejectInvitation").click(decline_);
                 jQuery("#gotInvitation").show();
+                alarmSound.play();
             },
             system: function (result) {
                 var target = systemLine;
