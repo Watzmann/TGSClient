@@ -59,7 +59,6 @@ function loadTGCConnection() {
                     var ws = new WebSocket("ws://"+host_port+"/ws");
                     ws.onopen = function() {
                         ws.send("ping");
-                        ws.send("ebifkey");
                     };
                     ws.onmessage = function(event) {
                         var data = event.data.split(',');

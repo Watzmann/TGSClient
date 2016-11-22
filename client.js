@@ -552,10 +552,10 @@ function loadTGC() {
                     case "b06":
                         tgc.action.delFromPL(cmd);
                         break;
-                    case "q17":
+                    case "q18":
                         tgc.action.savedGames(action_parts);
                         break;
-                    case "q18":
+                    case "q19":
                         break;
                     default:
                         tgc.action.focus(msg);
