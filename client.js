@@ -714,8 +714,10 @@ function loadTGC() {
                 this.show();
             },
             sortByName: function (a, b) {
-                if (a > b) return 1;
-                if (a < b) return -1;
+                var _a = a.toLowerCase();
+                var _b = b.toLowerCase();
+                if (_a > _b) return 1;
+                if (_a < _b) return -1;
                 return 0;
             },
             sort: null,
