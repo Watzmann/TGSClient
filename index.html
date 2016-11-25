@@ -231,9 +231,17 @@
                 </div>
                 <div id="setSettings" style="float: left;">
                   <p class="settings">Settings</p>
-                  <div style="background-color:#99FFFF;">
+                  <div id="s01" style="background-color:#99FFFF;">
                     Here you soon will find ways to change your individual settings.
                   </div>
+                </div>
+                <div id="setLanguage" style="float: left; clear: left;">
+                  <p class="settings">Language
+                    <select class="settings" id="language" name="language" onchange="tgc.selectLanguage()">
+                      <option value="de">Deutsch</option>
+                      <option selected="selected" value="en">English</option>
+                    </select>
+                  </p>
                 </div>
               </div>
             </div>
@@ -308,7 +316,6 @@
     <script src="config.js"></script>
     <script>loadConfig();</script>
     <script src="dialogs.js"></script>
-    <script src="dialect.js"></script>
     <script src="board.js"></script>
     <script src="client.js"></script>
     <script src="clock.js"></script>

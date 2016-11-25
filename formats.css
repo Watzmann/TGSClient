@@ -145,6 +145,10 @@ p.settings {
     padding-right: 1em;
 }
 
+select.settings {
+    margin-left: 49px;
+}
+
 table {
     font-size: small;
 }

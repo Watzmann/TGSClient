@@ -102,5 +102,10 @@ function loadDialect() {
                        'NO': "You want your rooms door to be open"},
     }
   }());
-  return [dialect,toggles];
+  var labels = (function() {
+    return {
+        s01: "Here you soon will find ways to change your individual settings.",
+    }
+  }());
+  return [dialect,toggles,labels];
 }

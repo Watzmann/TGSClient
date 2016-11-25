@@ -681,8 +681,31 @@ function loadTGC() {
                         ;
                 };
             }
+        },
+        fillLabels: function(labels) {
+            for (var lbl in labels) {
+                    $('#'+lbl).html(labels[lbl]);
+                };
+        },
+        setLanguage: function(langue) {
+            function loadLanguage(data, textStatus, jqxhr) {
+                var messages = loadDialect();
+                obj.dialect = messages[0];
+                obj.toggles = messages[1];
+                obj.labels = messages[2];
+                obj.cc.sendCmd("toggle");
+                obj.fillLabels(temp.labels);
+            }
+            var obj = this,
+                dialect = 'dialect.' + langue + '.js';
+            $.getScript(dialect, loadLanguage);
         }
     };
+  temp.selectLanguage = function() {
+            var $selector = jQuery("#language"),
+                langue = $selector.val();
+            temp.setLanguage(langue);
+        };
   temp.action.playersList = (function () {
         var playersList = {
             plRowElement: {'start': '<div class="playersEntry"><div class="plc1 self">',
@@ -824,9 +847,7 @@ function loadTGC() {
   }());
   tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
-  var messages = loadDialect();
-  tgc.dialect = messages[0];
-  tgc.toggles = messages[1];
+  tgc.setLanguage('en');
   if (window.tgcConfig.DEVELOP_MODE) {
     jQuery("#developButton").show();
   }

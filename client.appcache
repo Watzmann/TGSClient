@@ -1,12 +1,13 @@
 CACHE MANIFEST
-# 2016-10-25 v0.8.6-1
+# 2016-11-25 v0.8.6-2
 /client/third_party/jquery.js
 /client/third_party/sprintf.js
 /client/board.js
 /client/client.js
 /client/clock.js
 /client/config.js
-/client/dialect.js
+/client/dialect.en.js
+/client/dialect.de.js
 /client/dialogs.js
 /client/board.css
 /client/clock.css
