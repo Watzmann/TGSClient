@@ -125,7 +125,9 @@ function loadTGCConnection() {
                             $login.hide();
                             window.tgc.startClient();
                             var regismsg = document.getElementById("registration");
-                            regismsg.style.display = "none";
+                            if (typeof regismsg !== 'undefined' && regismsg != null) {
+                                regismsg.style.display = "none";
+                            }
                             break;
                     }
                 }
