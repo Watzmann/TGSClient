@@ -634,10 +634,12 @@ function loadTGC() {
                 }
             };
             tgc.action.set_nick(tgc.nickname, tgc.version);
-            tgc.navigate.show("players");
-            $(".watching").hide();
-            $client.show();
-            tgc.cc.sendCmd("toggle");
+            tgc.languageLoaded.then(function() {
+                tgc.navigate.show("players");
+                $(".watching").hide();
+                $client.show();
+                tgc.languageLoaded = null;
+            });
         },
         navigate: {                     /* TODO:0j: this can be compressed using arrays */
             show: function(element) {
@@ -695,10 +697,13 @@ function loadTGC() {
                 obj.labels = messages[2];
                 obj.cc.sendCmd("toggle");
                 obj.fillLabels(temp.labels);
+                deferred.resolve();
             }
             var obj = this,
+                deferred = $.Deferred();
                 dialect = 'dialect.' + langue + '.js';
             $.getScript(dialect, loadLanguage);
+            return deferred.promise();
         }
     };
   temp.selectLanguage = function() {
@@ -847,7 +852,7 @@ function loadTGC() {
   }());
   tgc.blackBoard.savedGamesFocus = '#generalAlert';
   tgc.dialogs = loadDialogs();
-  tgc.setLanguage('en');
+  tgc.languageLoaded = tgc.setLanguage('en');
   if (window.tgcConfig.DEVELOP_MODE) {
     jQuery("#developButton").show();
   }
