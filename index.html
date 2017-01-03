@@ -161,33 +161,41 @@
                 </div>
               </div>
               <div class="generalDialog" id="inviteDialog" style="display:none;">
-                <form id="invitation">   <!-- muss des ne form sein???? -->
-                  <p>
-                    <input type="submit" name="watch_player" id="watch_player" value="Watch"
-                         onclick="tgc.dialogs.sendWatch(); return false"/>
-                    <span id="wPlayerName"></span>
-                  </p>
-                  <div id="invitationSection">
+                <form id="invitation" style="margin-bottom: 0em;">   <!-- muss des ne form sein???? -->
+                  <div class="softLink3" id="cancelInvite" onclick="tgc.dialogs.hideInvite();"
+                       title="click to dismiss invitation dialog">X</div>
+                  <div style="clear: right;"></div>
+                  <div id="inviteSavedGames" style="display:none;">
+                    Resume a saved game with <span id="iResumeName"></span>:
+                    <div class="gaContent">
+                      saved games list goes here
+                    </div>
                     <hr />
-                    <p>
-                      Invite <span id="iPlayerName"></span>
-                    </p>
-                    <div id="inviteSavedGames" style="display:none;">
-                      Saved games:
-                      <div class="gaContent">
-                        saved games list goes here
-                      </div>
+                  </div>
+                  <div id="invitationSection">
+                    <div>
+                      <div> Invite <span id="iPlayerName"></span></div>
                     </div>
                     <div>
-                      A new match of matchlength
+                      to a new match of ML
                       <input type="text" name="matchLength" id="iMatchLength" size="2"
                              title="insert a number as matchlength or the word 'unlimited' for Money Game"/>
+                      <div id="bgVariant" style="display: none;">of <span></span></div>
+                      <hr />
                     </div>
-                    <div>
-                      Backgammon variation:
-                      <table>
+                    <div id="bVLabel" class="softLink softLink2"
+                         onclick="tgc.dialogs.showBackgammonVariation(); return false"
+                         title="click to see a menu of Backgammon variants">
+                      chose Backgammon variant
+                    </div>
+                    <div id="backgammonVariation" style="display:none; clear: right;">
+                      <div class="softLink softLink2" style="float: right;"
+                           onclick="tgc.dialogs.hideBackgammonVariation(); return false"
+                           title="click to hide section">hide
+                      </div>
+                      <table onclick="tgc.dialogs.displayBackgammonVariation();">
                         <tr>
-                          <td><input type="radio" name="variation" value="standard" checked="checked" />Standard</td>
+                          <td><input type="radio" name="variation" value="standard" checked="checked"/>Standard</td>
                           <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
                         </tr>
                         <tr>
@@ -200,12 +208,36 @@
                         </tr>
                       </table>
                     </div>
+                    <hr id="invitationHr" style="display: none;"/>
+                    <div>
+                      <div id="iCLabel"; style="display:block;" class="softLink softLink2"
+                         onclick="tgc.dialogs.showClockInvitation(); return false"
+                         title="click to chose the settings of the clock">
+                        chose clock
+                      </div>
+                      <div id="iCData"; style="display:none; clear: both;">
+                        <div  class="softLink softLink2" style="float: right;"
+                              onclick="tgc.dialogs.hideClockInvitation(); return false"
+                              title="click to hide section">hide
+                        </div>
+                        <input type="text" name="iCBronstein" id="iCBronstein" size="2" value="8"
+                               title="insert a number as seconds Bronstein grace time"/>
+                        <input type="text" name="iCReserve" id="iCReserve" size="3" value="120"
+                               title="insert a number as seconds reserve time per point"/>
+                        <input type="checkbox" name="useClock" value="standard"/>
+                        <hr />
+                      </div>
+                    </div>
                   </div>
                   <div style="text-align:right;">
-                    <input type="submit" name="send_invite" id="send_invite" value="Invite"
+                    <input type="submit" name="send_invite" id="send_invite" value="invite"
                          onclick="tgc.dialogs.sendInvite(); return false"/>
-                    <input type="submit" name="cancelInvite" id="cancelInvite" value="Cancel"
-                         onclick="tgc.dialogs.hideInvite(); return false"/>
+                  </div>
+                  <hr style="border-width: medium;" />
+                  <div> Just
+                    <input type="submit" name="watch_player" id="watch_player" value="watch"
+                         onclick="tgc.dialogs.sendWatch(); return false"/>
+                    <span id="wPlayerName"></span>
                   </div>
                 </form>
               </div>

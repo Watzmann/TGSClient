@@ -37,9 +37,12 @@ function loadDialogs() {
         dialogInvite: function (player) {
             tgc.blackBoard['savedGamesFocusOld'] = tgc.blackBoard['savedGamesFocus']
             tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
+            tgc.blackBoard['invitationHrSemaphore'] = 0;
             tgc.cc.sendCmd("savedgame " + player);
             $("#invitation #iPlayerName").html(player);
             $("#invitation #wPlayerName").html(player);
+            $("#invitation #iResumeName").html(player);
+            $("#invitationHr").hide();
             $("#inviteDialog").show();
         },
         watch: function (player) {
@@ -60,6 +63,49 @@ function loadDialogs() {
             $("#send_invite").show();
             $('#inviteSavedGames .gaContent table').remove()
             tgc.blackBoard['savedGamesFocus'] = tgc.blackBoard['savedGamesFocusOld'];
+        },
+        hideClockInvitation: function () {
+            $("#iCLabel").show();
+            $("#iCData").hide();
+            if (tgc.blackBoard['invitationHrSemaphore'] == 1) {
+                $("#invitationHr").hide();
+            }
+            tgc.blackBoard['invitationHrSemaphore']--;
+        },
+        showClockInvitation: function () {
+            $("#iCData").show();
+            $("#iCLabel").hide();
+            if (tgc.blackBoard['invitationHrSemaphore'] == 0) {
+                $("#invitationHr").show();
+            }
+            tgc.blackBoard['invitationHrSemaphore']++;
+        },
+        hideBackgammonVariation: function () {
+            $("#bVLabel").show();
+            $("#backgammonVariation").hide();
+            if (tgc.blackBoard['invitationHrSemaphore'] == 1) {
+                $("#invitationHr").hide();
+            }
+            tgc.blackBoard['invitationHrSemaphore']--;
+        },
+        showBackgammonVariation: function () {
+            $("#backgammonVariation").show();
+            $("#bVLabel").hide();
+            if (tgc.blackBoard['invitationHrSemaphore'] == 0) {
+                $("#invitationHr").show();
+            }
+            tgc.blackBoard['invitationHrSemaphore']++;
+        },
+        displayBackgammonVariation: function () {
+            var element = $("#invitation input:checked"),
+                variation = element.attr('value'),
+                label = element.parent().text();
+            if (variation == 'standard') {
+                $("#bgVariant").hide();
+            } else {
+                $("#bgVariant span").html(label);
+                $("#bgVariant").show();
+            }
         },
         sendUnwatch: function () {
             tgc.cc.sendCmd("unwatch");
