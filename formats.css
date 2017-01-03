@@ -11,6 +11,9 @@ body {
     font-size: 28px;
     font-weight: bold;
 }
+#login_template input {
+    margin-top: 3px;
+}
 #identity {
     width: 1200px;
     margin-top: 10px;
@@ -25,7 +28,7 @@ body {
     font-weight: bold;
     padding-right: 20px;
 }
-#quit {
+.softLink {
     text-decoration: underline;
     cursor: pointer;
 }

@@ -1,15 +1,19 @@
   <h1>TigerGammon login</h1>
   <div id="denied" style="display:none; color:red;">
-      wrong username <i id="user-name">...</i> or password!
+    <p>
+      Wrong username <i id="user-name">...</i> or password!</br>
+      Please, <span class="softLink" onclick="tgcCnct.start_registration();">create an account</span> if you are new!
+    </p>
   </div>
   <div id="registration" style="display:none; color:red;">
   </div>
   <div id="greeting"  style="display:block;">
-    <p>
+    <p id="introMsg">
       This is your beta version of the new HTML5 client for TigerGammon online Backgammon play.
     </p>
-    <p>
-      Login to tigergammon.com or register if you are new!</br>
+    <p id="loginPrompt">
+      Login to TigerGammon or
+      <span class="softLink" onclick="tgcCnct.start_registration();">create an account</span> if you are new!</br>
     </p>
   </div>
   <div id="goodbye"  style="display:none;">
@@ -17,20 +21,19 @@
       Thanks for playing on TigerGammon.
     </p>
   </div>
-  <div>
-    <label for="login_name">name:</label><br/>
-    <input type="text" name="name" id="login_name"/><br/>
-    <label for="login_password">password:</label><br/>
-    <input type="password" name="password" id="login_password"/><br/>
+  <div id="login_template" style="width: 153px;">
+    <input type="text" name="name" id="login_name" placeholder="Username"/>
+    <input type="password" name="password" id="login_password" placeholder="Password"/>
     <div style="margin-top: 1em;">
-    <input type="button" id="login_submit" value="Login"
-           onclick="tgcCnct.openSession('login', 'v'+CLIENT_VERSION);"/>
-    <span style="padding-left: 35px;">
-    <input type="button" id="register_submit" value="Register"
-           onclick="tgcCnct.openSession('register', 'v'+CLIENT_VERSION);"/>
-    </span></div>
+      <div id="loginButton">
+      <input type="button" id="login_submit" value="Login"
+             onclick="tgcCnct.openSession('login', 'v'+CLIENT_VERSION);"/></div>
+      <div id="registerButton" style="float: right; display: none;">
+      <input type="button" id="register_submit" value="Register"
+             onclick="tgcCnct.openSession('register', 'v'+CLIENT_VERSION);"/></div>
+    </div>
   </div>
-  <div id="switchservers" style="padding-top:20px; display:none;">available servers:
+  <div id="switchservers" style="padding-top:20px; display:none; clear: right;">available servers:
     <table id="sockets">
       <tr>
         <td id="discard">None</td><td></td>

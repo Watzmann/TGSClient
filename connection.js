@@ -76,14 +76,32 @@ function loadTGCConnection() {
                 }
             }
         },
+        start_registration: function () {
+            $('#loginPrompt').html('Chose a nick and password');
+            $('#login_name').attr("placeholder", "Pick a username");
+            $('#login_password').attr("placeholder", "Create a password");
+            $('#registerButton').show();
+            $('#loginButton').hide();
+        },
+        reset_login: function () {
+            $('#loginPrompt').html('Login to TigerGammon or <span class="softLink" onclick="tgcCnct.start_registration();">create an account</span> if you are new!');
+            $('#login_name').attr("placeholder", "Username");
+            $('#login_password').attr("placeholder", "Password");
+            $('#registerButton').hide();
+            $('#loginButton').show();
+        },
         access_denied: function (nick) {
             var denied = document.getElementById("denied"),
-                target = document.getElementById("user-name");
+                target = document.getElementById("user-name"),
+                greeting = document.getElementById("greeting");
+            greeting.style.display = "none";
             denied.style.display = "block";
             target.innerHTML = nick;
         },
         registration_error: function (msg) {
-            var regismsg = document.getElementById("registration");
+            var regismsg = document.getElementById("introMsg");
+            regismsg.style.display = "none";
+            regismsg = document.getElementById("registration");
             regismsg.style.display = "block";
             regismsg.innerHTML = msg;
         },
@@ -123,6 +141,7 @@ function loadTGCConnection() {
                             window.tgc.version = label;
                             window.tgc.ws = ws;
                             $login.hide();
+                            tgcCnct.reset_login();
                             window.tgc.startClient();
                             var regismsg = document.getElementById("registration");
                             if (typeof regismsg !== 'undefined' && regismsg != null) {
@@ -136,6 +155,7 @@ function loadTGCConnection() {
             var ws = new WebSocket("ws://"+hp+"/ws");
             tgc.ws = ws;
             ws.onopen = function() {
+                $("#goodbye").hide();
                 if (mode != 'fullLogin') {
                     var name = document.getElementById("login_name").value,
                         passwd = document.getElementById("login_password").value,
@@ -157,9 +177,9 @@ function loadTGCConnection() {
             };
         },
         closeSession: function () {
-                jQuery("#greeting").hide();
-                jQuery("#goodbye").show();
-                $login.show();
+            jQuery("#greeting").hide();
+            jQuery("#goodbye").show();
+            $login.show();
         },
     };
   }());
