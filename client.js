@@ -11,6 +11,7 @@
 
 function loadTGC() {
   var tgc = (function() {
+    var CLIENT_FEATURES = ['webrtc', 'tavli', 'clock'];
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var $client = jQuery("#client"),
         $inputField = jQuery("#send_input"),
@@ -205,12 +206,16 @@ function loadTGC() {
             whoUpdate: function (list_of_players) {
                 for (var p = 1, len = list_of_players.length-1; p < len; p++) {
                     var po = JSON.parse(list_of_players[p]);
+                    var feats = po.features.split(',');
                     if ('>=<?'.indexOf(po.client[0]) > -1) {    // TODO:01: let this be handled by the server
                         po.client = "JavaFIBS 2001";
                     }
                     if (po.user == tgc.selfNick) {
                         this.updateSelf(po);
                     }
+                    CLIENT_FEATURES.forEach(function(element, index) {
+                        po[element] = $.inArray(element, feats) != -1;
+                        })
                     this.playersList.add(po);
                 }
                 this.playersList.reSort();
@@ -817,6 +822,9 @@ function loadTGC() {
                 });
                 $("#playersList div.invitable").each(setInvite);
                 $("#playersList div.watchable").each(setWatch);
+            },
+            features: function (user, feature) {
+                return this.players[user][feature];
             },
         };
         playersList.sortByRating = (function () {

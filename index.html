@@ -178,9 +178,12 @@
                     </div>
                     <div>
                       to a new match of ML
-                      <input type="text" name="matchLength" id="iMatchLength" size="2"
+                      <input type="text" name="matchLength" id="iMatchLength" size="2" placeholder="1"
                              title="insert a number as matchlength or the word 'unlimited' for Money Game"/>
-                      <div id="bgVariant" style="display: none;">of <span></span></div>
+                      <div>
+                        <span id="bgVariant" style="display: none;"></span>
+                        <span id="usingClock" style="display: none;">with Clock</span>
+                      </div>
                       <hr />
                     </div>
                     <div id="bVLabel" class="softLink softLink2"
@@ -193,38 +196,52 @@
                            onclick="tgc.dialogs.hideBackgammonVariation(); return false"
                            title="click to hide section">hide
                       </div>
+                      <div class="normalText">Chose a Backgammon Variant</div>
                       <table onclick="tgc.dialogs.displayBackgammonVariation();">
                         <tr>
                           <td><input type="radio" name="variation" value="standard" checked="checked"/>Standard</td>
-                          <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
-                        </tr>
-                        <tr>
                           <td><input type="radio" name="variation" value="nack"/>Nack</td>
+                          <td><input type="radio" name="variation" value="hyper"/>Hyper</td>
+                        </tr>
+                        <tr class="tavliVariants">
+                          <td><input type="radio" name="variation" value="tavli"/>Tavli</td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                        <tr class="tavliVariants">
+                          <td><input type="radio" name="variation" value="portes"/>Portes</td>
                           <td><input type="radio" name="variation" value="plakoto"/>Plakoto</td>
+                          <td><input type="radio" name="variation" value="fevga"/>Fevga</td>
                         </tr>
                         <tr>
-                          <td><input type="radio" name="variation" value="hyper"/>Hyper</td>
-                          <td><input type="radio" name="variation" value="fevga"/>Fevga</td>
                         </tr>
                       </table>
                     </div>
                     <hr id="invitationHr" style="display: none;"/>
-                    <div>
+                    <div id="clockInvitationSection">
                       <div id="iCLabel"; style="display:block;" class="softLink softLink2"
                          onclick="tgc.dialogs.showClockInvitation(); return false"
                          title="click to chose the settings of the clock">
-                        chose clock
+                        set the clock
                       </div>
                       <div id="iCData"; style="display:none; clear: both;">
                         <div  class="softLink softLink2" style="float: right;"
                               onclick="tgc.dialogs.hideClockInvitation(); return false"
                               title="click to hide section">hide
                         </div>
-                        <input type="text" name="iCBronstein" id="iCBronstein" size="2" value="8"
-                               title="insert a number as seconds Bronstein grace time"/>
-                        <input type="text" name="iCReserve" id="iCReserve" size="3" value="120"
-                               title="insert a number as seconds reserve time per point"/>
-                        <input type="checkbox" name="useClock" value="standard"/>
+                        <div class="normalText">
+                          <div>Chose your clock settings</div>
+                          Bronstein
+                          <input type="text" name="iCBronstein" id="iCBronstein" size="2" value="8"
+                                 title="insert a number as seconds Bronstein grace time"/>
+                          Reserve
+                          <input type="text" name="iCReserve" id="iCReserve" size="3" value="120"
+                                 title="insert a number as seconds reserve time per point"/>
+                          <br />
+                          <input type="checkbox" name="useClock" id="useClockToggle" value="standard"
+                                 onclick="tgc.dialogs.displayUseClock();"/>
+                          Use clock in this match
+                        </div>
                         <hr />
                       </div>
                     </div>

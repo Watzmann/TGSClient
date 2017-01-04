@@ -28,6 +28,9 @@ body {
     font-weight: bold;
     padding-right: 20px;
 }
+#iCData input {
+    text-align: center;
+}
 .softLink {
     text-decoration: underline;
     cursor: pointer;

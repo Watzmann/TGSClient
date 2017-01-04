@@ -35,10 +35,20 @@ function loadDialogs() {
             $("#inviteDialog").show();
         },
         dialogInvite: function (player) {
+            var toggle = function (id, value) {
+                if (value) {
+                    $(id).show();
+                } else {
+                    $(id).hide();
+                }
+            };
+            $("#inviteSavedGames").hide();
             tgc.blackBoard['savedGamesFocusOld'] = tgc.blackBoard['savedGamesFocus']
             tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
             tgc.blackBoard['invitationHrSemaphore'] = 0;
             tgc.cc.sendCmd("savedgame " + player);
+            toggle("#clockInvitationSection", tgc.action.playersList.features(player, 'clock'));
+            toggle(".tavliVariants", tgc.action.playersList.features(player, 'tavli'));
             $("#invitation #iPlayerName").html(player);
             $("#invitation #wPlayerName").html(player);
             $("#invitation #iResumeName").html(player);
@@ -97,14 +107,22 @@ function loadDialogs() {
             tgc.blackBoard['invitationHrSemaphore']++;
         },
         displayBackgammonVariation: function () {
-            var element = $("#invitation input:checked"),
+            var element = $("#backgammonVariation input:checked"),
                 variation = element.attr('value'),
                 label = element.parent().text();
             if (variation == 'standard') {
                 $("#bgVariant").hide();
             } else {
-                $("#bgVariant span").html(label);
+                $("#bgVariant").html('of '+label+'&nbsp;');
                 $("#bgVariant").show();
+            }
+        },
+        displayUseClock: function () {
+            var element = $("#useClockToggle");
+            if (element.prop("checked")) {
+                $("#usingClock").show();
+            } else {
+                $("#usingClock").hide();
             }
         },
         sendUnwatch: function () {
@@ -120,9 +138,10 @@ function loadDialogs() {
             $(".watching").show();
         },
         sendInvite: function () {
-            var variation = $("#invitation input:checked").attr('value'),
+            var variation = $("#backgammonVariation input:checked").attr('value'),
                 matchLength = document.getElementById("iMatchLength"),
-                invitation = "invite "+$("#invitation #iPlayerName").html()+" "+matchLength.value;
+                ML = matchLength.value == "" ? "1" : matchLength.value,
+                invitation = "invite "+$("#invitation #iPlayerName").html()+" "+ML;
             if (variation != 'standard') {
                 invitation += ' ' + variation;
             }
