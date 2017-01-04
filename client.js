@@ -571,6 +571,9 @@ function loadTGC() {
                 tgc.action.focus(msg);
             }
         },
+        onShutDown: function () {
+            systemLine.innerHTML = "System messages";
+        },
         blackBoard: { /* This is a container for communication between calls;
                  sort of tmp, for some of them. Do not litter! */
         },
@@ -608,6 +611,7 @@ function loadTGC() {
                 window.onbeforeunload = function(){
                     return null;
                 };
+                tgc.onShutDown();
             };
             tgc.cc.sendWho = function() {
                 tgc.ws.send("who");
