@@ -145,6 +145,10 @@ function loadDialogs() {
             if (variation != 'standard') {
                 invitation += ' ' + variation;
             }
+            if ($("#useClockToggle").prop("checked")) {
+                invitation += ' clock_' + $("#iCBronstein").prop('value')
+                            + '_' + $("#iCReserve").prop('value');
+            }
             tgc.cc.sendCmd(invitation);
             this.hideInvite();
         },
