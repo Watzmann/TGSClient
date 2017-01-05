@@ -11,7 +11,7 @@
 
 function loadTGC() {
   var tgc = (function() {
-    var CLIENT_FEATURES = ['webrtc', 'tavli', 'clock'];
+    var CLIENT_FEATURES = ['webrtc', 'tavli', 'clock', 'xlock'];
     var signal_colors = {1: "green", 3: "red", 0: "orange"};
     var $client = jQuery("#client"),
         $inputField = jQuery("#send_input"),

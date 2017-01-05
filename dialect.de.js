@@ -73,10 +73,10 @@ function loadDialect() {
   var toggles = (function() {
     return {
         'allowclock': {'name': "allowclock",
-                       //'YES': "You would like to play using the clock",
-                       'YES': "Du möchtest gerne mit Uhr spielen",
-                       //'NO': "You don't allow the use of the servers clock"},
-                       'NO': "Du möchtest keinesfalls mit Uhr spielen"},
+                       //'YES': "You will accept invitations to matches with clock",
+                       'YES': "Du akzeptierst Einladungen mit Uhr",
+                       //'NO': "You won't accept invitations to matches with clock"},
+                       'NO': "Du akzeptierst keine Einladungen mit Uhr"},
         'allowpip': {'name': "allowpip",
                        //'YES': "You allow the use of the servers pip-count",
                        'YES': "Du erlaubst, dass der Server den pip-count angibt",

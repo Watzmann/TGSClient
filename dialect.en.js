@@ -47,10 +47,8 @@ function loadDialect() {
   var toggles = (function() {
     return {
         'allowclock': {'name': "allowclock",
-                       'YES': "You would like to play using the clock",
-                       'NO': "You don't allow the use of the servers clock"},
-//                       'YES': "You allow the use of the servers clock",
-//                       'NO': "You don't allow the use of the servers clock"},
+                       'YES': "You will accept invitations to matches with clock",
+                       'NO': "You won't accept invitations to matches with clock"},
         'allowpip': {'name': "allowpip",
                        'YES': "You allow the use of the servers pip-count",
                        'NO': "You don't allow the use of the servers pip-count"},

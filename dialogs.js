@@ -51,6 +51,7 @@ function loadDialogs() {
             tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
             tgc.blackBoard['invitationHrSemaphore'] = 0;
             tgc.cc.sendCmd("savedgame " + player);
+            toggle("#xlockInvitationSection", tgc.action.playersList.features(player, 'xlock'));
             toggle("#clockInvitationSection", tgc.action.playersList.features(player, 'clock'));
             toggle(".tavliVariants", tgc.action.playersList.features(player, 'tavli'));
             $("#invitation #iPlayerName").html(player);
