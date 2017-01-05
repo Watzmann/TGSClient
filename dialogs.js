@@ -42,6 +42,10 @@ function loadDialogs() {
                     $(id).hide();
                 }
             };
+            $("#standardBGvariant").prop("checked", true);
+            this.displayBackgammonVariation();
+            $("#useClockToggle").prop("checked", false);
+            this.displayUseClock();
             $("#inviteSavedGames").hide();
             tgc.blackBoard['savedGamesFocusOld'] = tgc.blackBoard['savedGamesFocus']
             tgc.blackBoard['savedGamesFocus'] = '#inviteSavedGames';
