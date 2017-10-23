@@ -554,6 +554,14 @@ function loadTGC() {
                             tgc.clocks.setSeconds(p, data.reserve, data.grace);
                         }
                         break;
+                    case "i22":
+                        var data = JSON.parse(cmd);
+            		    tgc.clocks.setSeconds('player', data.reserve, "0");
+                        break;
+                    case "i23":
+                        var data = JSON.parse(cmd);
+            		    tgc.clocks.setSeconds('opponent', data.reserve, "0");
+                        break;
                     case "b06":
                         tgc.action.delFromPL(cmd);
                         break;
