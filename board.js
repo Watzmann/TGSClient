@@ -730,6 +730,14 @@ hannes rolls 4 and 3.
         }
         function setCube(cubeValue, meMayDouble, meMayTurn, cubeWasTurned, crawford, $b) {
             var pic, div, t;
+            function showTurnedCube(picture) {
+                var turnedCube = function() {
+                    jQuery('#rollDice').remove();
+                    jQuery('#cube').attr('class', 'dCube');
+                    jQuery('#cube img').attr('src', picture).attr('alt', 'turned cube');
+                }
+                return turnedCube;
+            }
             function double(picture) {
                 var turnCube = function() {
                     jQuery('#rollDice').remove();
@@ -757,13 +765,14 @@ hannes rolls 4 and 3.
             }
             pic = '<img src="'+gifRoot+'cube'+cubeValue+GIF+'" alt="cube'+cubeValue+'">';
             jQuery('<div id="cube" class="'+type+'">'+pic+'</div>').appendTo($b);
+            pic = gifRoot+'cube' + cubeValue*2 + GIF;
+            tgc.board.draw.turnCubeOnResume = showTurnedCube(pic);
             if (! tgc.board.watching) {
                 if (cubeWasTurned) {
                     tgc.board.setReject($b);
                     jQuery('#cube').dblclick(accept);
                 }
                 if (meMayTurn) {
-                    pic = gifRoot+'cube' + cubeValue*2 + GIF;
                     jQuery('#cube').dblclick(double(pic));
                 }
             }

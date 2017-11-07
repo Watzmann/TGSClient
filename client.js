@@ -543,6 +543,10 @@ function loadTGC() {
                     case "g02":
                         tgc.action.whoUpdate(action_parts);
                         break;
+                    case "i19":
+                        var data = JSON.parse(cmd);
+            		    tgc.board.draw.turnCubeOnResume();
+                        break;
                     case "i20":
                     case "i21":
                         var data = JSON.parse(cmd),
