@@ -601,6 +601,9 @@ function loadTGC() {
         },
         startClient: function() {
             tgc.ws.onclose = function(event) {
+                window.onbeforeunload = function(){
+                    return null;
+                };
                 tgc.action.showBye();
             };
             tgc.ws.onmessage = function(evt) {
@@ -625,9 +628,6 @@ function loadTGC() {
             tgc.cc.shutdown = function() {
                 tgc.ws.send("ciao");
                 tgc.ws.close();
-                window.onbeforeunload = function(){
-                    return null;
-                };
                 tgc.onShutDown();
             };
             tgc.cc.sendWho = function() {
